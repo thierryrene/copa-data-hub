@@ -443,9 +443,12 @@ class App {
 
   extractCuriosities(text) {
     if (!text) return [];
-    return text
-      .split(/[.!?](?:\s+|$)/)
-      .map(item => item.trim())
+
+    const sentences = (typeof Intl !== 'undefined' && Intl.Segmenter)
+      ? Array.from(new Intl.Segmenter('pt', { granularity: 'sentence' }).segment(text), part => part.segment.trim())
+      : text.split(/[.!?](?:\s+|$)/).map(item => item.trim());
+
+    return sentences
       .filter(item => item.length > MIN_CURIOSITY_LENGTH)
       .slice(0, MAX_TEAM_CURIOSITIES);
   }
