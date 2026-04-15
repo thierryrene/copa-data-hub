@@ -11,6 +11,9 @@ import { registerServiceWorker, setupInstallPrompt, renderInstallBanner, trigger
 const WIKIPEDIA_API_BASE = 'https://pt.wikipedia.org/w/api.php';
 const WIKIPEDIA_SUMMARY_BASE = 'https://pt.wikipedia.org/api/rest_v1/page/summary/';
 const WIKIMEDIA_FEATURED_BASE = 'https://api.wikimedia.org/feed/v1/wikipedia/pt/featured';
+const MAX_TEAM_NEWS_ITEMS = 3;
+const MAX_TEAM_CURIOSITIES = 3;
+const MIN_CURIOSITY_LENGTH = 40;
 
 function escapeHTML(value = '') {
   return String(value)
@@ -420,7 +423,7 @@ class App {
           return fullText.includes(teamName);
         });
 
-        if (related.length) return related.slice(0, 3);
+        if (related.length) return related.slice(0, MAX_TEAM_NEWS_ITEMS);
       } catch (error) {
         continue;
       }
@@ -432,10 +435,10 @@ class App {
   extractCuriosities(text) {
     if (!text) return [];
     return text
-      .split(/(?<=[.!?])\s+/)
+      .split(/[.!?]\s+/)
       .map(item => item.trim())
-      .filter(item => item.length > 40)
-      .slice(0, 3);
+      .filter(item => item.length > MIN_CURIOSITY_LENGTH)
+      .slice(0, MAX_TEAM_CURIOSITIES);
   }
 
   /**
