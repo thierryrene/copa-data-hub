@@ -18,15 +18,26 @@ class App {
   }
 
   init() {
+    // Always hide the welcome overlay first (safety net)
+    const overlay = document.getElementById('welcome-overlay');
+
     // Check if onboarding needed
     if (!this.state.user.onboarded) {
+      // Show overlay for new users
+      if (overlay) overlay.style.display = 'flex';
       this.showWelcome();
     } else {
+      // Returning user — ensure overlay is hidden and go straight to app
+      if (overlay) overlay.style.display = 'none';
       this.startApp();
     }
   }
 
   startApp() {
+    // Safety: always hide welcome overlay when entering the app
+    const overlay = document.getElementById('welcome-overlay');
+    if (overlay) overlay.style.display = 'none';
+
     // Update streak
     updateStreak(this.state);
 
