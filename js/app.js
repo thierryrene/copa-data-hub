@@ -312,7 +312,15 @@ class App {
   async loadTeamDetails(teamCode) {
     const panel = document.getElementById('team-details-panel');
     const team = getTeam(teamCode);
-    if (!panel || !team) return;
+    if (!panel) return;
+    if (!team) {
+      showToast('Não foi possível identificar a seleção selecionada.', 'error');
+      panel.innerHTML = `
+        <div class="team-insights__title">Detalhes da seleção</div>
+        <p class="text-sm text-muted">Não foi possível carregar esta seleção no momento.</p>
+      `;
+      return;
+    }
 
     panel.dataset.teamCode = teamCode;
     panel.innerHTML = `
@@ -352,6 +360,7 @@ class App {
         ${wikiUrl ? `<div class="team-insights__link">${wikiUrl}</div>` : ''}
       `;
     } catch (error) {
+      console.error('Erro ao carregar detalhes da seleção:', error);
       panel.innerHTML = `
         <div class="team-insights__title">${team.flag} ${escapeHTML(team.name)} (${escapeHTML(team.code)})</div>
         <p class="text-sm text-muted">Não foi possível carregar os detalhes agora. Tente novamente em instantes.</p>
@@ -435,7 +444,7 @@ class App {
   extractCuriosities(text) {
     if (!text) return [];
     return text
-      .split(/[.!?]\s+/)
+      .split(/[.!?](?:\s+|$)/)
       .map(item => item.trim())
       .filter(item => item.length > MIN_CURIOSITY_LENGTH)
       .slice(0, MAX_TEAM_CURIOSITIES);
