@@ -31,6 +31,21 @@ function normalizeText(value = '') {
     .toLowerCase();
 }
 
+function isTrustedWikiUrl(rawUrl = '') {
+  try {
+    const parsed = new URL(rawUrl);
+    if (parsed.protocol !== 'https:') return false;
+    return (
+      parsed.hostname === 'wikipedia.org' ||
+      parsed.hostname.endsWith('.wikipedia.org') ||
+      parsed.hostname === 'wikimedia.org' ||
+      parsed.hostname.endsWith('.wikimedia.org')
+    );
+  } catch (error) {
+    return false;
+  }
+}
+
 class App {
   constructor() {
     this.state = loadState();
@@ -339,7 +354,9 @@ class App {
       const ranking = escapeHTML(String(team.ranking));
       const wikiDescription = wiki?.description ? escapeHTML(wiki.description) : 'Sem descrição disponível.';
       const wikiExtract = wiki?.extract ? escapeHTML(wiki.extract) : 'Não foi possível recuperar detalhes enciclopédicos no momento.';
-      const wikiUrl = wiki?.url ? `<a href="${escapeHTML(wiki.url)}" target="_blank" rel="noopener noreferrer">Abrir na Wikipedia</a>` : '';
+      const safeWikiUrl = isTrustedWikiUrl(wiki?.url) ? wiki.url : '';
+      const safeNews = news.filter(item => isTrustedWikiUrl(item.url));
+      const wikiUrl = safeWikiUrl ? `<a href="${escapeHTML(safeWikiUrl)}" target="_blank" rel="noopener noreferrer">Abrir na Wikipedia</a>` : '';
 
       panel.innerHTML = `
         <div class="team-insights__title">${team.flag} ${escapeHTML(team.name)} (${escapeHTML(team.code)})</div>
@@ -353,8 +370,8 @@ class App {
 
         <div class="team-insights__section-title">Notícias em destaque (Wikimedia)</div>
         <ul class="team-insights__list">
-          ${news.length
-            ? news.map(item => `<li><a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.title)}</a></li>`).join('')
+          ${safeNews.length
+            ? safeNews.map(item => `<li><a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.title)}</a></li>`).join('')
             : '<li>Não encontramos notícias recentes relacionadas; tente novamente mais tarde.</li>'}
         </ul>
         ${wikiUrl ? `<div class="team-insights__link">${wikiUrl}</div>` : ''}
@@ -403,12 +420,11 @@ class App {
   }
 
   async fetchTeamNews(team) {
-    const today = new Date();
+    const baseTime = Date.now();
     const teamName = normalizeText(team.name);
 
     for (let offset = 0; offset <= MAX_NEWS_SEARCH_DAYS; offset++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - offset);
+      const date = new Date(baseTime - (offset * 24 * 60 * 60 * 1000));
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
