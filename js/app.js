@@ -13,15 +13,15 @@ const WIKIPEDIA_SUMMARY_BASE = 'https://pt.wikipedia.org/api/rest_v1/page/summar
 const WIKIMEDIA_FEATURED_BASE = 'https://api.wikimedia.org/feed/v1/wikipedia/pt/featured';
 const MAX_TEAM_NEWS_ITEMS = 3;
 const MAX_TEAM_CURIOSITIES = 3;
+const MAX_NEWS_SEARCH_DAYS = 3;
 const MIN_CURIOSITY_LENGTH = 40;
+const HTML_ESCAPE_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const PT_SENTENCE_SEGMENTER = (typeof Intl !== 'undefined' && Intl.Segmenter)
+  ? new Intl.Segmenter('pt', { granularity: 'sentence' })
+  : null;
 
 function escapeHTML(value = '') {
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+  return String(value).replace(/[&<>"']/g, (char) => HTML_ESCAPE_MAP[char]);
 }
 
 function normalizeText(value = '') {
@@ -406,7 +406,7 @@ class App {
     const today = new Date();
     const teamName = normalizeText(team.name);
 
-    for (let offset = 0; offset <= 3; offset++) {
+    for (let offset = 0; offset <= MAX_NEWS_SEARCH_DAYS; offset++) {
       const date = new Date(today);
       date.setDate(today.getDate() - offset);
       const year = date.getFullYear();
@@ -444,8 +444,8 @@ class App {
   extractCuriosities(text) {
     if (!text) return [];
 
-    const sentences = (typeof Intl !== 'undefined' && Intl.Segmenter)
-      ? Array.from(new Intl.Segmenter('pt', { granularity: 'sentence' }).segment(text), part => part.segment.trim())
+    const sentences = PT_SENTENCE_SEGMENTER
+      ? Array.from(PT_SENTENCE_SEGMENTER.segment(text), part => part.segment.trim())
       : text.split(/[.!?](?:\s+|$)/).map(item => item.trim());
 
     return sentences
