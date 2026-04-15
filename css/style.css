@@ -772,6 +772,21 @@ input, select, textarea {
   font-weight: 500;
 }
 
+.team-cell--button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.team-cell--button:hover {
+  color: var(--color-gold);
+}
+
 .team-cell__flag {
   font-size: 1.2rem;
   line-height: 1;
@@ -781,6 +796,52 @@ input, select, textarea {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
   width: 18px;
+}
+
+.team-insights {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.team-insights__title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+.team-insights__meta {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.team-insights__description {
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+.team-insights__section-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  margin-top: var(--space-sm);
+}
+
+.team-insights__list {
+  margin: 0;
+  padding-left: var(--space-lg);
+  display: grid;
+  gap: var(--space-xs);
+  color: var(--color-text-secondary);
+}
+
+.team-insights__list a {
+  color: var(--color-blue);
+}
+
+.team-insights__link a {
+  color: var(--color-gold);
+  font-size: var(--text-sm);
 }
 
 

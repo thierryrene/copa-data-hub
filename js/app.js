@@ -8,6 +8,44 @@ import { updateCountdown, showToast } from './components.js';
 import { renderHome, renderMatches, renderGroups, renderFanzone, renderStadiums, renderSettings } from './pages.js';
 import { registerServiceWorker, setupInstallPrompt, renderInstallBanner, triggerInstall, hideInstallBanner } from './pwa.js';
 
+const WIKIPEDIA_API_BASE = 'https://pt.wikipedia.org/w/api.php';
+const WIKIPEDIA_SUMMARY_BASE = 'https://pt.wikipedia.org/api/rest_v1/page/summary/';
+const WIKIMEDIA_FEATURED_BASE = 'https://api.wikimedia.org/feed/v1/wikipedia/pt/featured';
+const MAX_TEAM_NEWS_ITEMS = 3;
+const MAX_TEAM_CURIOSITIES = 3;
+const MAX_NEWS_SEARCH_DAYS = 3;
+const MIN_CURIOSITY_LENGTH = 40;
+const HTML_ESCAPE_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const PT_SENTENCE_SEGMENTER = (typeof Intl !== 'undefined' && Intl.Segmenter)
+  ? new Intl.Segmenter('pt', { granularity: 'sentence' })
+  : null;
+
+function escapeHTML(value = '') {
+  return String(value).replace(/[&<>"']/g, (char) => HTML_ESCAPE_MAP[char]);
+}
+
+function normalizeText(value = '') {
+  return String(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+function isTrustedWikiUrl(rawUrl = '') {
+  try {
+    const parsed = new URL(rawUrl);
+    if (parsed.protocol !== 'https:') return false;
+    return (
+      parsed.hostname === 'wikipedia.org' ||
+      parsed.hostname.endsWith('.wikipedia.org') ||
+      parsed.hostname === 'wikimedia.org' ||
+      parsed.hostname.endsWith('.wikimedia.org')
+    );
+  } catch (error) {
+    return false;
+  }
+}
+
 class App {
   constructor() {
     this.state = loadState();
@@ -154,6 +192,14 @@ class App {
       });
     }
 
+    // Team details (Groups page)
+    const teamDetailsPanel = document.getElementById('team-details-panel');
+    if (teamDetailsPanel) {
+      document.querySelectorAll('[data-team-detail]').forEach((trigger) => {
+        trigger.addEventListener('click', () => this.loadTeamDetails(trigger.dataset.teamDetail));
+      });
+    }
+
     // Stadium filter tabs
     const stadiumFilters = document.getElementById('stadium-filters');
     if (stadiumFilters) {
@@ -276,6 +322,151 @@ class App {
         }
       });
     }
+  }
+
+  async loadTeamDetails(teamCode) {
+    const panel = document.getElementById('team-details-panel');
+    const team = getTeam(teamCode);
+    if (!panel) return;
+    if (!team) {
+      showToast('Não foi possível identificar a seleção selecionada.', 'error');
+      panel.innerHTML = `
+        <div class="team-insights__title">Detalhes da seleção</div>
+        <p class="text-sm text-muted">Não foi possível carregar esta seleção no momento.</p>
+      `;
+      return;
+    }
+
+    panel.dataset.teamCode = teamCode;
+    panel.innerHTML = `
+      <div class="team-insights__title">${team.flag} ${escapeHTML(team.name)} (${escapeHTML(team.code)})</div>
+      <p class="text-sm text-muted">Carregando dados da Wikipedia e APIs públicas...</p>
+    `;
+
+    try {
+      const wiki = await this.fetchWikipediaTeamSummary(team);
+      const news = await this.fetchTeamNews(team);
+
+      if (panel.dataset.teamCode !== teamCode) return;
+
+      const curiosities = this.extractCuriosities(wiki?.extract || '');
+      const confederation = escapeHTML(team.confederation);
+      const ranking = escapeHTML(String(team.ranking));
+      const wikiDescription = wiki?.description ? escapeHTML(wiki.description) : 'Sem descrição disponível.';
+      const wikiExtract = wiki?.extract ? escapeHTML(wiki.extract) : 'Não foi possível recuperar detalhes enciclopédicos no momento.';
+      const safeWikiUrl = isTrustedWikiUrl(wiki?.url) ? wiki.url : '';
+      const safeNews = news.filter(item => isTrustedWikiUrl(item.url));
+      const wikiUrl = safeWikiUrl ? `<a href="${escapeHTML(safeWikiUrl)}" target="_blank" rel="noopener noreferrer">Abrir na Wikipedia</a>` : '';
+
+      panel.innerHTML = `
+        <div class="team-insights__title">${team.flag} ${escapeHTML(team.name)} (${escapeHTML(team.code)})</div>
+        <div class="team-insights__meta">Confederação: ${confederation} · Ranking FIFA: #${ranking}</div>
+        <p class="team-insights__description"><strong>${wikiDescription}</strong><br>${wikiExtract}</p>
+
+        <div class="team-insights__section-title">Curiosidades (Wikipedia)</div>
+        <ul class="team-insights__list">
+          ${curiosities.length ? curiosities.map(item => `<li>${escapeHTML(item)}</li>`).join('') : '<li>Sem curiosidades disponíveis para esta seleção.</li>'}
+        </ul>
+
+        <div class="team-insights__section-title">Notícias em destaque (Wikimedia)</div>
+        <ul class="team-insights__list">
+          ${safeNews.length
+            ? safeNews.map(item => `<li><a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.title)}</a></li>`).join('')
+            : '<li>Não encontramos notícias recentes relacionadas; tente novamente mais tarde.</li>'}
+        </ul>
+        ${wikiUrl ? `<div class="team-insights__link">${wikiUrl}</div>` : ''}
+      `;
+    } catch (error) {
+      console.error('Erro ao carregar detalhes da seleção:', error);
+      panel.innerHTML = `
+        <div class="team-insights__title">${team.flag} ${escapeHTML(team.name)} (${escapeHTML(team.code)})</div>
+        <p class="text-sm text-muted">Não foi possível carregar os detalhes agora. Tente novamente em instantes.</p>
+      `;
+    }
+  }
+
+  async fetchWikipediaTeamSummary(team) {
+    const searchQueries = [
+      `Seleção ${team.name} futebol`,
+      `${team.name} seleção nacional de futebol`,
+      `${team.name} futebol`
+    ];
+
+    let pageTitle = '';
+    for (const query of searchQueries) {
+      const searchUrl = `${WIKIPEDIA_API_BASE}?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=1&format=json&origin=*`;
+      const response = await fetch(searchUrl);
+      if (!response.ok) continue;
+      const data = await response.json();
+      pageTitle = data?.query?.search?.[0]?.title || '';
+      if (pageTitle) break;
+    }
+
+    if (!pageTitle) {
+      return null;
+    }
+
+    const summaryUrl = `${WIKIPEDIA_SUMMARY_BASE}${encodeURIComponent(pageTitle)}`;
+    const summaryResponse = await fetch(summaryUrl);
+    if (!summaryResponse.ok) return null;
+    const summaryData = await summaryResponse.json();
+
+    return {
+      title: summaryData?.title || pageTitle,
+      description: summaryData?.description || '',
+      extract: summaryData?.extract || '',
+      url: summaryData?.content_urls?.desktop?.page || ''
+    };
+  }
+
+  async fetchTeamNews(team) {
+    const baseTime = Date.now();
+    const teamName = normalizeText(team.name);
+
+    for (let offset = 0; offset <= MAX_NEWS_SEARCH_DAYS; offset++) {
+      const date = new Date(baseTime - (offset * 24 * 60 * 60 * 1000));
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+
+      const url = `${WIKIMEDIA_FEATURED_BASE}/${year}/${month}/${day}`;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) continue;
+        const data = await response.json();
+        const stories = (data?.news || []).map((story) => {
+          const firstLink = story?.links?.[0];
+          return {
+            title: firstLink?.title || story?.story || '',
+            url: firstLink?.content_urls?.desktop?.page || '',
+            description: firstLink?.description || firstLink?.extract || ''
+          };
+        }).filter(item => item.title && item.url);
+
+        const related = stories.filter((item) => {
+          const fullText = normalizeText(`${item.title} ${item.description}`);
+          return fullText.includes(teamName);
+        });
+
+        if (related.length) return related.slice(0, MAX_TEAM_NEWS_ITEMS);
+      } catch (error) {
+        continue;
+      }
+    }
+
+    return [];
+  }
+
+  extractCuriosities(text) {
+    if (!text) return [];
+
+    const sentences = PT_SENTENCE_SEGMENTER
+      ? Array.from(PT_SENTENCE_SEGMENTER.segment(text), part => part.segment.trim())
+      : text.split(/[.!?](?:\s+|$)/).map(item => item.trim());
+
+    return sentences
+      .filter(item => item.length > MIN_CURIOSITY_LENGTH)
+      .slice(0, MAX_TEAM_CURIOSITIES);
   }
 
   /**
