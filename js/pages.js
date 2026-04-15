@@ -1,0 +1,498 @@
+// CopaDataHub 2026 — Page Renderers
+
+import { icon } from './icons.js';
+import { TEAMS, GROUPS, STADIUMS, FIXTURES, TRIVIA, getTeam, getTodayFixtures } from './data.js';
+import {
+  renderCountdown, renderXPBar, renderMatchCard,
+  renderGroupTable, renderStadiumCard, renderStatBar,
+  renderPredictionBar, showToast
+} from './components.js';
+import { getXPProgress, addXP, savePrediction, recordTrivia } from './state.js';
+
+/**
+ * ── HOME PAGE ──
+ */
+export function renderHome(state) {
+  const fixtures = getTodayFixtures();
+  const matchCards = fixtures.map(f => renderMatchCard(f)).join('');
+
+  return `
+    ${renderCountdown()}
+    ${renderXPBar(state)}
+
+    <div class="section-title">
+      ${icon('calendar', 20)} Próximos Jogos
+    </div>
+    <div class="matches-list">
+      ${matchCards}
+    </div>
+
+    <div class="mt-xl">
+      <div class="section-title">
+        ${icon('barChart', 20)} Torneio em Números
+      </div>
+      <div class="fanzone-stats">
+        <div class="fanzone-stat">
+          <span class="fanzone-stat__value fanzone-stat__value--gold">48</span>
+          <span class="fanzone-stat__label">Seleções</span>
+        </div>
+        <div class="fanzone-stat">
+          <span class="fanzone-stat__value fanzone-stat__value--emerald">104</span>
+          <span class="fanzone-stat__label">Jogos</span>
+        </div>
+        <div class="fanzone-stat">
+          <span class="fanzone-stat__value fanzone-stat__value--blue">16</span>
+          <span class="fanzone-stat__label">Estádios</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-xl">
+      <div class="section-title">
+        ${icon('trophy', 20)} Acesse as Seções
+      </div>
+      <div class="matches-list">
+        <div class="card card--interactive card--gold" data-nav="groups">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-md">
+              ${icon('shield', 24, 'text-gold')}
+              <div>
+                <div class="font-display font-bold">Grupos & Classificação</div>
+                <div class="text-sm text-muted">12 grupos, 48 seleções</div>
+              </div>
+            </div>
+            ${icon('chevronRight', 20, 'text-muted')}
+          </div>
+        </div>
+
+        <div class="card card--interactive" data-nav="matches">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-md">
+              ${icon('target', 24, 'text-blue')}
+              <div>
+                <div class="font-display font-bold">Match Center</div>
+                <div class="text-sm text-muted">Estatísticas e previsões ao vivo</div>
+              </div>
+            </div>
+            ${icon('chevronRight', 20, 'text-muted')}
+          </div>
+        </div>
+
+        <div class="card card--interactive" data-nav="fanzone">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-md">
+              ${icon('gamepad', 24, 'text-emerald')}
+              <div>
+                <div class="font-display font-bold">FanZone</div>
+                <div class="text-sm text-muted">Bolão, trivia e ranking</div>
+              </div>
+            </div>
+            ${icon('chevronRight', 20, 'text-muted')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * ── MATCHES / MATCH CENTER PAGE ──
+ */
+export function renderMatches(state) {
+  const allFixtures = FIXTURES;
+
+  // Simulated live match for demo
+  const demoMatch = {
+    home: getTeam('BRA'),
+    away: getTeam('FRA'),
+    homeScore: 1,
+    awayScore: 0,
+    clock: '68:12',
+    status: 'LIVE_2H'
+  };
+
+  return `
+    <div class="section-title">
+      ${icon('target', 20)} Match Center
+    </div>
+    <p class="section-subtitle">Acompanhe partidas ao vivo com estatísticas e previsão de IA</p>
+
+    <!-- Demo Live Match -->
+    <div class="card card--gold mb-xl">
+      <div class="match-card">
+        <div class="match-card__header">
+          <span class="match-card__group">Grupo H</span>
+          <span class="match-card__status live">AO VIVO · ${demoMatch.clock}</span>
+        </div>
+        <div class="match-card__teams">
+          <div class="match-card__team">
+            <span class="match-card__flag">${demoMatch.home.flag}</span>
+            <span class="match-card__name">${demoMatch.home.code}</span>
+          </div>
+          <div class="match-card__score">
+            <span>${demoMatch.homeScore}</span>
+            <span class="match-card__score-sep">:</span>
+            <span>${demoMatch.awayScore}</span>
+          </div>
+          <div class="match-card__team">
+            <span class="match-card__flag">${demoMatch.away.flag}</span>
+            <span class="match-card__name">${demoMatch.away.code}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="card mb-lg" style="display: flex; flex-direction: column; gap: var(--space-lg); padding: var(--space-xl);">
+      <div class="section-title" style="margin-bottom: 0;">${icon('barChart', 18)} Estatísticas</div>
+      ${renderStatBar('Posse de Bola', 58, 42, true)}
+      ${renderStatBar('Chutes ao Gol', 6, 3)}
+      ${renderStatBar('Precisão de Passes', 89, 81, true)}
+      ${renderStatBar('xG (Gols Esperados)', 1.84, 0.92)}
+      ${renderStatBar('Escanteios', 5, 2)}
+    </div>
+
+    <!-- AI Prediction -->
+    ${renderPredictionBar(65, 20, 15, 'BRA', 'FRA')}
+
+    <!-- Upcoming matches -->
+    <div class="mt-xl">
+      <div class="section-title">${icon('calendar', 20)} Calendário</div>
+      <div class="matches-list">
+        ${allFixtures.slice(0, 8).map(f => renderMatchCard(f)).join('')}
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * ── GROUPS PAGE ──
+ */
+export function renderGroups(state) {
+  const groupEntries = Object.entries(GROUPS);
+
+  // Filter tabs
+  const filterHTML = `
+    <div class="filter-tabs" id="group-filters">
+      <button class="filter-tab active" data-filter="all">Todos</button>
+      ${groupEntries.map(([id]) => `
+        <button class="filter-tab" data-filter="${id}">Grupo ${id}</button>
+      `).join('')}
+    </div>
+  `;
+
+  const tablesHTML = groupEntries.map(([id, group]) => {
+    return `<div class="group-wrapper" data-group="${id}">${renderGroupTable(id, group.teams)}</div>`;
+  }).join('');
+
+  return `
+    <div class="section-title">
+      ${icon('shield', 20)} Fase de Grupos
+    </div>
+    <p class="section-subtitle">12 grupos · Os 2 primeiros classificam-se diretamente + 8 melhores terceiros</p>
+
+    ${filterHTML}
+
+    <div class="groups-grid" id="groups-container">
+      ${tablesHTML}
+    </div>
+  `;
+}
+
+/**
+ * ── FANZONE PAGE ──
+ */
+export function renderFanzone(state) {
+  const { level, xp, percent } = getXPProgress(state);
+  const predictionsCount = state.user.predictions.length;
+  const triviaCount = state.user.triviaAnswered.length;
+
+  // Get next unanswered trivia
+  const nextTrivia = TRIVIA.find(q => !state.user.triviaAnswered.includes(q.id));
+
+  // Leaderboard data (mock)
+  const leaderboard = [
+    { name: 'Carlos M.', team: '🇧🇷', score: 2450, isUser: false },
+    { name: 'Ana S.', team: '🇦🇷', score: 2280, isUser: false },
+    { name: 'João P.', team: '🇵🇹', score: 1950, isUser: false },
+    { name: state.user.name || 'Você', team: state.user.favoriteTeam ? getTeam(state.user.favoriteTeam)?.flag || '⚽' : '⚽', score: xp, isUser: true },
+    { name: 'Maria L.', team: '🇪🇸', score: 890, isUser: false },
+    { name: 'Pedro R.', team: '🇩🇪', score: 720, isUser: false },
+    { name: 'Lucas F.', team: '🇫🇷', score: 540, isUser: false }
+  ].sort((a, b) => b.score - a.score);
+
+  // Sub-tabs
+  const subTabsHTML = `
+    <div class="sub-tabs" id="fanzone-tabs">
+      <button class="sub-tab active" data-tab="bolao">⚽ Bolão</button>
+      <button class="sub-tab" data-tab="trivia">🧠 Trivia</button>
+      <button class="sub-tab" data-tab="ranking">🏆 Ranking</button>
+    </div>
+  `;
+
+  // Bolão section
+  const bolaoFixtures = FIXTURES.slice(0, 4);
+  const bolaoHTML = `
+    <div id="tab-bolao" class="fanzone-tab-content">
+      <div class="section-title">${icon('target', 20)} Bolão Relâmpago</div>
+      <p class="section-subtitle">Dê seus palpites e ganhe XP! Cada acerto vale 50 XP.</p>
+      ${bolaoFixtures.map(f => {
+        const home = getTeam(f.home);
+        const away = getTeam(f.away);
+        const existing = state.user.predictions.find(p => p.fixtureId === f.id);
+        return `
+          <div class="card bolao-card mb-md">
+            <div class="match-card__header mb-sm">
+              <span class="match-card__group">Grupo ${f.group}</span>
+              <span class="text-xs text-muted">${f.date} · ${f.time}</span>
+            </div>
+            <div class="bolao-card__match">
+              <div class="bolao-card__team-info">
+                <span style="font-size: 1.5rem">${home.flag}</span>
+                <span class="font-display" style="font-weight: 600; font-size: var(--text-sm)">${home.code}</span>
+              </div>
+              <input type="number" class="bolao-card__input" min="0" max="20"
+                     data-fixture="${f.id}" data-side="home"
+                     value="${existing ? existing.homeScore : ''}"
+                     placeholder="0" aria-label="Placar ${home.name}">
+              <span class="bolao-card__sep">✕</span>
+              <input type="number" class="bolao-card__input" min="0" max="20"
+                     data-fixture="${f.id}" data-side="away"
+                     value="${existing ? existing.awayScore : ''}"
+                     placeholder="0" aria-label="Placar ${away.name}">
+              <div class="bolao-card__team-info">
+                <span style="font-size: 1.5rem">${away.flag}</span>
+                <span class="font-display" style="font-weight: 600; font-size: var(--text-sm)">${away.code}</span>
+              </div>
+            </div>
+            <button class="btn btn--primary btn--sm btn--full mt-sm save-prediction-btn" data-fixture="${f.id}">
+              ${icon('check', 16)} Salvar Palpite
+            </button>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+
+  // Trivia section
+  const triviaHTML = nextTrivia ? `
+    <div id="tab-trivia" class="fanzone-tab-content" style="display: none;">
+      <div class="section-title">${icon('zap', 20)} Trivia do Mundial</div>
+      <p class="section-subtitle">Cada resposta correta vale 25 XP! · ${triviaCount}/${TRIVIA.length} respondidas</p>
+      <div class="card trivia-card">
+        <div class="trivia-question">${nextTrivia.question}</div>
+        <div class="trivia-options" data-trivia-id="${nextTrivia.id}" data-answer="${nextTrivia.answer}">
+          ${nextTrivia.options.map((opt, i) => `
+            <button class="trivia-option" data-index="${i}">
+              <span class="trivia-option__letter">${String.fromCharCode(65 + i)}</span>
+              ${opt}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  ` : `
+    <div id="tab-trivia" class="fanzone-tab-content" style="display: none;">
+      <div class="section-title">${icon('zap', 20)} Trivia do Mundial</div>
+      <div class="card text-center" style="padding: var(--space-3xl);">
+        <div style="font-size: 3rem; margin-bottom: var(--space-lg);">🎉</div>
+        <div class="font-display font-bold mb-sm">Todas respondidas!</div>
+        <div class="text-muted">Você completou todas as ${TRIVIA.length} perguntas. Volte em breve para mais!</div>
+      </div>
+    </div>
+  `;
+
+  // Ranking section
+  const rankingHTML = `
+    <div id="tab-ranking" class="fanzone-tab-content" style="display: none;">
+      <div class="section-title">${icon('trendingUp', 20)} Ranking Global</div>
+      <p class="section-subtitle">Sua posição entre todos os participantes</p>
+      <div class="leaderboard-list">
+        ${leaderboard.map((entry, i) => {
+          const rank = i + 1;
+          let rankClass = '';
+          if (rank === 1) rankClass = 'leaderboard-item__rank--gold';
+          else if (rank === 2) rankClass = 'leaderboard-item__rank--silver';
+          else if (rank === 3) rankClass = 'leaderboard-item__rank--bronze';
+
+          return `
+            <div class="leaderboard-item ${entry.isUser ? 'is-user' : ''}">
+              <span class="leaderboard-item__rank ${rankClass}">${rank <= 3 ? ['🥇','🥈','🥉'][rank-1] : rank}</span>
+              <div class="leaderboard-item__info">
+                <div class="leaderboard-item__name">${entry.name}</div>
+                <div class="leaderboard-item__team">${entry.team}</div>
+              </div>
+              <span class="leaderboard-item__score">${entry.score.toLocaleString('pt-BR')} XP</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+
+  return `
+    <div class="section-title">
+      ${icon('gamepad', 20)} FanZone
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="fanzone-stats">
+      <div class="fanzone-stat">
+        <span class="fanzone-stat__value fanzone-stat__value--gold">${level}</span>
+        <span class="fanzone-stat__label">Nível</span>
+      </div>
+      <div class="fanzone-stat">
+        <span class="fanzone-stat__value fanzone-stat__value--emerald">${predictionsCount}</span>
+        <span class="fanzone-stat__label">Palpites</span>
+      </div>
+      <div class="fanzone-stat">
+        <span class="fanzone-stat__value fanzone-stat__value--blue">${state.user.streak}</span>
+        <span class="fanzone-stat__label">Streak</span>
+      </div>
+    </div>
+
+    ${renderXPBar(state)}
+    ${subTabsHTML}
+    ${bolaoHTML}
+    ${triviaHTML}
+    ${rankingHTML}
+  `;
+}
+
+/**
+ * ── STADIUMS/MAP PAGE ──
+ */
+export function renderStadiums(state) {
+  const byCountry = {
+    'EUA': STADIUMS.filter(s => s.country === 'EUA'),
+    'México': STADIUMS.filter(s => s.country === 'México'),
+    'Canadá': STADIUMS.filter(s => s.country === 'Canadá')
+  };
+
+  // Filter tabs
+  const filterHTML = `
+    <div class="filter-tabs" id="stadium-filters">
+      <button class="filter-tab active" data-filter="all">Todos (16)</button>
+      <button class="filter-tab" data-filter="EUA">🇺🇸 EUA (11)</button>
+      <button class="filter-tab" data-filter="México">🇲🇽 México (3)</button>
+      <button class="filter-tab" data-filter="Canadá">🇨🇦 Canadá (2)</button>
+    </div>
+  `;
+
+  return `
+    <div class="section-title">
+      ${icon('mapPin', 20)} Sedes & Estádios
+    </div>
+    <p class="section-subtitle">16 estádios em 3 países · 4 fusos horários</p>
+
+    <!-- Summary stats -->
+    <div class="fanzone-stats mb-xl">
+      <div class="fanzone-stat">
+        <span class="fanzone-stat__value fanzone-stat__value--blue">11</span>
+        <span class="fanzone-stat__label">🇺🇸 EUA</span>
+      </div>
+      <div class="fanzone-stat">
+        <span class="fanzone-stat__value fanzone-stat__value--emerald">3</span>
+        <span class="fanzone-stat__label">🇲🇽 México</span>
+      </div>
+      <div class="fanzone-stat">
+        <span class="fanzone-stat__value fanzone-stat__value--gold">2</span>
+        <span class="fanzone-stat__label">🇨🇦 Canadá</span>
+      </div>
+    </div>
+
+    ${filterHTML}
+
+    <div class="stadium-grid" id="stadiums-container">
+      ${STADIUMS.map(s => `<div class="stadium-wrapper" data-country="${s.country}">${renderStadiumCard(s)}</div>`).join('')}
+    </div>
+  `;
+}
+
+/**
+ * ── SETTINGS PAGE ──
+ */
+export function renderSettings(state) {
+  const { level, xp } = getXPProgress(state);
+  const favTeam = state.user.favoriteTeam ? getTeam(state.user.favoriteTeam) : null;
+
+  return `
+    <div class="section-title">
+      ${icon('settings', 20)} Configurações
+    </div>
+
+    <!-- Profile Card -->
+    <div class="card card--gold mb-xl">
+      <div class="flex items-center gap-lg">
+        <div style="width:56px;height:56px;border-radius:var(--radius-lg);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">
+          ${favTeam ? favTeam.flag : '⚽'}
+        </div>
+        <div>
+          <div class="font-display font-bold" style="font-size: var(--text-lg);">${state.user.name || 'Torcedor'}</div>
+          <div class="text-sm text-muted">Nível ${level} · ${xp} XP · ${state.user.streak} dias de streak</div>
+        </div>
+      </div>
+      ${renderXPBar(state)}
+    </div>
+
+    <!-- General Settings -->
+    <div class="settings-group">
+      <div class="settings-group__title">Geral</div>
+
+      <div class="settings-item" id="setting-install">
+        <div class="settings-item__left">
+          ${icon('download', 20, 'text-gold')}
+          <div>
+            <div class="settings-item__label">Instalar App</div>
+            <div class="settings-item__desc">Adicionar à tela inicial do celular</div>
+          </div>
+        </div>
+        ${icon('chevronRight', 18, 'text-muted')}
+      </div>
+
+      <div class="settings-item" id="setting-notifications">
+        <div class="settings-item__left">
+          ${icon('bell', 20, 'text-blue')}
+          <div>
+            <div class="settings-item__label">Notificações</div>
+            <div class="settings-item__desc">Alertas de gols e resultados</div>
+          </div>
+        </div>
+        <div class="toggle ${state.settings.notifications ? 'active' : ''}" id="toggle-notifications"></div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="settings-group">
+      <div class="settings-group__title">Sobre</div>
+
+      <div class="settings-item">
+        <div class="settings-item__left">
+          ${icon('info', 20, 'text-muted')}
+          <div>
+            <div class="settings-item__label">CopaDataHub 2026</div>
+            <div class="settings-item__desc">MVP v1.0 · PWA Instalável</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-item">
+        <div class="settings-item__left">
+          ${icon('shield', 20, 'text-muted')}
+          <div>
+            <div class="settings-item__label">Privacidade</div>
+            <div class="settings-item__desc">Seus dados ficam no seu dispositivo</div>
+          </div>
+        </div>
+        ${icon('chevronRight', 18, 'text-muted')}
+      </div>
+    </div>
+
+    <!-- Reset -->
+    <div class="mt-xl text-center">
+      <button class="btn btn--ghost btn--sm text-rose" id="btn-reset-data">
+        Resetar todos os dados
+      </button>
+    </div>
+  `;
+}

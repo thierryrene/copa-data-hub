@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <!-- SEO & Meta -->
+  <title>CopaDataHub 2026 — Dados, Previsões e Bolão do Mundial</title>
+  <meta name="description" content="Acompanhe o maior torneio de seleções do mundo com dados ao vivo, previsões de IA, simulador de chaveamento e bolão gamificado. Instale no seu celular!">
+  <meta name="theme-color" content="#0a0e1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CopaDataHub">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Favicon (inline SVG as data URI) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- ── Welcome / Onboarding Overlay ── -->
+  <div class="welcome-overlay" id="welcome-overlay">
+    <div class="welcome-logo">🏆</div>
+    <h1 class="welcome-title">CopaDataHub 2026</h1>
+    <p class="welcome-subtitle">Dados, previsões e bolão do maior torneio de seleções do mundo</p>
+
+    <input type="text" class="welcome-name-input"
+           placeholder="Seu nome (ex: João)"
+           maxlength="30"
+           autocomplete="given-name"
+           id="welcome-name">
+
+    <p class="text-sm text-muted" style="margin-top: var(--space-sm);">Escolha sua seleção favorita:</p>
+    <div class="team-selector" id="team-selector">
+      <!-- Populated by JS -->
+    </div>
+
+    <button class="btn btn--primary btn--full" id="welcome-start" style="max-width: 300px; margin-top: var(--space-lg);">
+      Começar! ⚽
+    </button>
+  </div>
+
+  <!-- ── App Header ── -->
+  <header class="app-header">
+    <div class="app-header__logo">
+      <span style="font-size: 1.5rem;">🏆</span>
+      <div>
+        <div class="app-header__title">CopaDataHub</div>
+        <div class="app-header__subtitle">2026 · EUA · CAN · MEX</div>
+      </div>
+    </div>
+    <div class="app-header__badge" id="header-xp-badge">
+      ⚡ <span id="header-xp">0</span> XP
+    </div>
+  </header>
+
+  <!-- ── Toast Container ── -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ── Main Content ── -->
+  <main id="app">
+    <div class="page active" id="page-container">
+      <!-- Pages rendered here by JS -->
+    </div>
+  </main>
+
+  <!-- ── Install Banner ── -->
+  <div class="install-banner hidden" id="install-banner">
+    <div class="install-banner__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+    </div>
+    <div class="install-banner__text">
+      <div class="install-banner__title">Instalar CopaDataHub</div>
+      <div class="install-banner__desc">Acesso rápido na tela inicial</div>
+    </div>
+    <button class="install-banner__btn" id="install-btn">Instalar</button>
+    <button class="install-banner__close" id="install-close" aria-label="Fechar">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- ── Bottom Navigation ── -->
+  <nav class="bottom-nav" aria-label="Navegação principal">
+    <button class="nav-item active" data-route="home" id="nav-home" aria-label="Início">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <span>Início</span>
+    </button>
+    <button class="nav-item" data-route="matches" id="nav-matches" aria-label="Jogos">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      <span>Jogos</span>
+    </button>
+    <button class="nav-item" data-route="groups" id="nav-groups" aria-label="Grupos">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+      <span>Grupos</span>
+    </button>
+    <button class="nav-item" data-route="fanzone" id="nav-fanzone" aria-label="FanZone">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>
+      <span>FanZone</span>
+    </button>
+    <button class="nav-item" data-route="stadiums" id="nav-stadiums" aria-label="Sedes">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>Sedes</span>
+    </button>
+  </nav>
+
+  <!-- ── Application Script ── -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
