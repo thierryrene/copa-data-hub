@@ -20,6 +20,22 @@ export function renderHome(state) {
     ${renderCountdown()}
     ${renderXPBar(state)}
 
+    <!-- Cross-app link to UCL -->
+    <a href="champions.html" style="text-decoration: none; color: inherit; display: block; margin-bottom: var(--space-xl);">
+      <div class="card card--interactive" style="background: linear-gradient(135deg, rgba(30,58,138,0.2), rgba(10,14,26,0.95)); border: 1px solid rgba(147,197,253,0.2);">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-md">
+            <span style="font-size: 1.5rem;">⭐</span>
+            <div>
+              <div class="font-display font-bold" style="color: var(--color-ucl-star, #ffd700);">UCL DataHub Ao Vivo</div>
+              <div class="text-sm text-muted">Acesso aos jogos reais (Ao Vivo) da Champions</div>
+            </div>
+          </div>
+          ${icon('chevronRight', 20, 'text-muted')}
+        </div>
+      </div>
+    </a>
+
     <div class="section-title">
       ${icon('calendar', 20)} Próximos Jogos
     </div>
