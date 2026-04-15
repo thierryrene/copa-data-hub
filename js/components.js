@@ -237,11 +237,11 @@ export function renderGroupTable(groupId, teamCodes) {
     return `
       <tr class="${rowClass}">
         <td>
-          <div class="team-cell">
+          <button class="team-cell team-cell--button" type="button" data-team-detail="${s.code}" aria-label="Ver detalhes de ${s.team.name}">
             <span class="team-cell__pos">${s.pos}</span>
             <span class="team-cell__flag">${s.team.flag}</span>
             ${s.team.code}
-          </div>
+          </button>
         </td>
         <td>${s.played}</td>
         <td>${s.won}</td>

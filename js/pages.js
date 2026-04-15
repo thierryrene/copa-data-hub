@@ -212,6 +212,11 @@ export function renderGroups(state) {
     <div class="groups-grid" id="groups-container">
       ${tablesHTML}
     </div>
+
+    <div class="card team-insights mt-xl" id="team-details-panel">
+      <div class="team-insights__title">${icon('info', 18)} Detalhes da seleção</div>
+      <p class="text-sm text-muted">Clique em uma seleção na tabela para carregar informações do time, notícias e curiosidades da Wikipedia.</p>
+    </div>
   `;
 }
 
