@@ -9,6 +9,17 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ## [Não-publicado]
 
+### Adicionado
+
+- **Escalação provável e elenco completo** na página de detalhes de seleção (`/team/:code`):
+  - Campo visual com formação tática (4-3-3, 4-2-3-1, etc.) e 11 titulares prováveis posicionados graficamente.
+  - Lista do elenco completo agrupada por posição (goleiros, defensores, meio-campistas, atacantes) com foto, número, nome e idade.
+  - Indicação da próxima partida e adversário no cabeçalho da seção.
+  - Dados via API-Football (`/players/squads`) com cache em `sessionStorage` (TTL 24h) para economizar o limite de 100 req/dia.
+  - Skeletons animados durante carregamento; fallback gracioso se API indisponível.
+- Mapeamento `TEAM_API_IDS` (48 seleções → IDs da API-Football) e `TEAM_FORMATIONS` (formação tática padrão por seleção) em `data.js`.
+- Novos módulos: `js/api/squad.js`, `js/components/lineupField.js`, `js/components/squadList.js`.
+
 ---
 
 ## 2026-04-16

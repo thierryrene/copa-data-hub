@@ -2,11 +2,55 @@ import { icon } from '../icons.js';
 import { getTeam, getTeamFixtures, getGroupForTeam } from '../data.js';
 import { renderTeamChip } from '../components/teamChip.js';
 import { renderTeamFixtureRow } from '../components/teamFixtureRow.js';
+import { renderLineupField, renderLineupSkeleton } from '../components/lineupField.js';
+import { renderSquadList, renderSquadSkeleton } from '../components/squadList.js';
 import { showToast } from '../components/toast.js';
 import { escapeHTML, isTrustedWikiUrl } from '../util/html.js';
 import { setFavoriteTeam } from '../state.js';
 import { loadTeamDossier, getTeamDossierCached } from '../api/teamLoader.js';
 import { extractCuriosities } from '../api/wikipedia.js';
+import { fetchSquad, buildLineup } from '../api/squad.js';
+
+function getNextMatch(teamCode, fixtures) {
+  const now = Date.now();
+  const upcoming = fixtures.filter(f => {
+    if (f.status === 'FT') return false;
+    return new Date(`${f.date}T${f.time}`).getTime() >= now || f.status === 'SCHEDULED';
+  });
+  return upcoming[0] || fixtures[fixtures.length - 1] || null;
+}
+
+function renderLineupSection(team, teamFixtures) {
+  const nextMatch = getNextMatch(team.code, teamFixtures);
+  const opponent = nextMatch
+    ? getTeam(nextMatch.home === team.code ? nextMatch.away : nextMatch.home)
+    : null;
+
+  const matchLabel = opponent
+    ? `Próxima partida: vs ${opponent.flag} ${escapeHTML(opponent.name)}`
+    : 'Provável escalação';
+
+  const dateLabel = nextMatch
+    ? new Date(`${nextMatch.date}T${nextMatch.time}`).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
+    : '';
+
+  return `
+    <div class="team-page__section" id="team-lineup-section">
+      <div class="section-title">${icon('users', 18)} Escalação Provável</div>
+      <p class="section-subtitle">${matchLabel}${dateLabel ? ` · ${dateLabel}` : ''}</p>
+      <div id="team-lineup-field">
+        ${renderLineupSkeleton()}
+      </div>
+    </div>
+
+    <div class="team-page__section" id="team-squad-section">
+      <div class="section-title">${icon('shield', 18)} Elenco Completo</div>
+      <div id="team-squad-list">
+        ${renderSquadSkeleton()}
+      </div>
+    </div>
+  `;
+}
 
 function renderNotFound(rawCode) {
   return `
@@ -129,6 +173,8 @@ function render(state, params) {
         <div class="team-page__chips">${groupRivals}</div>
       </div>
     ` : ''}
+
+    ${renderLineupSection(team, teamFixtures)}
 
     <div class="team-page__section" id="team-wiki-section">
       <div class="section-title">${icon('globe', 18)} Dossiê enciclopédico</div>
@@ -300,6 +346,33 @@ function bindEvents(state, { router, params }) {
         console.error('Erro ao carregar dossiê da seleção:', error);
         showDossierError();
       });
+  }
+
+  loadSquadSection(team);
+}
+
+async function loadSquadSection(team) {
+  const fieldEl = document.getElementById('team-lineup-field');
+  const listEl = document.getElementById('team-squad-list');
+  if (!fieldEl && !listEl) return;
+
+  try {
+    const squad = await fetchSquad(team.code);
+    const hero = document.querySelector('.team-page__hero');
+    if (!hero || hero.dataset.teamCode !== team.code) return;
+
+    if (squad) {
+      const lineup = buildLineup(squad);
+      if (fieldEl) fieldEl.innerHTML = renderLineupField(lineup, team.flag);
+      if (listEl) listEl.innerHTML = renderSquadList(squad);
+    } else {
+      if (fieldEl) fieldEl.innerHTML = renderLineupField(null);
+      if (listEl) listEl.innerHTML = '<p class="text-sm text-muted">Elenco indisponível. Verifique sua conexão ou tente mais tarde.</p>';
+    }
+  } catch (error) {
+    console.error('Erro ao carregar elenco:', error);
+    if (fieldEl) fieldEl.innerHTML = renderLineupField(null);
+    if (listEl) listEl.innerHTML = '<p class="text-sm text-muted">Não foi possível carregar o elenco agora.</p>';
   }
 }
 

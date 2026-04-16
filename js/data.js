@@ -156,6 +156,41 @@ export const TRIVIA = [
   { id: 12, question: "Qual é o xG (Expected Goals) de uma cobrança de pênalti?", options: ["0.56", "0.76", "0.82", "1.00"], answer: 1 }
 ];
 
+// Mapeamento código interno → ID da API-Football (api-sports.io v3).
+// IDs oficiais de seleções nacionais. Fonte: /teams?league=1&season=2026
+export const TEAM_API_IDS = {
+  USA: 2384, CAN: 5529, MEX: 16, ARG: 26, FRA: 2, ENG: 10, ESP: 9,
+  BRA: 6, POR: 27, GER: 25, NED: 1118, BEL: 1, ITA: 768, CRO: 3,
+  COL: 1573, MAR: 31, URU: 7, JPN: 12, SUI: 15, DEN: 21, AUT: 4,
+  SEN: 28, KOR: 17, AUS: 20, UKR: 44, TUR: 135, IRN: 22, SRB: 14,
+  POL: 24, SCO: 1108, ECU: 2382, NGA: 33, PAR: 29, EGY: 30, CMR: 1530,
+  CRC: 2383, GHA: 32, TUN: 34, SAU: 23, JAM: 2395, QAT: 1569, PER: 2381,
+  CHL: 2397, BOL: 2380, ALG: 1532, CIV: 5765, NZL: 1572, HON: 2385
+};
+
+// Formação tática padrão por seleção (estimativa até escalação oficial).
+// Formato: array de linhas de trás pra frente (GK implícito).
+export const TEAM_FORMATIONS = {
+  USA: '4-3-3', CAN: '4-4-2', MEX: '4-3-3', ARG: '4-3-3', FRA: '4-3-3',
+  ENG: '4-2-3-1', ESP: '4-3-3', BRA: '4-3-3', POR: '4-3-3', GER: '4-2-3-1',
+  NED: '4-3-3', BEL: '4-3-3', ITA: '3-5-2', CRO: '4-3-3', COL: '4-3-3',
+  MAR: '4-3-3', URU: '4-4-2', JPN: '4-2-3-1', SUI: '3-4-2-1', DEN: '3-4-3',
+  AUT: '4-2-3-1', SEN: '4-3-3', KOR: '4-2-3-1', AUS: '4-4-2', UKR: '4-3-3',
+  TUR: '4-2-3-1', IRN: '4-4-2', SRB: '3-4-2-1', POL: '3-5-2', SCO: '3-5-2',
+  ECU: '4-3-3', NGA: '4-3-3', PAR: '4-4-2', EGY: '4-3-3', CMR: '4-3-3',
+  CRC: '4-4-2', GHA: '4-2-3-1', TUN: '4-3-3', SAU: '4-3-3', JAM: '4-3-3',
+  QAT: '3-5-2', PER: '4-3-3', CHL: '4-3-3', BOL: '3-5-2', ALG: '4-3-3',
+  CIV: '4-3-3', NZL: '4-4-2', HON: '4-4-2'
+};
+
+export function getTeamApiId(code) {
+  return TEAM_API_IDS[code] || null;
+}
+
+export function getTeamFormation(code) {
+  return TEAM_FORMATIONS[code] || '4-4-2';
+}
+
 /**
  * Get team info by code
  */
