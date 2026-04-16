@@ -20,12 +20,12 @@ Acesse `http://localhost:3000` e clique "Instalar" para adicionar à tela inicia
 word-cup-app/
 ├── index.html          # Shell do SPA + PWA meta tags
 ├── manifest.json       # PWA manifest (instalação)
-├── sw.js               # Service Worker (cache + offline)
+├── vercel.json         # Rewrites SPA (History API) + cache de assets
 ├── css/
 │   └── style.css       # Design system completo (Vanilla CSS)
 ├── js/
 │   ├── app.js          # Controller principal + orquestração
-│   ├── router.js       # SPA router (hash-based)
+│   ├── router.js       # SPA router (History API)
 │   ├── data.js         # Dados do torneio (48 times, grupos, estádios)
 │   ├── state.js        # Estado do usuário (LocalStorage)
 │   ├── components.js   # Componentes reutilizáveis (cards, barras, etc)
@@ -42,7 +42,7 @@ word-cup-app/
 - **HTML5 Semântico** — FCP ultra-rápido
 - **Vanilla CSS** — Design system com Custom Properties, dark mode, glassmorphism
 - **Vanilla JS (ES6 Modules)** — Zero framework, controle total
-- **PWA** — Service Worker, manifest, A2HS, offline-capable
+- **PWA mínimo** — manifest + A2HS + `display: standalone` (sem Service Worker no MVP)
 - **LocalStorage** — Persistência de XP, palpites e preferências
 
 ## Features (MVP)
@@ -59,8 +59,7 @@ word-cup-app/
 | 16 Estádios com filtros | ✅ |
 | Sistema de XP + Níveis + Streak | ✅ |
 | Toast notifications | ✅ |
-| PWA instalável | ✅ |
-| Service Worker + offline | ✅ |
+| PWA instalável (A2HS + fullscreen) | ✅ |
 | Configurações + reset | ✅ |
 
 ## Próximas Fases

@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validação estática
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validar HTML
+        run: |
+          npx --yes html-validate index.html champions.html
+
+      - name: Lint JS (sem var, sem eval, sem console solto)
+        run: |
+          cat > .eslintrc.json <<'EOF'
+          {
+            "parserOptions": { "ecmaVersion": 2022, "sourceType": "module" },
+            "env": { "browser": true, "es2022": true },
+            "rules": {
+              "no-var": "error",
+              "no-eval": "error",
+              "no-implied-eval": "error",
+              "no-new-func": "error",
+              "no-console": ["warn", { "allow": ["warn", "error"] }],
+              "eqeqeq": ["error", "always"],
+              "prefer-const": "warn"
+            }
+          }
+          EOF
+          npx --yes eslint "js/**/*.js"
+
+      - name: Validar manifests PWA
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const required = ['name', 'short_name', 'start_url', 'display', 'icons'];
+          for (const file of ['manifest.json', 'manifest-ucl.json']) {
+            const m = JSON.parse(fs.readFileSync(file, 'utf8'));
+            for (const k of required) {
+              if (!(k in m)) {
+                console.error(`${file}: campo obrigatório ausente: ${k}`);
+                process.exit(1);
+              }
+            }
+            console.log(`${file}: OK`);
+          }
+          EOF
+
+      - name: Sanity do vercel.json (rewrites SPA presentes)
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const v = JSON.parse(fs.readFileSync('vercel.json', 'utf8'));
+          const rewrites = v.rewrites || [];
+          const hasSpaFallback = rewrites.some(r => /index\.html$/.test(r.destination || ''));
+          if (!hasSpaFallback) {
+            console.error('vercel.json: falta rewrite SPA apontando para index.html (necessário para History API).');
+            process.exit(1);
+          }
+          console.log('vercel.json: rewrites OK.');
+          EOF

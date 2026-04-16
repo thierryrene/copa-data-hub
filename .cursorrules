@@ -1,0 +1,27 @@
+# .cursorrules — CopaDataHub 2026
+
+> Instruções para o **Cursor**. Leia AGENTS.md primeiro — é a fonte canônica. Este arquivo adiciona só regras específicas do Cursor.
+
+## Contexto do projeto
+- PWA vanilla (HTML5 + Vanilla CSS + Vanilla JS ES6 modules) para o Mundial 2026.
+- **Zero build step, zero dependências npm, sem package.json.**
+- Mobile-first, offline-first, pt-BR na UI/commits, inglês nos identificadores.
+
+## Regras duras
+1. Nunca sugerir `npm install`, bundlers, ou frameworks (React/Vue/Svelte/Next.js).
+2. Strings externas → `escapeHTML()` antes de `innerHTML` (ver js/app.js:23).
+3. URLs externas → validar por allowlist (ver `isTrustedWikiUrl` em js/app.js:34).
+4. MVP sem Service Worker — PWA é apenas manifest + A2HS + `display: standalone`. Não reintroduzir SW/cache offline sem decisão explícita.
+5. Estado vive em localStorage via helpers de js/state.js — não acessar localStorage direto de outros módulos.
+6. Sem menções a marcas FIFA oficiais; sem "apostas com dinheiro real" (a plataforma é Pick'em / Daily Fantasy).
+7. Padrão é **não escrever comentários** — nomes claros bastam. Comentar só o porquê não-óbvio.
+
+## Estilo
+- Conventional Commits em pt-BR: `fix:`, `feat:`, `chore:`, `refactor:`, `docs:`, `perf:`, `style:`.
+- CSS via Custom Properties do design system em css/style.css.
+- ES6 modules, `const`/`let`, arrow functions.
+
+## Modo Agent / Composer
+- Antes de mudança cross-module, leia AGENTS.md seção 3 e docs/WORKFLOW.md.
+- Teste manual obrigatório após mudança: onboarding → navegação → recarregar → deep-link direto em rota (ex.: `/groups`).
+- Use `/review` ou equivalente antes de sugerir PR.
