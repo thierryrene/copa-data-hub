@@ -2,7 +2,7 @@
   "name": "UCL DataHub 2025-26",
   "short_name": "UCL DataHub",
   "description": "Champions League ao vivo — dados reais, chaveamento, bolão e estatísticas.",
-  "start_url": "/champions.html",
+  "start_url": "/champions",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a0e1a",

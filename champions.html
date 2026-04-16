@@ -1235,11 +1235,25 @@
       }
     }
 
-    function navigate(route) {
+    const CHAMPIONS_BASE = '/champions';
+    const CHAMPIONS_ROUTES = ['today', 'bracket', 'bolao', 'stats', 'settings'];
+
+    function navigate(route, { replace = false } = {}) {
+      if (!CHAMPIONS_ROUTES.includes(route)) return;
       currentPage = route;
-      window.location.hash = `#${route}`;
+      const path = `${CHAMPIONS_BASE}/${route}`;
+      const method = replace ? 'replaceState' : 'pushState';
+      window.history[method]({ route }, '', path);
       renderCurrentPage();
       updateNavHighlight(route);
+    }
+
+    function resolveInitialRoute() {
+      const legacy = window.location.hash.slice(1);
+      if (legacy && CHAMPIONS_ROUTES.includes(legacy)) return legacy;
+      const path = window.location.pathname.replace(CHAMPIONS_BASE, '').replace(/^\//, '');
+      const segment = path.split('/')[0];
+      return CHAMPIONS_ROUTES.includes(segment) ? segment : currentPage;
     }
 
     function updateNavHighlight(route) {
@@ -1386,15 +1400,14 @@
         setTimeout(() => btn.classList.remove('spinning'), 800);
       });
 
-      // Handle hash navigation
-      const hash = window.location.hash.slice(1);
-      if (hash && ['today', 'bracket', 'bolao', 'stats', 'settings'].includes(hash)) {
-        currentPage = hash;
-      }
+      currentPage = resolveInitialRoute();
+      navigate(currentPage, { replace: true });
 
-      // Initial render
-      renderCurrentPage();
-      updateNavHighlight(currentPage);
+      window.addEventListener('popstate', () => {
+        currentPage = resolveInitialRoute();
+        renderCurrentPage();
+        updateNavHighlight(currentPage);
+      });
 
       // Set API status
       if (appState.apiKey) {

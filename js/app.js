@@ -6,7 +6,7 @@ import { TEAMS, getTeam } from './data.js';
 import { loadState, saveState, addXP, savePrediction, recordTrivia, updateStreak } from './state.js';
 import { updateCountdown, showToast } from './components.js';
 import { renderHome, renderMatches, renderGroups, renderFanzone, renderStadiums, renderSettings } from './pages.js';
-import { registerServiceWorker, setupInstallPrompt, renderInstallBanner, triggerInstall, hideInstallBanner } from './pwa.js';
+import { setupInstallPrompt, triggerInstall, hideInstallBanner } from './pwa.js';
 
 const WIKIPEDIA_API_BASE = 'https://pt.wikipedia.org/w/api.php';
 const WIKIPEDIA_SUMMARY_BASE = 'https://pt.wikipedia.org/api/rest_v1/page/summary/';
@@ -76,21 +76,15 @@ class App {
     const overlay = document.getElementById('welcome-overlay');
     if (overlay) overlay.style.display = 'none';
 
-    // Update streak
     updateStreak(this.state);
 
-    // DEV MODE: Disable PWA and unregister any existing service workers to clear cache
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for(let registration of registrations) {
-          registration.unregister();
-          console.log('DEV MODE: Service worker removido para facilitar testes limpos.');
-        }
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => registration.unregister());
       });
     }
-    // PWA resources temporarily disabled for development
-    // registerServiceWorker();
-    // setupInstallPrompt(this.state.settings.installDismissed);
+
+    setupInstallPrompt(this.state.settings.installDismissed);
 
     // Setup routes
     this.setupRoutes();
@@ -133,15 +127,6 @@ class App {
   }
 
   setupNavigation() {
-    // Bottom nav clicks
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        const route = item.dataset.route;
-        if (route) this.router.navigate(route);
-      });
-    });
-
     // Install banner events
     const installBtn = document.getElementById('install-btn');
     const installClose = document.getElementById('install-close');
