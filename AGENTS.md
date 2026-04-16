@@ -22,22 +22,53 @@
 
 ```
 word-cup-app/
-├── index.html          # Shell do SPA + PWA meta tags
-├── champions.html      # Página secundária (UCL/histórico)
-├── manifest.json       # Manifest PWA principal (A2HS + fullscreen)
-├── manifest-ucl.json   # Manifest alternativo (UCL)
-├── vercel.json         # Rewrites SPA + headers de cache para deploy Vercel
-├── css/style.css       # Design system completo (Custom Properties, dark mode)
+├── index.html              # Shell mínimo do SPA (div#app-root + PWA meta tags)
+├── champions.html          # Página secundária (UCL/histórico)
+├── manifest.json           # Manifest PWA principal (A2HS + fullscreen)
+├── manifest-ucl.json       # Manifest alternativo (UCL)
+├── vercel.json             # Rewrites SPA + headers de cache para deploy Vercel
+├── css/style.css           # Design system completo (Custom Properties, dark mode)
+├── scripts/
+│   └── dev-server.js       # Dev server Node com fallback SPA + rewrite /champions
 ├── js/
-│   ├── app.js          # Controller + orquestração + integrações Wikipedia
-│   ├── router.js       # SPA router (History API)
-│   ├── data.js         # Times, grupos, estádios (estáticos no MVP)
-│   ├── state.js        # Estado do usuário em localStorage
-│   ├── components.js   # Cards, barras, toasts, countdown
-│   ├── pages.js        # Renderizadores de página
-│   ├── icons.js        # Biblioteca SVG Lucide-inspired
-│   └── pwa.js          # Install prompt handler
-└── icons/              # Ícones PWA 192/512
+│   ├── app.js              # Bootstrap, monta shell, registra rotas, bind global
+│   ├── router.js           # SPA router (History API)
+│   ├── data.js             # Times, grupos, estádios (estáticos no MVP)
+│   ├── state.js            # Estado do usuário em localStorage
+│   ├── icons.js            # Biblioteca SVG Lucide-inspired
+│   ├── pwa.js              # Install prompt handler
+│   ├── util/
+│   │   └── html.js         # escapeHTML, isTrustedWikiUrl, normalizeText
+│   ├── api/
+│   │   ├── wikipedia.js    # Fetchs Wikipedia/Wikimedia
+│   │   └── teamLoader.js   # Cache + prefetch de dossiês de seleções
+│   ├── layout/
+│   │   ├── header.js       # App header com XP badge
+│   │   ├── bottomNav.js    # Bottom navigation (5 abas)
+│   │   ├── welcome.js      # Overlay de onboarding
+│   │   └── layout.js       # Helpers de UI (section title, install banner)
+│   ├── components/
+│   │   ├── index.js        # Re-export barrel
+│   │   ├── countdown.js    # Countdown até o torneio
+│   │   ├── xpBar.js        # Barra de XP
+│   │   ├── matchCard.js    # Card de jogo
+│   │   ├── groupTable.js   # Tabela de classificação do grupo
+│   │   ├── statBar.js      # Barra de estatística comparativa
+│   │   ├── predictionBar.js# Barra de previsão de IA
+│   │   ├── stadiumCard.js  # Card de estádio
+│   │   ├── teamChip.js     # Chip de seleção (clicável)
+│   │   ├── teamFixtureRow.js # Linha de jogo na página de seleção
+│   │   └── toast.js        # Notificação toast
+│   └── pages/
+│       ├── index.js        # Registro de rotas { nome: { render, bindEvents } }
+│       ├── home.js
+│       ├── matches.js
+│       ├── groups.js
+│       ├── fanzone.js
+│       ├── stadiums.js
+│       ├── settings.js
+│       └── team.js         # Dossiê de seleção (/team/:code)
+└── icons/                  # Ícones PWA 192/512
 ```
 
 **Stack obrigatória:**

@@ -9,9 +9,10 @@
 Só é preciso um servidor HTTP estático e um navegador moderno. **Não** instale nada com npm.
 
 - **Servidor local** (escolha um):
-  - `python3 -m http.server 3000` (Python 3 já vem no macOS/Linux)
-  - `npx serve -s .` (se tiver Node.js)
-  - Qualquer extensão "Live Server" do VSCode também serve.
+  - `node scripts/dev-server.js 3000` (recomendado — rewrite SPA incluso, deep-links funcionam)
+  - `npx serve -s .` (alternativa com rewrite SPA)
+  - `python3 -m http.server 3000` (sem rewrite — deep-links como `/team/BRA` dão 404)
+  - Qualquer extensão "Live Server" do VSCode também serve (sem rewrite).
 - **Navegador:** Chrome/Edge/Firefox atualizado. Para testar o install prompt (A2HS), prefira **Chrome** ou **Edge**.
 - **Git** configurado com usuário e email.
 
@@ -22,14 +23,14 @@ Só é preciso um servidor HTTP estático e um navegador moderno. **Não** insta
 ```bash
 git clone <repo-url>
 cd word-cup-app
-python3 -m http.server 3000
+node scripts/dev-server.js 3000
 ```
 
 Abra `http://localhost:3000`. Primeira visita mostra o onboarding (escolher nome + seleção favorita).
 
 **Dica:** o MVP não tem Service Worker. Se aparecer cache teimoso em dev, use aba anônima ou DevTools → Network → "Disable cache".
 
-**Roteamento SPA em dev:** servidores estáticos simples (`python3 -m http.server`) não fazem rewrite, então abrir `/groups` direto dá 404. Rode via `npx serve -s .` (flag `-s` serve `index.html` como fallback) ou navegue pela raiz. Em produção, os rewrites de [vercel.json](../vercel.json) cuidam disso.
+**Roteamento SPA em dev:** o dev-server (`scripts/dev-server.js`) já inclui fallback SPA e rewrite `/champions → champions.html`. Deep-links como `/team/BRA` funcionam normalmente. Se usar `python3 -m http.server` (sem rewrite), abrir rotas direto dá 404 — navegue pela raiz nesse caso.
 
 ---
 
