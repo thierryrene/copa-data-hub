@@ -11,6 +11,19 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ### Adicionado
 
+- **Página de detalhes de jogador** (`/player/:id`) com:
+  - Hero com foto, nome, nacionalidade, clube, posição, número, idade, dados físicos.
+  - Grid de estatísticas da temporada (gols, assistências, jogos, minutos, rating, passes, dribles, chutes, desarmes, cartões, defesas para goleiros).
+  - Dossiê enciclopédico da Wikipedia com busca inteligente por "futebolista" + curiosidades extraídas do texto.
+  - Botão de compartilhar (Web Share API + fallback clipboard).
+  - Skeletons animados durante carregamento; fallback gracioso se API indisponível.
+- Novo endpoint `fetchWikipediaPlayerSummary` em `wikipedia.js` com busca heurística filtrando resultados por contexto futebol.
+- Novo módulo `js/api/player.js` com cache `sessionStorage` 24h (mesmo padrão do squad).
+- Jogadores clicáveis na escalação provável e no elenco completo — ambos navegam para `/player/:id`.
+- Novos componentes: `playerHero.js`, `playerStats.js`.
+
+### Adicionado (escalação)
+
 - **Escalação provável e elenco completo** na página de detalhes de seleção (`/team/:code`):
   - Campo visual com formação tática (4-3-3, 4-2-3-1, etc.) e 11 titulares prováveis posicionados graficamente.
   - Lista do elenco completo agrupada por posição (goleiros, defensores, meio-campistas, atacantes) com foto, número, nome e idade.

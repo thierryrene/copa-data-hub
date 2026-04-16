@@ -8,6 +8,7 @@ import fanzone from './fanzone.js';
 import stadiums from './stadiums.js';
 import settings from './settings.js';
 import team from './team.js';
+import player from './player.js';
 
 export const pages = {
   home,
@@ -16,5 +17,6 @@ export const pages = {
   fanzone,
   stadiums,
   settings,
-  team
+  team,
+  player
 };

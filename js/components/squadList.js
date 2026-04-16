@@ -13,17 +13,21 @@ export function renderSquadList(squad) {
     .map(pos => {
       const label = POSITION_LABELS[pos] || pos;
       const players = squad.grouped[pos];
-      const rows = players.map(p => `
-        <div class="squad-list__player">
-          <span class="squad-list__number">${p.number || '—'}</span>
-          ${p.photo ? `<img class="squad-list__photo" src="${escapeHTML(p.photo)}" alt="" loading="lazy" onerror="this.style.display='none'">` : '<span class="squad-list__photo-placeholder">⚽</span>'}
-          <div class="squad-list__info">
-            <span class="squad-list__name">${escapeHTML(p.name)}</span>
-            ${p.age ? `<span class="squad-list__age">${p.age} anos</span>` : ''}
-          </div>
-          <span class="squad-list__pos-badge">${escapeHTML(p.positionShort)}</span>
-        </div>
-      `).join('');
+      const rows = players.map(p => {
+        const tag = p.id ? 'a' : 'div';
+        const linkAttrs = p.id ? `href="/player/${encodeURIComponent(p.id)}" data-route-link` : '';
+        return `
+          <${tag} class="squad-list__player" ${linkAttrs} aria-label="Ver detalhes de ${escapeHTML(p.name)}">
+            <span class="squad-list__number">${p.number || '—'}</span>
+            ${p.photo ? `<img class="squad-list__photo" src="${escapeHTML(p.photo)}" alt="" loading="lazy" onerror="this.style.display='none'">` : '<span class="squad-list__photo-placeholder">⚽</span>'}
+            <div class="squad-list__info">
+              <span class="squad-list__name">${escapeHTML(p.name)}</span>
+              ${p.age ? `<span class="squad-list__age">${p.age} anos</span>` : ''}
+            </div>
+            <span class="squad-list__pos-badge">${escapeHTML(p.positionShort)}</span>
+          </${tag}>
+        `;
+      }).join('');
 
       return `
         <div class="squad-list__group">

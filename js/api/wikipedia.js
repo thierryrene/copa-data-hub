@@ -86,7 +86,7 @@ export async function fetchTeamNews(team) {
   return [];
 }
 
-export function extractCuriosities(text) {
+export function extractCuriosities(text, max = MAX_TEAM_CURIOSITIES) {
   if (!text) return [];
 
   const sentences = PT_SENTENCE_SEGMENTER
@@ -95,5 +95,44 @@ export function extractCuriosities(text) {
 
   return sentences
     .filter(item => item.length > MIN_CURIOSITY_LENGTH)
-    .slice(0, MAX_TEAM_CURIOSITIES);
+    .slice(0, max);
+}
+
+export async function fetchWikipediaPlayerSummary(playerName) {
+  const searchQueries = [
+    `${playerName} futebolista`,
+    `${playerName} jogador futebol`,
+    playerName
+  ];
+
+  let pageTitle = '';
+  for (const query of searchQueries) {
+    const searchUrl = `${WIKIPEDIA_API_BASE}?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=3&format=json&origin=*`;
+    const response = await fetch(searchUrl);
+    if (!response.ok) continue;
+    const data = await response.json();
+    const results = data?.query?.search || [];
+    const match = results.find(r =>
+      r.snippet?.toLowerCase().includes('futebol') ||
+      r.snippet?.toLowerCase().includes('jogador') ||
+      r.snippet?.toLowerCase().includes('gol')
+    ) || results[0];
+    pageTitle = match?.title || '';
+    if (pageTitle) break;
+  }
+
+  if (!pageTitle) return null;
+
+  const summaryUrl = `${WIKIPEDIA_SUMMARY_BASE}${encodeURIComponent(pageTitle)}`;
+  const summaryResponse = await fetch(summaryUrl);
+  if (!summaryResponse.ok) return null;
+  const summaryData = await summaryResponse.json();
+
+  return {
+    title: summaryData?.title || pageTitle,
+    description: summaryData?.description || '',
+    extract: summaryData?.extract || '',
+    url: summaryData?.content_urls?.desktop?.page || '',
+    thumbnail: summaryData?.thumbnail?.source || ''
+  };
 }

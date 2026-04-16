@@ -7,6 +7,19 @@ function shortName(fullName) {
   return parts[parts.length - 1];
 }
 
+function renderFieldPlayer(p, isGk) {
+  const cls = isGk ? 'lineup-field__player lineup-field__player--gk' : 'lineup-field__player';
+  const href = p.id ? `/player/${encodeURIComponent(p.id)}` : '#';
+  const photoHTML = p.photo ? `<img class="lineup-field__photo" src="${escapeHTML(p.photo)}" alt="" loading="lazy" onerror="this.style.display='none'">` : '';
+  return `
+    <a class="${cls}" href="${href}" ${p.id ? 'data-route-link' : ''} title="${escapeHTML(p.name)}" aria-label="Ver detalhes de ${escapeHTML(p.name)}">
+      ${photoHTML}
+      <span class="lineup-field__number">${p.number || (isGk ? '1' : '')}</span>
+      <span class="lineup-field__name">${escapeHTML(shortName(p.name))}</span>
+    </a>
+  `;
+}
+
 export function renderLineupField(lineup, teamFlag) {
   if (!lineup || !lineup.gk) {
     return `
@@ -22,23 +35,13 @@ export function renderLineupField(lineup, teamFlag) {
 
   const gkHTML = lineup.gk ? `
     <div class="lineup-field__row lineup-field__row--gk">
-      <div class="lineup-field__player lineup-field__player--gk" title="${escapeHTML(lineup.gk.name)}">
-        ${lineup.gk.photo ? `<img class="lineup-field__photo" src="${escapeHTML(lineup.gk.photo)}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
-        <span class="lineup-field__number">${lineup.gk.number || '1'}</span>
-        <span class="lineup-field__name">${escapeHTML(shortName(lineup.gk.name))}</span>
-      </div>
+      ${renderFieldPlayer(lineup.gk, true)}
     </div>
   ` : '';
 
-  const linesHTML = lineup.lines.map((line, i) => {
+  const linesHTML = lineup.lines.map((line) => {
     if (!line.length) return '';
-    const playersHTML = line.map((p) => `
-      <div class="lineup-field__player" title="${escapeHTML(p.name)}">
-        ${p.photo ? `<img class="lineup-field__photo" src="${escapeHTML(p.photo)}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
-        <span class="lineup-field__number">${p.number || ''}</span>
-        <span class="lineup-field__name">${escapeHTML(shortName(p.name))}</span>
-      </div>
-    `).join('');
+    const playersHTML = line.map((p) => renderFieldPlayer(p, false)).join('');
     return `<div class="lineup-field__row">${playersHTML}</div>`;
   }).join('');
 

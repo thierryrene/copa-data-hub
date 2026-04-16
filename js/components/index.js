@@ -10,3 +10,5 @@ export { renderTeamFixtureRow } from './teamFixtureRow.js';
 export { showToast } from './toast.js';
 export { renderLineupField, renderLineupSkeleton } from './lineupField.js';
 export { renderSquadList, renderSquadSkeleton } from './squadList.js';
+export { renderPlayerHero, renderPlayerHeroSkeleton } from './playerHero.js';
+export { renderPlayerStats, renderPlayerStatsSkeleton } from './playerStats.js';
