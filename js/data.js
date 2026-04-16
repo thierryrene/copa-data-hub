@@ -182,6 +182,25 @@ export function getFixturesByGroup(groupId) {
 }
 
 /**
+ * Get fixtures for a given team (as home or away), ordered by date.
+ */
+export function getTeamFixtures(teamCode) {
+  return FIXTURES
+    .filter(f => f.home === teamCode || f.away === teamCode)
+    .sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
+}
+
+/**
+ * Find the group containing a given team.
+ */
+export function getGroupForTeam(teamCode) {
+  for (const [id, group] of Object.entries(GROUPS)) {
+    if (group.teams.includes(teamCode)) return { id, teams: group.teams };
+  }
+  return null;
+}
+
+/**
  * Get stadium info by id
  */
 export function getStadium(id) {

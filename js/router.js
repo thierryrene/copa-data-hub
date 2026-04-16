@@ -9,6 +9,8 @@ export class Router {
     this.currentParams = [];
     this.onNavigate = null;
     this.basePath = basePath.replace(/\/$/, '');
+    this.defaultRoute = 'home';
+    this.started = false;
 
     window.addEventListener('popstate', () => this._handleRoute());
     document.addEventListener('click', (event) => this._interceptLink(event));
@@ -19,21 +21,25 @@ export class Router {
   }
 
   navigate(name, { replace = false, params = [] } = {}) {
-    const path = this._buildPath(name, params);
+    const targetName = this.routes[name] ? name : this.defaultRoute;
+    const path = this._buildPath(targetName, params);
     const method = replace ? 'replaceState' : 'pushState';
-    window.history[method]({ route: name, params }, '', path);
+    window.history[method]({ route: targetName, params }, '', path);
     this._handleRoute();
   }
 
   start(defaultRoute = 'home') {
+    this.defaultRoute = defaultRoute;
+    this.started = true;
+
     const legacy = this._legacyHashRoute();
     if (legacy) {
       this.navigate(legacy.name, { replace: true, params: legacy.params });
       return;
     }
 
-    const resolved = this._parseLocation();
-    if (!resolved.name || !this.routes[resolved.name]) {
+    const { name } = this._parseLocation();
+    if (!name || !this.routes[name]) {
       this.navigate(defaultRoute, { replace: true });
       return;
     }
@@ -50,13 +56,18 @@ export class Router {
 
   _handleRoute() {
     const { name, params } = this._parseLocation();
-    const resolved = this.routes[name] ? name : Object.keys(this.routes)[0];
-    if (!resolved) return;
 
-    this.currentRoute = resolved;
+    if (!name || !this.routes[name]) {
+      if (this.started) {
+        this.navigate(this.defaultRoute, { replace: true });
+      }
+      return;
+    }
+
+    this.currentRoute = name;
     this.currentParams = params;
-    this.routes[resolved](params);
-    if (this.onNavigate) this.onNavigate(resolved, params);
+    this.routes[name](params);
+    if (this.onNavigate) this.onNavigate(name, params);
   }
 
   _parseLocation() {
@@ -64,7 +75,13 @@ export class Router {
     const stripped = this.basePath && pathname.startsWith(this.basePath)
       ? pathname.slice(this.basePath.length)
       : pathname;
-    const segments = stripped.split(ROUTE_SEPARATOR).filter(Boolean);
+    const segments = stripped.split(ROUTE_SEPARATOR).filter(Boolean).map((seg) => {
+      try {
+        return decodeURIComponent(seg);
+      } catch (_error) {
+        return seg;
+      }
+    });
     return {
       name: segments[0] || '',
       params: segments.slice(1)
@@ -74,13 +91,19 @@ export class Router {
   _legacyHashRoute() {
     const hash = window.location.hash.slice(1);
     if (!hash) return null;
-    const segments = hash.split(ROUTE_SEPARATOR).filter(Boolean);
+    const segments = hash.split(ROUTE_SEPARATOR).filter(Boolean).map((seg) => {
+      try {
+        return decodeURIComponent(seg);
+      } catch (_error) {
+        return seg;
+      }
+    });
     if (!segments.length) return null;
     return { name: segments[0], params: segments.slice(1) };
   }
 
   _buildPath(name, params) {
-    const segments = [name, ...params].filter(Boolean).map(encodeURIComponent);
+    const segments = [name, ...params].filter(Boolean).map((seg) => encodeURIComponent(String(seg)));
     return `${this.basePath}/${segments.join(ROUTE_SEPARATOR)}`;
   }
 
@@ -92,14 +115,34 @@ export class Router {
     const anchor = event.target.closest('a[data-route-link]');
     if (!anchor) return;
 
+    if (anchor.target && anchor.target !== '_self') return;
+    if (anchor.hasAttribute('download')) return;
+
     const href = anchor.getAttribute('href');
-    if (!href || href.startsWith('http') || href.startsWith('//')) return;
+    if (!href) return;
+
+    let url;
+    try {
+      url = new URL(href, window.location.href);
+    } catch (_error) {
+      return;
+    }
+
+    if (url.origin !== window.location.origin) return;
 
     event.preventDefault();
-    const url = new URL(href, window.location.origin);
-    const relative = url.pathname.replace(this.basePath, '') || '/';
-    const segments = relative.split(ROUTE_SEPARATOR).filter(Boolean);
-    const [name, ...params] = segments.length ? segments : ['home'];
+
+    const relative = this.basePath && url.pathname.startsWith(this.basePath)
+      ? url.pathname.slice(this.basePath.length)
+      : url.pathname;
+    const segments = relative.split(ROUTE_SEPARATOR).filter(Boolean).map((seg) => {
+      try {
+        return decodeURIComponent(seg);
+      } catch (_error) {
+        return seg;
+      }
+    });
+    const [name = this.defaultRoute, ...params] = segments;
     this.navigate(name, { params });
   }
 }

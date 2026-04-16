@@ -1,13 +1,18 @@
 // CopaDataHub 2026 — Page Renderers
 
 import { icon } from './icons.js';
-import { TEAMS, GROUPS, STADIUMS, FIXTURES, TRIVIA, getTeam, getTodayFixtures } from './data.js';
+import { TEAMS, GROUPS, STADIUMS, FIXTURES, TRIVIA, getTeam, getTodayFixtures, getTeamFixtures, getGroupForTeam } from './data.js';
 import {
   renderCountdown, renderXPBar, renderMatchCard,
   renderGroupTable, renderStadiumCard, renderStatBar,
-  renderPredictionBar, showToast
+  renderPredictionBar, showToast, renderTeamChip, renderTeamFixtureRow
 } from './components.js';
 import { getXPProgress, addXP, savePrediction, recordTrivia } from './state.js';
+
+const HTML_ESCAPE_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+function escapeHTML(value = '') {
+  return String(value).replace(/[&<>"']/g, (char) => HTML_ESCAPE_MAP[char]);
+}
 
 /**
  * ── HOME PAGE ──
@@ -21,7 +26,7 @@ export function renderHome(state) {
     ${renderXPBar(state)}
 
     <!-- Cross-app link to UCL -->
-    <a href="champions.html" style="text-decoration: none; color: inherit; display: block; margin-bottom: var(--space-xl);">
+    <a href="/champions" style="text-decoration: none; color: inherit; display: block; margin-bottom: var(--space-xl);">
       <div class="card card--interactive" style="background: linear-gradient(135deg, rgba(30,58,138,0.2), rgba(10,14,26,0.95)); border: 1px solid rgba(147,197,253,0.2);">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-md">
@@ -141,19 +146,19 @@ export function renderMatches(state) {
           <span class="match-card__status live">AO VIVO · ${demoMatch.clock}</span>
         </div>
         <div class="match-card__teams">
-          <div class="match-card__team">
+          <a class="match-card__team match-card__team--link" href="/team/${encodeURIComponent(demoMatch.home.code)}" data-route-link data-team-prefetch="${demoMatch.home.code}" aria-label="Ver detalhes de ${demoMatch.home.name}">
             <span class="match-card__flag">${demoMatch.home.flag}</span>
             <span class="match-card__name">${demoMatch.home.code}</span>
-          </div>
+          </a>
           <div class="match-card__score">
             <span>${demoMatch.homeScore}</span>
             <span class="match-card__score-sep">:</span>
             <span>${demoMatch.awayScore}</span>
           </div>
-          <div class="match-card__team">
+          <a class="match-card__team match-card__team--link" href="/team/${encodeURIComponent(demoMatch.away.code)}" data-route-link data-team-prefetch="${demoMatch.away.code}" aria-label="Ver detalhes de ${demoMatch.away.name}">
             <span class="match-card__flag">${demoMatch.away.flag}</span>
             <span class="match-card__name">${demoMatch.away.code}</span>
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -213,10 +218,166 @@ export function renderGroups(state) {
       ${tablesHTML}
     </div>
 
-    <div class="card team-insights mt-xl" id="team-details-panel">
-      <div class="team-insights__title">${icon('info', 18)} Detalhes da seleção</div>
-      <p class="text-sm text-muted">Clique em uma seleção na tabela para carregar informações do time, notícias e curiosidades da Wikipedia.</p>
+    <p class="text-sm text-muted mt-md">
+      ${icon('info', 14)} Toque em uma seleção para ver dossiê completo, jogos do time e curiosidades.
+    </p>
+  `;
+}
+
+/**
+ * ── TEAM DETAIL PAGE ──
+ */
+export function renderTeam(state, teamCode) {
+  const team = getTeam(teamCode);
+
+  if (!team) {
+    return `
+      <div class="team-page__notfound">
+        <div class="section-title">${icon('info', 20)} Seleção não encontrada</div>
+        <p class="section-subtitle">O código <strong>${escapeHTML(String(teamCode || '').toUpperCase())}</strong> não corresponde a uma das 48 seleções.</p>
+        <a class="btn btn--primary" href="/groups" data-route-link>${icon('shield', 16)} Voltar aos grupos</a>
+      </div>
+    `;
+  }
+
+  const group = getGroupForTeam(team.code);
+  const teamFixtures = getTeamFixtures(team.code);
+  const isFavorite = state.user.favoriteTeam === team.code;
+  const favoriteTeam = state.user.favoriteTeam ? getTeam(state.user.favoriteTeam) : null;
+  const canCompare = favoriteTeam && favoriteTeam.code !== team.code;
+
+  const predictionsByFixture = new Map(
+    (state.user.predictions || []).map(p => [p.fixtureId, p])
+  );
+
+  const groupRivals = group
+    ? group.teams.filter(code => code !== team.code).map(code => renderTeamChip(code)).join('')
+    : '';
+
+  const fixturesHTML = teamFixtures.length
+    ? teamFixtures.map(f => renderTeamFixtureRow(f, team.code, predictionsByFixture.get(f.id))).join('')
+    : '<p class="text-sm text-muted">Nenhum jogo cadastrado ainda para esta seleção no MVP.</p>';
+
+  const compareHTML = canCompare ? `
+    <div class="team-page__compare" id="team-compare">
+      <div class="team-page__compare-header">
+        ${icon('gitCompare', 18, 'text-blue')}
+        <span class="team-page__compare-title">Comparar com ${favoriteTeam.flag} ${escapeHTML(favoriteTeam.name)}</span>
+      </div>
+      <div class="team-page__compare-grid">
+        <div class="team-page__compare-col">
+          <div class="team-page__compare-flag">${favoriteTeam.flag}</div>
+          <div class="team-page__compare-name">${escapeHTML(favoriteTeam.name)}</div>
+          <div class="team-page__compare-row"><span>Ranking</span><strong>#${favoriteTeam.ranking}</strong></div>
+          <div class="team-page__compare-row"><span>Confederação</span><strong>${escapeHTML(favoriteTeam.confederation)}</strong></div>
+          <div class="team-page__compare-row"><span>Grupo</span><strong>${getGroupForTeam(favoriteTeam.code)?.id || '—'}</strong></div>
+        </div>
+        <div class="team-page__compare-vs">VS</div>
+        <div class="team-page__compare-col">
+          <div class="team-page__compare-flag">${team.flag}</div>
+          <div class="team-page__compare-name">${escapeHTML(team.name)}</div>
+          <div class="team-page__compare-row"><span>Ranking</span><strong>#${team.ranking}</strong></div>
+          <div class="team-page__compare-row"><span>Confederação</span><strong>${escapeHTML(team.confederation)}</strong></div>
+          <div class="team-page__compare-row"><span>Grupo</span><strong>${group?.id || '—'}</strong></div>
+        </div>
+      </div>
+      <div class="team-page__compare-hint">
+        Ranking FIFA mais baixo é melhor · diferença de ${Math.abs(favoriteTeam.ranking - team.ranking)} posições
+      </div>
     </div>
+  ` : '';
+
+  const favoriteLabel = isFavorite ? 'Sua seleção' : 'Definir como favorita';
+  const favoriteIcon = isFavorite ? 'heartFilled' : 'heart';
+
+  return `
+    <button class="team-page__back" id="team-back-btn" type="button" aria-label="Voltar">
+      ${icon('arrowLeft', 18)} <span>Voltar</span>
+    </button>
+
+    <section class="team-page__hero" data-team-code="${escapeHTML(team.code)}">
+      <div class="team-page__hero-flag" aria-hidden="true">${team.flag}</div>
+      <div class="team-page__hero-info">
+        <div class="team-page__hero-kicker">Seleção Nacional</div>
+        <h1 class="team-page__hero-name">${escapeHTML(team.name)}</h1>
+        <div class="team-page__hero-tags">
+          <span class="team-page__tag">${escapeHTML(team.code)}</span>
+          <span class="team-page__tag team-page__tag--muted">${escapeHTML(team.confederation)}</span>
+          ${group ? `<span class="team-page__tag team-page__tag--muted">Grupo ${group.id}</span>` : ''}
+          ${isFavorite ? `<span class="team-page__tag team-page__tag--gold">${icon('heartFilled', 12)} Sua seleção</span>` : ''}
+        </div>
+      </div>
+      <div class="team-page__hero-stats">
+        <div class="team-page__hero-stat">
+          <span class="team-page__hero-stat-value">#${team.ranking}</span>
+          <span class="team-page__hero-stat-label">Ranking FIFA</span>
+        </div>
+        <div class="team-page__hero-stat">
+          <span class="team-page__hero-stat-value">${teamFixtures.length}</span>
+          <span class="team-page__hero-stat-label">Jogos no MVP</span>
+        </div>
+        <div class="team-page__hero-stat">
+          <span class="team-page__hero-stat-value">${group ? group.id : '—'}</span>
+          <span class="team-page__hero-stat-label">Grupo</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="team-page__actions">
+      <button class="btn ${isFavorite ? 'btn--gold' : 'btn--primary'} team-page__action" id="team-favorite-btn" data-team="${escapeHTML(team.code)}" aria-pressed="${isFavorite}">
+        ${icon(favoriteIcon, 16)} <span>${favoriteLabel}</span>
+      </button>
+      <button class="btn btn--ghost team-page__action" id="team-share-btn" data-team="${escapeHTML(team.code)}">
+        ${icon('share2', 16)} <span>Compartilhar</span>
+      </button>
+    </div>
+
+    ${compareHTML}
+
+    <div class="team-page__section">
+      <div class="section-title">${icon('calendar', 18)} Jogos da seleção</div>
+      <p class="section-subtitle">Toque em um adversário para ver o dossiê dele.</p>
+      <div class="team-page__fixtures">
+        ${fixturesHTML}
+      </div>
+    </div>
+
+    ${group ? `
+      <div class="team-page__section">
+        <div class="section-title">${icon('shield', 18)} Adversários no Grupo ${group.id}</div>
+        <div class="team-page__chips">
+          ${groupRivals}
+        </div>
+      </div>
+    ` : ''}
+
+    <div class="team-page__section" id="team-wiki-section">
+      <div class="section-title">${icon('globe', 18)} Dossiê enciclopédico</div>
+      <div class="team-page__wiki" id="team-wiki-content">
+        <div class="team-page__skeleton team-page__skeleton--lg"></div>
+        <div class="team-page__skeleton"></div>
+        <div class="team-page__skeleton"></div>
+      </div>
+    </div>
+
+    <div class="team-page__section" id="team-curiosities-section">
+      <div class="section-title">${icon('sparkles', 18)} Curiosidades</div>
+      <ul class="team-page__curiosities" id="team-curiosities">
+        <li class="team-page__skeleton"></li>
+        <li class="team-page__skeleton"></li>
+        <li class="team-page__skeleton"></li>
+      </ul>
+    </div>
+
+    <div class="team-page__section" id="team-news-section">
+      <div class="section-title">${icon('newspaper', 18)} Notícias em destaque</div>
+      <div class="team-page__news" id="team-news">
+        <div class="team-page__skeleton"></div>
+        <div class="team-page__skeleton"></div>
+      </div>
+    </div>
+
+    <div class="team-page__source" id="team-wiki-link"></div>
   `;
 }
 
@@ -231,15 +392,15 @@ export function renderFanzone(state) {
   // Get next unanswered trivia
   const nextTrivia = TRIVIA.find(q => !state.user.triviaAnswered.includes(q.id));
 
-  // Leaderboard data (mock)
+  // Leaderboard data (mock) — teamCode liga cada entry à página de detalhes.
   const leaderboard = [
-    { name: 'Carlos M.', team: '🇧🇷', score: 2450, isUser: false },
-    { name: 'Ana S.', team: '🇦🇷', score: 2280, isUser: false },
-    { name: 'João P.', team: '🇵🇹', score: 1950, isUser: false },
-    { name: state.user.name || 'Você', team: state.user.favoriteTeam ? getTeam(state.user.favoriteTeam)?.flag || '⚽' : '⚽', score: xp, isUser: true },
-    { name: 'Maria L.', team: '🇪🇸', score: 890, isUser: false },
-    { name: 'Pedro R.', team: '🇩🇪', score: 720, isUser: false },
-    { name: 'Lucas F.', team: '🇫🇷', score: 540, isUser: false }
+    { name: 'Carlos M.', teamCode: 'BRA', score: 2450, isUser: false },
+    { name: 'Ana S.', teamCode: 'ARG', score: 2280, isUser: false },
+    { name: 'João P.', teamCode: 'POR', score: 1950, isUser: false },
+    { name: state.user.name || 'Você', teamCode: state.user.favoriteTeam || null, score: xp, isUser: true },
+    { name: 'Maria L.', teamCode: 'ESP', score: 890, isUser: false },
+    { name: 'Pedro R.', teamCode: 'GER', score: 720, isUser: false },
+    { name: 'Lucas F.', teamCode: 'FRA', score: 540, isUser: false }
   ].sort((a, b) => b.score - a.score);
 
   // Sub-tabs
@@ -268,10 +429,10 @@ export function renderFanzone(state) {
               <span class="text-xs text-muted">${f.date} · ${f.time}</span>
             </div>
             <div class="bolao-card__match">
-              <div class="bolao-card__team-info">
+              <a class="bolao-card__team-info" href="/team/${encodeURIComponent(home.code)}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}">
                 <span style="font-size: 1.5rem">${home.flag}</span>
                 <span class="font-display" style="font-weight: 600; font-size: var(--text-sm)">${home.code}</span>
-              </div>
+              </a>
               <input type="number" class="bolao-card__input" min="0" max="20"
                      data-fixture="${f.id}" data-side="home"
                      value="${existing ? existing.homeScore : ''}"
@@ -281,10 +442,10 @@ export function renderFanzone(state) {
                      data-fixture="${f.id}" data-side="away"
                      value="${existing ? existing.awayScore : ''}"
                      placeholder="0" aria-label="Placar ${away.name}">
-              <div class="bolao-card__team-info">
+              <a class="bolao-card__team-info" href="/team/${encodeURIComponent(away.code)}" data-route-link data-team-prefetch="${away.code}" aria-label="Ver detalhes de ${away.name}">
                 <span style="font-size: 1.5rem">${away.flag}</span>
                 <span class="font-display" style="font-weight: 600; font-size: var(--text-sm)">${away.code}</span>
-              </div>
+              </a>
             </div>
             <button class="btn btn--primary btn--sm btn--full mt-sm save-prediction-btn" data-fixture="${f.id}">
               ${icon('check', 16)} Salvar Palpite
@@ -336,12 +497,17 @@ export function renderFanzone(state) {
           else if (rank === 2) rankClass = 'leaderboard-item__rank--silver';
           else if (rank === 3) rankClass = 'leaderboard-item__rank--bronze';
 
+          const entryTeam = entry.teamCode ? getTeam(entry.teamCode) : null;
+          const teamMarkup = entryTeam
+            ? `<a class="leaderboard-item__team leaderboard-item__team--link" href="/team/${encodeURIComponent(entryTeam.code)}" data-route-link data-team-prefetch="${entryTeam.code}" aria-label="Ver detalhes de ${entryTeam.name}">${entryTeam.flag} ${entryTeam.code}</a>`
+            : `<span class="leaderboard-item__team">⚽</span>`;
+
           return `
             <div class="leaderboard-item ${entry.isUser ? 'is-user' : ''}">
               <span class="leaderboard-item__rank ${rankClass}">${rank <= 3 ? ['🥇','🥈','🥉'][rank-1] : rank}</span>
               <div class="leaderboard-item__info">
                 <div class="leaderboard-item__name">${entry.name}</div>
-                <div class="leaderboard-item__team">${entry.team}</div>
+                ${teamMarkup}
               </div>
               <span class="leaderboard-item__score">${entry.score.toLocaleString('pt-BR')} XP</span>
             </div>
@@ -445,12 +611,15 @@ export function renderSettings(state) {
     <!-- Profile Card -->
     <div class="card card--gold mb-xl">
       <div class="flex items-center gap-lg">
-        <div style="width:56px;height:56px;border-radius:var(--radius-lg);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">
-          ${favTeam ? favTeam.flag : '⚽'}
-        </div>
+        ${favTeam
+          ? `<a class="settings-profile__avatar settings-profile__avatar--link" href="/team/${encodeURIComponent(favTeam.code)}" data-route-link data-team-prefetch="${favTeam.code}" aria-label="Ver detalhes de ${favTeam.name}">${favTeam.flag}</a>`
+          : `<div class="settings-profile__avatar">⚽</div>`}
         <div>
           <div class="font-display font-bold" style="font-size: var(--text-lg);">${state.user.name || 'Torcedor'}</div>
           <div class="text-sm text-muted">Nível ${level} · ${xp} XP · ${state.user.streak} dias de streak</div>
+          ${favTeam
+            ? `<a class="settings-profile__team-link" href="/team/${encodeURIComponent(favTeam.code)}" data-route-link data-team-prefetch="${favTeam.code}">${favTeam.flag} ${escapeHTML(favTeam.name)} →</a>`
+            : ''}
         </div>
       </div>
       ${renderXPBar(state)}

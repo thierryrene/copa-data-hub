@@ -11,6 +11,7 @@ const DEFAULT_STATE = {
     streak: 0,
     lastVisit: null,
     favoriteTeam: null,
+    favoriteTeamChanged: false,
     predictions: [],
     triviaAnswered: [],
     badges: [],
@@ -119,6 +120,28 @@ export function recordTrivia(state, questionId, wasCorrect) {
     saveState(state);
   }
   return !state.user.triviaAnswered.includes(questionId);
+}
+
+/**
+ * Change favorite team. Rewards +10 XP once (first change after onboarding).
+ * Returns { changed, xpAwarded, leveledUp, newLevel }.
+ */
+export function setFavoriteTeam(state, teamCode) {
+  if (!teamCode || state.user.favoriteTeam === teamCode) {
+    return { changed: false, xpAwarded: 0, leveledUp: false, newLevel: state.user.level };
+  }
+
+  const wasFirstChange = !state.user.favoriteTeamChanged;
+  state.user.favoriteTeam = teamCode;
+  state.user.favoriteTeamChanged = true;
+  saveState(state);
+
+  if (wasFirstChange) {
+    const result = addXP(state, 10);
+    return { changed: true, xpAwarded: 10, leveledUp: result.leveledUp, newLevel: result.newLevel };
+  }
+
+  return { changed: true, xpAwarded: 0, leveledUp: false, newLevel: state.user.level };
 }
 
 /**

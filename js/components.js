@@ -132,21 +132,21 @@ export function renderMatchCard(fixture) {
   }
 
   return `
-    <div class="card card--interactive match-card" data-fixture="${fixture.id}">
+    <div class="card match-card" data-fixture="${fixture.id}">
       <div class="match-card__header">
         <span class="match-card__group">Grupo ${fixture.group}</span>
         ${statusHTML}
       </div>
       <div class="match-card__teams">
-        <div class="match-card__team">
+        <a class="match-card__team match-card__team--link" href="/team/${encodeURIComponent(home.code)}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}">
           <span class="match-card__flag">${home.flag}</span>
           <span class="match-card__name">${home.code}</span>
-        </div>
+        </a>
         ${centerContent}
-        <div class="match-card__team">
+        <a class="match-card__team match-card__team--link" href="/team/${encodeURIComponent(away.code)}" data-route-link data-team-prefetch="${away.code}" aria-label="Ver detalhes de ${away.name}">
           <span class="match-card__flag">${away.flag}</span>
           <span class="match-card__name">${away.code}</span>
-        </div>
+        </a>
       </div>
       <div class="match-card__footer">
         ${icon('mapPin', 14)} ${stadium ? stadium.city : '—'}
@@ -187,10 +187,24 @@ export function renderStatBar(label, homeVal, awayVal, isPercent = false) {
  * Render the prediction bar (AI probability)
  */
 export function renderPredictionBar(homePct, drawPct, awayPct, homeCode, awayCode) {
+  const home = getTeam(homeCode);
+  const away = getTeam(awayCode);
+  const homeLabel = home
+    ? `<a class="prediction-bar__team" href="/team/${encodeURIComponent(home.code)}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}"><span>${home.flag}</span> ${home.code}</a>`
+    : `<span class="prediction-bar__team">${homeCode}</span>`;
+  const awayLabel = away
+    ? `<a class="prediction-bar__team" href="/team/${encodeURIComponent(away.code)}" data-route-link data-team-prefetch="${away.code}" aria-label="Ver detalhes de ${away.name}"><span>${away.flag}</span> ${away.code}</a>`
+    : `<span class="prediction-bar__team">${awayCode}</span>`;
+
   return `
     <div class="prediction-bar">
       <div class="prediction-bar__title">
         ${icon('zap', 16, 'text-gold')} Previsão IA
+      </div>
+      <div class="prediction-bar__teams">
+        ${homeLabel}
+        <span class="prediction-bar__draw-label">Empate</span>
+        ${awayLabel}
       </div>
       <div class="prediction-bar__track">
         <div class="prediction-bar__segment prediction-bar__segment--home" style="width: ${homePct}%">
@@ -299,6 +313,78 @@ export function showToast(message, type = 'success', duration = 3000) {
     toast.classList.add('toast-out');
     setTimeout(() => toast.remove(), 300);
   }, duration);
+}
+
+/**
+ * Render a compact clickable team chip. Used in team page comparator and related teams.
+ */
+export function renderTeamChip(teamCode, { asLink = true } = {}) {
+  const team = getTeam(teamCode);
+  if (!team) return '';
+  const safeCode = encodeURIComponent(team.code);
+  const content = `
+    <span class="team-chip__flag">${team.flag}</span>
+    <span class="team-chip__name">${team.code}</span>
+    <span class="team-chip__ranking">#${team.ranking}</span>
+  `;
+  if (asLink) {
+    return `<a class="team-chip" href="/team/${safeCode}" data-route-link data-team-prefetch="${team.code}">${content}</a>`;
+  }
+  return `<span class="team-chip">${content}</span>`;
+}
+
+/**
+ * Render a single match row on the team page (compact, with user prediction hint).
+ */
+export function renderTeamFixtureRow(fixture, teamCode, userPrediction) {
+  const home = getTeam(fixture.home);
+  const away = getTeam(fixture.away);
+  const stadium = getStadium(fixture.stadium);
+  const isHome = fixture.home === teamCode;
+  const opponent = isHome ? away : home;
+  const isLive = fixture.status.startsWith('LIVE');
+  const isFinished = fixture.status === 'FT';
+
+  const dateStr = new Date(`${fixture.date}T${fixture.time}`).toLocaleDateString('pt-BR', {
+    day: '2-digit', month: 'short'
+  });
+
+  let scoreHTML;
+  if (isLive || isFinished) {
+    const homeScore = fixture.homeScore ?? 0;
+    const awayScore = fixture.awayScore ?? 0;
+    scoreHTML = `<span class="team-fixture__score">${homeScore} <span class="team-fixture__score-sep">:</span> ${awayScore}</span>`;
+  } else {
+    scoreHTML = `<span class="team-fixture__time">${fixture.time}</span>`;
+  }
+
+  const statusLabel = isLive ? 'AO VIVO' : isFinished ? 'ENCERRADO' : dateStr;
+  const statusClass = isLive ? 'team-fixture__status--live' : '';
+
+  const predictionHTML = userPrediction
+    ? `<span class="team-fixture__prediction">Seu palpite: ${userPrediction.homeScore} × ${userPrediction.awayScore}</span>`
+    : '';
+
+  return `
+    <div class="card team-fixture">
+      <div class="team-fixture__meta">
+        <span class="team-fixture__group">Grupo ${fixture.group}</span>
+        <span class="team-fixture__status ${statusClass}">${statusLabel}</span>
+      </div>
+      <div class="team-fixture__body">
+        <span class="team-fixture__vs-label">${isHome ? 'vs' : 'em'}</span>
+        <a class="team-fixture__opponent" href="/team/${encodeURIComponent(opponent.code)}" data-route-link data-team-prefetch="${opponent.code}">
+          <span class="team-fixture__flag">${opponent.flag}</span>
+          <span class="team-fixture__name">${opponent.name}</span>
+        </a>
+        ${scoreHTML}
+      </div>
+      <div class="team-fixture__footer">
+        ${icon('mapPin', 12)} ${stadium ? `${stadium.city}, ${stadium.country}` : '—'}
+        ${predictionHTML}
+      </div>
+    </div>
+  `;
 }
 
 /**

@@ -3,9 +3,9 @@
 import { Router } from './router.js';
 import { icon } from './icons.js';
 import { TEAMS, getTeam } from './data.js';
-import { loadState, saveState, addXP, savePrediction, recordTrivia, updateStreak } from './state.js';
+import { loadState, saveState, addXP, savePrediction, recordTrivia, updateStreak, setFavoriteTeam } from './state.js';
 import { updateCountdown, showToast } from './components.js';
-import { renderHome, renderMatches, renderGroups, renderFanzone, renderStadiums, renderSettings } from './pages.js';
+import { renderHome, renderMatches, renderGroups, renderFanzone, renderStadiums, renderSettings, renderTeam } from './pages.js';
 import { setupInstallPrompt, triggerInstall, hideInstallBanner } from './pwa.js';
 
 const WIKIPEDIA_API_BASE = 'https://pt.wikipedia.org/w/api.php';
@@ -51,6 +51,8 @@ class App {
     this.state = loadState();
     this.router = new Router();
     this.countdownInterval = null;
+    this.teamCache = new Map();
+    this.teamPrefetches = new Map();
 
     this.init();
   }
@@ -110,8 +112,8 @@ class App {
   setupRoutes() {
     const pageContainer = document.getElementById('page-container');
 
-    const renderPage = (renderFn) => {
-      pageContainer.innerHTML = renderFn(this.state);
+    const renderPage = (renderFn, ...args) => {
+      pageContainer.innerHTML = renderFn(this.state, ...args);
       window.scrollTo(0, 0);
       this.bindPageEvents();
     };
@@ -122,6 +124,12 @@ class App {
     this.router.addRoute('fanzone', () => renderPage(renderFanzone));
     this.router.addRoute('stadiums', () => renderPage(renderStadiums));
     this.router.addRoute('settings', () => renderPage(renderSettings));
+    this.router.addRoute('team', (params) => {
+      const rawCode = (params?.[0] || '').toUpperCase();
+      renderPage(renderTeam, rawCode);
+      const team = getTeam(rawCode);
+      if (team) this.loadTeamPageContent(team);
+    });
 
     this.router.onNavigate = (route) => this.updateNavHighlight(route);
   }
@@ -177,13 +185,28 @@ class App {
       });
     }
 
-    // Team details (Groups page)
-    const teamDetailsPanel = document.getElementById('team-details-panel');
-    if (teamDetailsPanel) {
-      document.querySelectorAll('[data-team-detail]').forEach((trigger) => {
-        trigger.addEventListener('click', () => this.loadTeamDetails(trigger.dataset.teamDetail));
+    // Navegação para a página de detalhes do time (Grupos + outras páginas)
+    document.querySelectorAll('[data-team-detail]').forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const code = trigger.dataset.teamDetail;
+        if (code) this.router.navigate('team', { params: [code] });
       });
-    }
+    });
+
+    // Prefetch Wikipedia ao hover/touchstart em links de time
+    document.querySelectorAll('[data-team-prefetch]').forEach((el) => {
+      const prefetch = () => {
+        const code = el.dataset.teamPrefetch;
+        if (!code) return;
+        const team = getTeam(code);
+        if (team) this.prefetchTeamSummary(team);
+      };
+      el.addEventListener('mouseenter', prefetch, { passive: true });
+      el.addEventListener('touchstart', prefetch, { passive: true });
+    });
+
+    // Eventos específicos da página de time
+    this.bindTeamPageEvents();
 
     // Stadium filter tabs
     const stadiumFilters = document.getElementById('stadium-filters');
@@ -309,65 +332,167 @@ class App {
     }
   }
 
-  async loadTeamDetails(teamCode) {
-    const panel = document.getElementById('team-details-panel');
-    const team = getTeam(teamCode);
-    if (!panel) return;
-    if (!team) {
-      showToast('Não foi possível identificar a seleção selecionada.', 'error');
-      panel.innerHTML = `
-        <div class="team-insights__title">Detalhes da seleção</div>
-        <p class="text-sm text-muted">Não foi possível carregar esta seleção no momento.</p>
-      `;
+  bindTeamPageEvents() {
+    const hero = document.querySelector('.team-page__hero');
+    if (!hero) return;
+
+    const backBtn = document.getElementById('team-back-btn');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          this.router.navigate('groups');
+        }
+      });
+    }
+
+    const favoriteBtn = document.getElementById('team-favorite-btn');
+    if (favoriteBtn) {
+      favoriteBtn.addEventListener('click', () => {
+        const code = favoriteBtn.dataset.team;
+        const result = setFavoriteTeam(this.state, code);
+        if (!result.changed) {
+          showToast('Esta já é a sua seleção favorita.', 'info');
+          return;
+        }
+        const team = getTeam(code);
+        const flag = team ? team.flag : '⚽';
+        if (result.xpAwarded > 0) {
+          showToast(`${flag} Seleção favorita definida! +${result.xpAwarded} XP`, 'xp');
+        } else {
+          showToast(`${flag} Nova seleção favorita: ${team?.name || code}`, 'success');
+        }
+        if (result.leveledUp) {
+          setTimeout(() => showToast(`🎉 Nível ${result.newLevel} alcançado!`, 'success'), 800);
+        }
+        this.router.navigate('team', { params: [code], replace: true });
+      });
+    }
+
+    const shareBtn = document.getElementById('team-share-btn');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', async () => {
+        const code = shareBtn.dataset.team;
+        const team = getTeam(code);
+        if (!team) return;
+        const shareData = {
+          title: `${team.name} no CopaDataHub 2026`,
+          text: `Veja o dossiê de ${team.flag} ${team.name} no CopaDataHub 2026!`,
+          url: `${window.location.origin}/team/${encodeURIComponent(code)}`
+        };
+        try {
+          if (navigator.share) {
+            await navigator.share(shareData);
+          } else if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(shareData.url);
+            showToast('🔗 Link copiado para a área de transferência', 'success');
+          } else {
+            showToast('Compartilhamento não suportado neste navegador.', 'error');
+          }
+        } catch (error) {
+          if (error?.name !== 'AbortError') {
+            showToast('Não foi possível compartilhar agora.', 'error');
+          }
+        }
+      });
+    }
+  }
+
+  async loadTeamPageContent(team) {
+    const hero = document.querySelector('.team-page__hero');
+    if (!hero || hero.dataset.teamCode !== team.code) return;
+
+    const wikiEl = document.getElementById('team-wiki-content');
+    const curiositiesEl = document.getElementById('team-curiosities');
+    const newsEl = document.getElementById('team-news');
+    const linkEl = document.getElementById('team-wiki-link');
+
+    const cached = this.teamCache.get(team.code);
+    if (cached) {
+      this.renderTeamContent(team, cached, { wikiEl, curiositiesEl, newsEl, linkEl });
       return;
     }
 
-    panel.dataset.teamCode = teamCode;
-    panel.innerHTML = `
-      <div class="team-insights__title">${team.flag} ${escapeHTML(team.name)} (${escapeHTML(team.code)})</div>
-      <p class="text-sm text-muted">Carregando dados da Wikipedia e APIs públicas...</p>
-    `;
-
     try {
-      const wiki = await this.fetchWikipediaTeamSummary(team);
-      const news = await this.fetchTeamNews(team);
+      const [wiki, news] = await Promise.all([
+        this.fetchWikipediaTeamSummary(team),
+        this.fetchTeamNews(team)
+      ]);
 
-      if (panel.dataset.teamCode !== teamCode) return;
+      const payload = { wiki, news };
+      this.teamCache.set(team.code, payload);
 
-      const curiosities = this.extractCuriosities(wiki?.extract || '');
-      const confederation = escapeHTML(team.confederation);
-      const ranking = escapeHTML(String(team.ranking));
-      const wikiDescription = wiki?.description ? escapeHTML(wiki.description) : 'Sem descrição disponível.';
-      const wikiExtract = wiki?.extract ? escapeHTML(wiki.extract) : 'Não foi possível recuperar detalhes enciclopédicos no momento.';
-      const safeWikiUrl = isTrustedWikiUrl(wiki?.url) ? wiki.url : '';
-      const safeNews = news.filter(item => isTrustedWikiUrl(item.url));
-      const wikiUrl = safeWikiUrl ? `<a href="${escapeHTML(safeWikiUrl)}" target="_blank" rel="noopener noreferrer">Abrir na Wikipedia</a>` : '';
+      const currentHero = document.querySelector('.team-page__hero');
+      if (!currentHero || currentHero.dataset.teamCode !== team.code) return;
 
-      panel.innerHTML = `
-        <div class="team-insights__title">${team.flag} ${escapeHTML(team.name)} (${escapeHTML(team.code)})</div>
-        <div class="team-insights__meta">Confederação: ${confederation} · Ranking FIFA: #${ranking}</div>
-        <p class="team-insights__description"><strong>${wikiDescription}</strong><br>${wikiExtract}</p>
-
-        <div class="team-insights__section-title">Curiosidades (Wikipedia)</div>
-        <ul class="team-insights__list">
-          ${curiosities.length ? curiosities.map(item => `<li>${escapeHTML(item)}</li>`).join('') : '<li>Sem curiosidades disponíveis para esta seleção.</li>'}
-        </ul>
-
-        <div class="team-insights__section-title">Notícias em destaque (Wikimedia)</div>
-        <ul class="team-insights__list">
-          ${safeNews.length
-            ? safeNews.map(item => `<li><a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.title)}</a></li>`).join('')
-            : '<li>Não encontramos notícias recentes relacionadas; tente novamente mais tarde.</li>'}
-        </ul>
-        ${wikiUrl ? `<div class="team-insights__link">${wikiUrl}</div>` : ''}
-      `;
+      this.renderTeamContent(team, payload, {
+        wikiEl: document.getElementById('team-wiki-content'),
+        curiositiesEl: document.getElementById('team-curiosities'),
+        newsEl: document.getElementById('team-news'),
+        linkEl: document.getElementById('team-wiki-link')
+      });
     } catch (error) {
-      console.error('Erro ao carregar detalhes da seleção:', error);
-      panel.innerHTML = `
-        <div class="team-insights__title">${team.flag} ${escapeHTML(team.name)} (${escapeHTML(team.code)})</div>
-        <p class="text-sm text-muted">Não foi possível carregar os detalhes agora. Tente novamente em instantes.</p>
+      console.error('Erro ao carregar dossiê da seleção:', error);
+      if (wikiEl) {
+        wikiEl.innerHTML = '<p class="text-sm text-muted">Não foi possível carregar o dossiê agora. Verifique sua conexão e tente novamente.</p>';
+      }
+      if (curiositiesEl) curiositiesEl.innerHTML = '<li class="text-sm text-muted">Curiosidades indisponíveis no momento.</li>';
+      if (newsEl) newsEl.innerHTML = '<p class="text-sm text-muted">Notícias indisponíveis no momento.</p>';
+    }
+  }
+
+  renderTeamContent(team, { wiki, news }, { wikiEl, curiositiesEl, newsEl, linkEl }) {
+    if (wikiEl) {
+      const description = wiki?.description ? escapeHTML(wiki.description) : '';
+      const extract = wiki?.extract
+        ? escapeHTML(wiki.extract)
+        : 'Não foi possível recuperar o resumo enciclopédico desta seleção.';
+      wikiEl.innerHTML = `
+        ${description ? `<p class="team-page__wiki-lead"><strong>${description}</strong></p>` : ''}
+        <p class="team-page__wiki-body">${extract}</p>
       `;
     }
+
+    if (curiositiesEl) {
+      const curiosities = this.extractCuriosities(wiki?.extract || '');
+      curiositiesEl.innerHTML = curiosities.length
+        ? curiosities.map(item => `<li>${escapeHTML(item)}</li>`).join('')
+        : '<li class="text-sm text-muted">Sem curiosidades disponíveis para esta seleção.</li>';
+    }
+
+    if (newsEl) {
+      const safeNews = (news || []).filter(item => isTrustedWikiUrl(item.url));
+      if (safeNews.length) {
+        newsEl.innerHTML = safeNews.map(item => `
+          <a class="team-page__news-item" href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">
+            <span class="team-page__news-title">${escapeHTML(item.title)}</span>
+            ${item.description ? `<span class="team-page__news-desc">${escapeHTML(item.description)}</span>` : ''}
+          </a>
+        `).join('');
+      } else {
+        newsEl.innerHTML = '<p class="text-sm text-muted">Nenhuma notícia recente relacionada nos últimos dias.</p>';
+      }
+    }
+
+    if (linkEl) {
+      const safeWikiUrl = isTrustedWikiUrl(wiki?.url) ? wiki.url : '';
+      linkEl.innerHTML = safeWikiUrl
+        ? `<a href="${escapeHTML(safeWikiUrl)}" target="_blank" rel="noopener noreferrer">${icon('globe', 14)} Abrir na Wikipedia</a>`
+        : '';
+    }
+  }
+
+  prefetchTeamSummary(team) {
+    if (this.teamCache.has(team.code) || this.teamPrefetches.has(team.code)) return;
+    const promise = Promise.all([
+      this.fetchWikipediaTeamSummary(team).catch(() => null),
+      this.fetchTeamNews(team).catch(() => [])
+    ]).then(([wiki, news]) => {
+      this.teamCache.set(team.code, { wiki, news });
+      this.teamPrefetches.delete(team.code);
+    });
+    this.teamPrefetches.set(team.code, promise);
   }
 
   async fetchWikipediaTeamSummary(team) {
