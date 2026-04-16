@@ -1,0 +1,42 @@
+# Dependências de pacotes
+node_modules/
+bower_components/
+jspm_packages/
+vendor/
+.pnp/
+.pnp.js
+
+# Build artifacts
+dist/
+build/
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.output/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# Editor / IDE
+.history/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Específicos de SO
+.DS_Store
+Thumbs.db
+
+# Específicos de ferramentas locais
+.claude/
