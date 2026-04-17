@@ -9,6 +9,21 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ## [Não-publicado]
 
+### Alterado (BREAKING — router reescrito com modelo declarativo)
+
+- **Router reescrito do zero** abandonando abordagem imperativa com remendos em favor de tabela declarativa de rotas com pattern matching (estilo React Router / Vue Router), padrão consolidado em frameworks maduros.
+- **API de rotas nova:**
+  - `router.addRoute(name, pattern, handler)` com patterns como `'/selecoes/:slug'`.
+  - `router.addRoute('*', null, handler)` para **NotFound explícito** (sem fallback silencioso para home).
+  - `router.navigate(name, { params: { slug: 'brasil' }, replace })` — params como objeto nomeado em vez de array posicional.
+  - `handler` recebe `{ params, name }` com `params` desestruturado do pattern.
+- **Home na raiz `/`** — mapeada para a rota registrada com `name:'home'` e `pattern:'/'`. Não há mais `/inicio` no URL — se alguém acessar `/inicio`, retorna 404 (não existe mais).
+- **Tabela de rotas centralizada** em `app.js` (`ROUTE_TABLE`): cada entrada tem `name`, `pattern` e `page` (chave em `pages/index.js`).
+- **Error boundaries** em handlers: exceções em `render()` ou `bindEvents()` são capturadas e mostram estado de erro sem crashar o app.
+- **Zero race conditions:** `setupRoutes()` ocorre em `init()` antes de qualquer decisão de onboarding, rotas estão sempre disponíveis.
+- **NotFound handler** renderiza página 404 real em vez de redirect silencioso, respeitando SEO (`noindex` implícito pela ausência no sitemap).
+- Todas as páginas adaptadas para novo contrato de `params` (objeto em vez de array).
+
 ### Alterado (home canônica em `/`)
 
 - Home do site agora é servida em `/` (não mais `/inicio`) como URL canônica.

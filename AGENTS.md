@@ -97,19 +97,34 @@ word-cup-app/
 
 **Rotas (todas em pt-BR, com slugs SEO-friendly):**
 
-| URL | Página |
-|---|---|
-| `/` | Home + countdown (URL canônica da home) |
-| `/jogos` | Match Center (lista filtrável por fase/grupo) |
-| `/partida/:slug` | Página da partida (pré/ao-vivo/pós) — slug `time1-vs-time2-data` |
-| `/grupos` | Fase de grupos |
-| `/fanzone` | Bolão, trivia, ranking |
-| `/sedes` | Estádios |
-| `/configuracoes` | Settings |
-| `/selecoes/:slug` | Dossiê de seleção (ex: `/selecoes/brasil`) |
-| `/jogadores/:slug` | Dossiê de jogador (ex: `/jogadores/vinicius-junior`) |
-| `/campeonatos` | Hub de ligas |
-| `/campeonatos/:slug` | UCL / Brasileirão / Premier League |
+| URL | Nome interno | Página |
+|---|---|---|
+| `/` | `home` | Home + countdown |
+| `/jogos` | `jogos` | Match Center |
+| `/partida/:slug` | `partida` | Partida (pré/ao-vivo/pós) — slug `time1-vs-time2-data` |
+| `/grupos` | `grupos` | Fase de grupos |
+| `/fanzone` | `fanzone` | Bolão, trivia, ranking |
+| `/sedes` | `sedes` | Estádios |
+| `/configuracoes` | `configuracoes` | Settings |
+| `/selecoes/:slug` | `selecoes` | Dossiê de seleção |
+| `/jogadores/:slug` | `jogadores` | Dossiê de jogador |
+| `/campeonatos` | `campeonatos` | Hub de ligas |
+| `/campeonatos/:slug` | `liga` | Liga individual (UCL / Brasileirão / EPL) |
+
+Qualquer outra URL → **404 explícito** (página "não encontrada" renderizada dentro do shell).
+
+**API do router** (ver [js/router.js](js/router.js)):
+
+```js
+router.addRoute('home', '/', ({ params, name }) => { /* render */ });
+router.addRoute('selecoes', '/selecoes/:slug', ({ params }) => { /* params.slug */ });
+router.addRoute('*', null, ({ path }) => { /* NotFound */ });
+
+router.navigate('selecoes', { params: { slug: 'brasil' } }); // → /selecoes/brasil
+router.navigate('home');                                      // → /
+```
+
+Tabela de rotas do app fica em [js/app.js](js/app.js) (`ROUTE_TABLE`). Cada página em `js/pages/` implementa `{ render(state, params), bindEvents(state, { router, params }) }` onde `params` é um objeto nomeado (ex: `{ slug: 'brasil' }`).
 
 ---
 

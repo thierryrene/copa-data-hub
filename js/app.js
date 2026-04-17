@@ -1,5 +1,4 @@
 // CopaDataHub 2026 — Bootstrap, roteamento e bind de shell do app.
-// Páginas e componentes vivem em /js/pages e /js/components.
 
 import { Router } from './router.js';
 import { loadState, saveState, addXP, updateStreak } from './state.js';
@@ -13,6 +12,39 @@ import { renderWelcomeOverlay, mountWelcome } from './layout/welcome.js';
 import { renderInstallBanner } from './layout/layout.js';
 import { prefetchTeamDossier } from './api/teamLoader.js';
 import { pages } from './pages/index.js';
+
+// Tabela declarativa de rotas do app.
+// name: identificador usado em router.navigate() e para destaque da nav.
+// pattern: path pattern com :params opcionais.
+// page: chave em pages/index.js que implementa { render, bindEvents }.
+const ROUTE_TABLE = [
+  { name: 'home',         pattern: '/',                      page: 'inicio' },
+  { name: 'jogos',        pattern: '/jogos',                 page: 'jogos' },
+  { name: 'partida',      pattern: '/partida/:slug',         page: 'partida' },
+  { name: 'grupos',       pattern: '/grupos',                page: 'grupos' },
+  { name: 'fanzone',      pattern: '/fanzone',               page: 'fanzone' },
+  { name: 'sedes',        pattern: '/sedes',                 page: 'sedes' },
+  { name: 'configuracoes',pattern: '/configuracoes',         page: 'configuracoes' },
+  { name: 'selecoes',     pattern: '/selecoes/:slug',        page: 'selecoes' },
+  { name: 'jogadores',    pattern: '/jogadores/:slug',       page: 'jogadores' },
+  { name: 'campeonatos',  pattern: '/campeonatos',           page: 'campeonatos' },
+  { name: 'liga',         pattern: '/campeonatos/:slug',     page: 'campeonatos' }
+];
+
+// Rotas que o bottom-nav destaca (algumas rotas usam o mesmo nav).
+const NAV_HIGHLIGHT = {
+  home: 'home',
+  jogos: 'jogos',
+  partida: 'jogos',
+  grupos: 'grupos',
+  fanzone: 'fanzone',
+  sedes: 'sedes',
+  configuracoes: null,
+  selecoes: 'grupos',
+  jogadores: null,
+  campeonatos: null,
+  liga: null
+};
 
 class App {
   constructor() {
@@ -37,7 +69,7 @@ class App {
   mountShell() {
     const root = document.getElementById('app-root');
     if (!root) {
-      console.error('Elemento #app-root não encontrado no HTML.');
+      console.error('[app] Elemento #app-root não encontrado no HTML.');
       return;
     }
     root.innerHTML = `
@@ -48,7 +80,7 @@ class App {
         <div class="page active" id="page-container"></div>
       </main>
       ${renderInstallBanner()}
-      ${renderBottomNav('inicio')}
+      ${renderBottomNav('home')}
     `;
   }
 
@@ -69,7 +101,7 @@ class App {
 
     this.countdownInterval = setInterval(() => updateCountdown(), 1000);
 
-    this.router.start('inicio');
+    this.router.start();
 
     if (this.state.user.streak > 1) {
       setTimeout(() => {
@@ -81,19 +113,70 @@ class App {
   }
 
   setupRoutes() {
-    const pageContainer = document.getElementById('page-container');
+    const pageContainer = () => document.getElementById('page-container');
 
-    Object.entries(pages).forEach(([name, pageModule]) => {
-      this.router.addRoute(name, (params) => {
-        pageContainer.innerHTML = pageModule.render(this.state, params);
-        window.scrollTo(0, 0);
+    const renderRoute = (name, pageModule, params) => {
+      const container = pageContainer();
+      if (!container) return;
+      try {
+        container.innerHTML = pageModule.render(this.state, params);
+      } catch (err) {
+        console.error(`[app] erro no render de "${name}":`, err);
+        container.innerHTML = this.renderErrorState(name);
+        return;
+      }
+      window.scrollTo(0, 0);
+      try {
         pageModule.bindEvents(this.state, { router: this.router, params });
-        this.bindCrossPageEvents();
-        updateHeaderXP(this.state);
+      } catch (err) {
+        console.error(`[app] erro no bindEvents de "${name}":`, err);
+      }
+      this.bindCrossPageEvents();
+      updateHeaderXP(this.state);
+    };
+
+    ROUTE_TABLE.forEach((route) => {
+      const pageModule = pages[route.page];
+      if (!pageModule) {
+        console.error(`[app] página "${route.page}" não encontrada para rota "${route.name}"`);
+        return;
+      }
+      this.router.addRoute(route.name, route.pattern, ({ params, name }) => {
+        renderRoute(name, pageModule, params);
       });
     });
 
-    this.router.onNavigate = (route) => updateBottomNavHighlight(route);
+    // Fallback 404 — rota desconhecida ou erro de renderização.
+    this.router.addRoute('*', null, () => {
+      const container = pageContainer();
+      if (container) container.innerHTML = this.renderNotFound();
+      updateHeaderXP(this.state);
+      updateBottomNavHighlight(null);
+    });
+
+    this.router.onNavigate = (name) => {
+      updateBottomNavHighlight(NAV_HIGHLIGHT[name] || null);
+    };
+  }
+
+  renderNotFound() {
+    return `
+      <div class="team-page__notfound">
+        <div class="section-title">🔎 Página não encontrada</div>
+        <p class="section-subtitle">A URL acessada não corresponde a nenhuma página deste site.</p>
+        <a class="btn btn--primary" href="/" data-route-link>← Voltar ao início</a>
+      </div>
+    `;
+  }
+
+  renderErrorState(routeName) {
+    return `
+      <div class="team-page__notfound">
+        <div class="section-title">⚠️ Erro ao carregar</div>
+        <p class="section-subtitle">Ocorreu um erro ao renderizar "${routeName}". Tente recarregar a página.</p>
+        <a class="btn btn--primary" href="/" data-route-link>← Voltar ao início</a>
+      </div>
+    `;
   }
 
   bindCrossPageEvents() {
@@ -115,16 +198,12 @@ class App {
     const installBtn = document.getElementById('install-btn');
     const installClose = document.getElementById('install-close');
 
-    if (installBtn) {
-      installBtn.addEventListener('click', () => triggerInstall());
-    }
-    if (installClose) {
-      installClose.addEventListener('click', () => {
-        hideInstallBanner();
-        this.state.settings.installDismissed = true;
-        saveState(this.state);
-      });
-    }
+    if (installBtn) installBtn.addEventListener('click', () => triggerInstall());
+    if (installClose) installClose.addEventListener('click', () => {
+      hideInstallBanner();
+      this.state.settings.installDismissed = true;
+      saveState(this.state);
+    });
   }
 }
 

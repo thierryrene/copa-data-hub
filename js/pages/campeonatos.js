@@ -74,7 +74,7 @@ function renderLeaguePage(league) {
 }
 
 function render(_state, params) {
-  const slug = (params?.[0] || '').toLowerCase();
+  const slug = String(params?.slug || '').toLowerCase();
 
   if (!slug) return renderHub();
 
@@ -104,7 +104,7 @@ async function loadLeagueData(league) {
 }
 
 function bindEvents(_state, { router, params }) {
-  const slug = (params?.[0] || '').toLowerCase();
+  const slug = String(params?.slug || '').toLowerCase();
 
   if (!slug) {
     setSEO({

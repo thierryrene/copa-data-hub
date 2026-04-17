@@ -64,7 +64,7 @@ function renderNotFound(rawSlug) {
 }
 
 function render(state, params) {
-  const rawSlug = (params?.[0] || '').toLowerCase();
+  const rawSlug = String(params?.slug || '').toLowerCase();
   const team = getTeamBySlug(rawSlug);
   if (!team) return renderNotFound(rawSlug);
 
@@ -320,7 +320,7 @@ function bindEvents(state, { router, params }) {
       if (result.leveledUp) {
         setTimeout(() => showToast(`🎉 Nível ${result.newLevel} alcançado!`, 'success'), 800);
       }
-      router.navigate('selecoes', { params: [current.slug], replace: true });
+      router.navigate('selecoes', { params: { slug: current.slug }, replace: true });
     });
   }
 

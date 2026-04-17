@@ -59,7 +59,7 @@ function bindEvents(_state, { router }) {
     trigger.addEventListener('click', () => {
       const code = trigger.dataset.teamDetail;
       const team = getTeam(code);
-      if (team?.slug) router.navigate('selecoes', { params: [team.slug] });
+      if (team?.slug) router.navigate('selecoes', { params: { slug: team.slug } });
     });
   });
 }

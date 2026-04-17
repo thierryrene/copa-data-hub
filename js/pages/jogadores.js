@@ -9,7 +9,7 @@ import { fetchPlayerDetails, resolvePlayerIdBySlug, registerPlayerSlug } from '.
 import { fetchWikipediaPlayerSummary, extractCuriosities } from '../api/wikipedia.js';
 
 function render(_state, params) {
-  const rawSlug = (params?.[0] || '').toLowerCase();
+  const rawSlug = String(params?.slug || '').toLowerCase();
 
   if (!rawSlug) {
     return `
@@ -68,7 +68,7 @@ function bindEvents(state, { router }) {
       if (window.history.length > 1) {
         window.history.back();
       } else {
-        router.navigate('inicio');
+        router.navigate('home');
       }
     });
   }

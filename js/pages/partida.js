@@ -85,7 +85,7 @@ function transmissaoBox(stadium) {
 }
 
 function render(state, params) {
-  const slug = (params?.[0] || '').toLowerCase();
+  const slug = String(params?.slug || '').toLowerCase();
   const fixture = findFixtureBySlug(FIXTURES, slug);
   if (!fixture) return notFound(slug);
 
@@ -225,7 +225,7 @@ async function loadLiveOrFinished(fixture, home, away, phase) {
 }
 
 function bindEvents(state, { router, params }) {
-  const slug = (params?.[0] || '').toLowerCase();
+  const slug = String(params?.slug || '').toLowerCase();
   const fixture = findFixtureBySlug(FIXTURES, slug);
 
   if (!fixture) {
@@ -272,7 +272,7 @@ function bindEvents(state, { router, params }) {
     const r = addXP(state, 15);
     showToast(`⚽ Palpite salvo! +15 XP`, 'xp');
     if (r.leveledUp) setTimeout(() => showToast(`🎉 Nível ${r.newLevel}!`, 'success'), 800);
-    setTimeout(() => router.navigate('partida', { params: [slug], replace: true }), 600);
+    setTimeout(() => router.navigate('partida', { params: { slug }, replace: true }), 600);
   });
 
   // Pulse + Polls
