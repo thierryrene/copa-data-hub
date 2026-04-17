@@ -22,60 +22,94 @@
 
 ```
 word-cup-app/
-├── index.html              # Shell mínimo do SPA (div#app-root + PWA meta tags)
-├── champions.html          # Página secundária (UCL/histórico)
-├── manifest.json           # Manifest PWA principal (A2HS + fullscreen)
+├── index.html              # Shell mínimo do SPA (div#app-root + meta SEO completo)
+├── champions.html          # Página secundária legada (UCL — substituída por /campeonatos)
+├── manifest.json           # Manifest PWA principal
 ├── manifest-ucl.json       # Manifest alternativo (UCL)
-├── vercel.json             # Rewrites SPA + headers de cache para deploy Vercel
-├── css/style.css           # Design system completo (Custom Properties, dark mode)
+├── vercel.json             # Rewrites SPA + headers de cache
+├── robots.txt              # Permite indexação total
+├── sitemap.xml             # 86 URLs (rotas + 48 seleções + 3 ligas + partidas)
+├── css/style.css           # Design system + estilos de todas as páginas
 ├── scripts/
 │   └── dev-server.js       # Dev server Node com fallback SPA + rewrite /champions
 ├── js/
-│   ├── app.js              # Bootstrap, monta shell, registra rotas, bind global
-│   ├── router.js           # SPA router (History API)
-│   ├── data.js             # Times, grupos, estádios (estáticos no MVP)
-│   ├── state.js            # Estado do usuário em localStorage
-│   ├── icons.js            # Biblioteca SVG Lucide-inspired
-│   ├── pwa.js              # Install prompt handler
+│   ├── app.js              # Bootstrap, shell, rotas genéricas, prefetch
+│   ├── router.js           # SPA router (History API, decodifica params, JSON-LD safe)
+│   ├── data.js             # Times (com slug), grupos, estádios, fixtures, helpers
+│   ├── state.js            # Estado em localStorage + setFavoriteTeam
+│   ├── icons.js            # Biblioteca SVG
+│   ├── pwa.js              # Install prompt
 │   ├── util/
-│   │   └── html.js         # escapeHTML, isTrustedWikiUrl, normalizeText
+│   │   ├── html.js         # escapeHTML, isTrustedWikiUrl, normalizeText
+│   │   ├── slug.js         # slugify, deslugify para URLs SEO
+│   │   ├── seo.js          # setSEO + JSON-LD (SportsTeam, Person, SportsEvent)
+│   │   └── match.js        # matchSlug, matchPhase, predictionResultXP
 │   ├── api/
-│   │   ├── wikipedia.js    # Fetchs Wikipedia/Wikimedia
-│   │   └── teamLoader.js   # Cache + prefetch de dossiês de seleções
+│   │   ├── wikipedia.js    # Fetchs Wikipedia/Wikimedia (time + jogador)
+│   │   ├── teamLoader.js   # Cache + prefetch de dossiês de seleções
+│   │   ├── squad.js        # Elenco da seleção via API-Football
+│   │   ├── player.js       # Detalhes do jogador + resolvePlayerIdBySlug
+│   │   ├── leagues.js      # Fixtures/standings/top scorers por liga
+│   │   └── match.js        # Fixture detalhada + h2h + cache adaptativo
+│   ├── data/
+│   │   └── leagues.js      # Catálogo de campeonatos (UCL, Brasileirão, EPL)
 │   ├── layout/
 │   │   ├── header.js       # App header com XP badge
-│   │   ├── bottomNav.js    # Bottom navigation (5 abas)
+│   │   ├── bottomNav.js    # Bottom nav (rotas pt-BR)
 │   │   ├── welcome.js      # Overlay de onboarding
-│   │   └── layout.js       # Helpers de UI (section title, install banner)
+│   │   └── layout.js       # Helpers de UI
 │   ├── components/
-│   │   ├── index.js        # Re-export barrel
-│   │   ├── countdown.js    # Countdown até o torneio
-│   │   ├── xpBar.js        # Barra de XP
-│   │   ├── matchCard.js    # Card de jogo
-│   │   ├── groupTable.js   # Tabela de classificação do grupo
-│   │   ├── statBar.js      # Barra de estatística comparativa
-│   │   ├── predictionBar.js# Barra de previsão de IA
-│   │   ├── stadiumCard.js  # Card de estádio
-│   │   ├── teamChip.js     # Chip de seleção (clicável)
-│   │   ├── teamFixtureRow.js # Linha de jogo na página de seleção
-│   │   └── toast.js        # Notificação toast
+│   │   ├── index.js        # Barrel
+│   │   ├── countdown.js, xpBar.js, statBar.js, toast.js
+│   │   ├── matchCard.js    # Card de jogo (linka /partida/:slug)
+│   │   ├── groupTable.js, stadiumCard.js
+│   │   ├── teamChip.js, teamFixtureRow.js
+│   │   ├── predictionBar.js
+│   │   ├── lineupField.js, squadList.js     # Escalação e elenco
+│   │   ├── playerHero.js, playerStats.js    # Página de jogador
+│   │   ├── leagueCard.js, leagueFixtureList.js,
+│   │   ├── standingsTable.js, topScorersList.js  # Campeonatos
+│   │   └── match/                            # Componentes da partida
+│   │       ├── matchHero.js                  # Hero adaptativo (pré/live/finished)
+│   │       └── matchSections.js              # h2h, key players, timeline,
+│   │                                         #   pulse, poll, live stats,
+│   │                                         #   recap, ratings
 │   └── pages/
-│       ├── index.js        # Registro de rotas { nome: { render, bindEvents } }
-│       ├── home.js
-│       ├── matches.js
-│       ├── groups.js
-│       ├── fanzone.js
-│       ├── stadiums.js
-│       ├── settings.js
-│       └── team.js         # Dossiê de seleção (/team/:code)
+│       ├── index.js          # Registro de rotas
+│       ├── inicio.js         # Home (/inicio)
+│       ├── jogos.js          # Match Center (/jogos) — lista filtrável
+│       ├── grupos.js         # Grupos (/grupos)
+│       ├── fanzone.js        # FanZone (/fanzone)
+│       ├── sedes.js          # Sedes (/sedes)
+│       ├── configuracoes.js  # Settings (/configuracoes)
+│       ├── selecoes.js       # Seleção (/selecoes/:slug)
+│       ├── jogadores.js      # Jogador (/jogadores/:slug)
+│       ├── campeonatos.js    # Hub + ligas (/campeonatos[/:slug])
+│       └── partida.js        # Partida (/partida/:slug) — pré/live/pós
 └── icons/                  # Ícones PWA 192/512
 ```
 
 **Stack obrigatória:**
 - HTML5 semântico • Vanilla CSS com Custom Properties • Vanilla JS ES6 modules
 - PWA mínimo (Manifest + A2HS + `display: standalone`), **sem** Service Worker no MVP • `localStorage` para persistência
-- SPA router usa **History API** com rewrites no [vercel.json](vercel.json) — URLs limpas tipo `/groups`, `/stadiums/:code`
+- SPA router usa **History API** com rewrites no [vercel.json](vercel.json) e [scripts/dev-server.js](scripts/dev-server.js)
 - **Nenhum** framework, **nenhum** bundler, **nenhum** `node_modules`, **nenhum** `package.json`
+
+**Rotas (todas em pt-BR, com slugs SEO-friendly):**
+
+| URL | Página |
+|---|---|
+| `/inicio` | Home + countdown |
+| `/jogos` | Match Center (lista filtrável por fase/grupo) |
+| `/partida/:slug` | Página da partida (pré/ao-vivo/pós) — slug `time1-vs-time2-data` |
+| `/grupos` | Fase de grupos |
+| `/fanzone` | Bolão, trivia, ranking |
+| `/sedes` | Estádios |
+| `/configuracoes` | Settings |
+| `/selecoes/:slug` | Dossiê de seleção (ex: `/selecoes/brasil`) |
+| `/jogadores/:slug` | Dossiê de jogador (ex: `/jogadores/vinicius-junior`) |
+| `/campeonatos` | Hub de ligas |
+| `/campeonatos/:slug` | UCL / Brasileirão / Premier League |
 
 ---
 

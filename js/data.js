@@ -238,6 +238,16 @@ export function getFixturesByGroup(groupId) {
 }
 
 /**
+ * Slug semântico de uma partida: "brasil-vs-franca-2026-06-20"
+ */
+export function getMatchSlug(fixture) {
+  const home = TEAMS[fixture.home];
+  const away = TEAMS[fixture.away];
+  if (!home || !away) return fixture.id;
+  return `${home.slug}-vs-${away.slug}-${fixture.date}`;
+}
+
+/**
  * Get fixtures for a given team (as home or away), ordered by date.
  */
 export function getTeamFixtures(teamCode) {

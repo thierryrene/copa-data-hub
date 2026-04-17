@@ -1,5 +1,5 @@
 import { icon } from '../icons.js';
-import { getTeam, getStadium } from '../data.js';
+import { getTeam, getStadium, getMatchSlug } from '../data.js';
 
 export function renderMatchCard(fixture) {
   const home = getTeam(fixture.home);
@@ -28,12 +28,15 @@ export function renderMatchCard(fixture) {
       ? `<span class="match-card__status">ENCERRADO</span>`
       : `<span class="match-card__status">${dateStr}</span>`;
 
+  const matchHref = `/partida/${getMatchSlug(fixture)}`;
   return `
     <div class="card match-card" data-fixture="${fixture.id}">
-      <div class="match-card__header">
-        <span class="match-card__group">Grupo ${fixture.group}</span>
-        ${statusHTML}
-      </div>
+      <a class="match-card__link" href="${matchHref}" data-route-link aria-label="Detalhes da partida ${fixture.home} vs ${fixture.away}">
+        <div class="match-card__header">
+          <span class="match-card__group">Grupo ${fixture.group}</span>
+          ${statusHTML}
+        </div>
+      </a>
       <div class="match-card__teams">
         <a class="match-card__team match-card__team--link" href="/selecoes/${home.slug}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}">
           <span class="match-card__flag">${home.flag}</span>
@@ -45,9 +48,9 @@ export function renderMatchCard(fixture) {
           <span class="match-card__name">${away.code}</span>
         </a>
       </div>
-      <div class="match-card__footer">
-        ${icon('mapPin', 14)} ${stadium ? stadium.city : '—'}
-      </div>
+      <a class="match-card__footer" href="${matchHref}" data-route-link>
+        ${icon('mapPin', 14)} ${stadium ? stadium.city : '—'} <span class="match-card__cta">Ver partida →</span>
+      </a>
     </div>
   `;
 }

@@ -1,74 +1,87 @@
 import { icon } from '../icons.js';
-import { FIXTURES, getTeam } from '../data.js';
+import { FIXTURES, GROUPS } from '../data.js';
+import { matchPhase } from '../util/match.js';
 import { renderMatchCard } from '../components/matchCard.js';
-import { renderStatBar } from '../components/statBar.js';
-import { renderPredictionBar } from '../components/predictionBar.js';
 import { setSEO } from '../util/seo.js';
 
-function render(_state) {
-  const demoMatch = {
-    home: getTeam('BRA'),
-    away: getTeam('FRA'),
-    homeScore: 1,
-    awayScore: 0,
-    clock: '68:12',
-    status: 'LIVE_2H'
+function categorize(fixtures) {
+  const now = Date.now();
+  const todayStr = new Date().toISOString().slice(0, 10);
+  return {
+    today: fixtures.filter(f => f.date === todayStr),
+    live: fixtures.filter(f => matchPhase(f) === 'live'),
+    upcoming: fixtures.filter(f => matchPhase(f) === 'pre').sort((a, b) =>
+      new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`)),
+    finished: fixtures.filter(f => matchPhase(f) === 'finished').reverse()
   };
+}
+
+function render() {
+  const c = categorize(FIXTURES);
+  const groupOpts = Object.keys(GROUPS).map(g => `<option value="${g}">Grupo ${g}</option>`).join('');
 
   return `
     <h1 class="section-title">${icon('target', 20)} Match Center</h1>
-    <p class="section-subtitle">Acompanhe partidas ao vivo com estatísticas e previsão de IA</p>
+    <p class="section-subtitle">Calendário completo de partidas do Mundial 2026 com cobertura ao vivo, escalações e estatísticas.</p>
 
-    <div class="card card--gold mb-xl">
-      <div class="match-card">
-        <div class="match-card__header">
-          <span class="match-card__group">Grupo H</span>
-          <span class="match-card__status live">AO VIVO · ${demoMatch.clock}</span>
-        </div>
-        <div class="match-card__teams">
-          <a class="match-card__team match-card__team--link" href="/selecoes/${demoMatch.home.slug}" data-route-link data-team-prefetch="${demoMatch.home.code}" aria-label="Ver detalhes de ${demoMatch.home.name}">
-            <span class="match-card__flag">${demoMatch.home.flag}</span>
-            <span class="match-card__name">${demoMatch.home.code}</span>
-          </a>
-          <div class="match-card__score">
-            <span>${demoMatch.homeScore}</span>
-            <span class="match-card__score-sep">:</span>
-            <span>${demoMatch.awayScore}</span>
-          </div>
-          <a class="match-card__team match-card__team--link" href="/selecoes/${demoMatch.away.slug}" data-route-link data-team-prefetch="${demoMatch.away.code}" aria-label="Ver detalhes de ${demoMatch.away.name}">
-            <span class="match-card__flag">${demoMatch.away.flag}</span>
-            <span class="match-card__name">${demoMatch.away.code}</span>
-          </a>
-        </div>
-      </div>
+    <div class="filter-tabs" id="match-filters">
+      <button class="filter-tab active" data-filter="all">Todos (${FIXTURES.length})</button>
+      ${c.live.length ? `<button class="filter-tab" data-filter="live">🔴 Ao Vivo (${c.live.length})</button>` : ''}
+      <button class="filter-tab" data-filter="upcoming">Próximos (${c.upcoming.length})</button>
+      <button class="filter-tab" data-filter="finished">Encerrados (${c.finished.length})</button>
     </div>
 
-    <div class="card mb-lg" style="display: flex; flex-direction: column; gap: var(--space-lg); padding: var(--space-xl);">
-      <div class="section-title" style="margin-bottom: 0;">${icon('barChart', 18)} Estatísticas</div>
-      ${renderStatBar('Posse de Bola', 58, 42, true)}
-      ${renderStatBar('Chutes ao Gol', 6, 3)}
-      ${renderStatBar('Precisão de Passes', 89, 81, true)}
-      ${renderStatBar('xG (Gols Esperados)', 1.84, 0.92)}
-      ${renderStatBar('Escanteios', 5, 2)}
+    <div class="filter-tabs" id="match-group-filter" style="margin-bottom: var(--space-md);">
+      <button class="filter-tab active" data-group="all">Todos os grupos</button>
+      ${Object.keys(GROUPS).map(g => `<button class="filter-tab" data-group="${g}">Grupo ${g}</button>`).join('')}
     </div>
 
-    ${renderPredictionBar(65, 20, 15, 'BRA', 'FRA')}
-
-    <div class="mt-xl">
-      <div class="section-title">${icon('calendar', 20)} Calendário</div>
-      <div class="matches-list">
-        ${FIXTURES.slice(0, 8).map(f => renderMatchCard(f)).join('')}
-      </div>
+    <div class="matches-list" id="matches-container">
+      ${FIXTURES.map(f => `
+        <div class="match-wrapper" data-phase="${matchPhase(f)}" data-group="${f.group}">
+          ${renderMatchCard(f)}
+        </div>
+      `).join('')}
     </div>
   `;
 }
 
+function applyFilters() {
+  const phaseFilter = document.querySelector('#match-filters .active')?.dataset.filter || 'all';
+  const groupFilter = document.querySelector('#match-group-filter .active')?.dataset.group || 'all';
+
+  document.querySelectorAll('.match-wrapper').forEach((el) => {
+    const phaseOk = phaseFilter === 'all'
+      || (phaseFilter === 'live' && el.dataset.phase === 'live')
+      || (phaseFilter === 'upcoming' && el.dataset.phase === 'pre')
+      || (phaseFilter === 'finished' && el.dataset.phase === 'finished');
+    const groupOk = groupFilter === 'all' || el.dataset.group === groupFilter;
+    el.style.display = (phaseOk && groupOk) ? '' : 'none';
+  });
+}
+
 function bindEvents() {
   setSEO({
-    title: 'Match Center — Estatísticas e Previsões Ao Vivo',
-    description: 'Acompanhe partidas do Mundial 2026 ao vivo com estatísticas detalhadas (posse, xG, chutes), previsões de IA e calendário completo.',
+    title: 'Match Center — Jogos do Mundial 2026',
+    description: 'Calendário completo do Mundial 2026 com 104 jogos. Filtre por fase, grupo ou status (ao vivo, próximos, encerrados). Cobertura completa de cada partida.',
     canonical: '/jogos',
-    keywords: 'match center, jogos mundial 2026, estatísticas futebol, xG, previsão IA'
+    keywords: 'jogos mundial 2026, calendário copa do mundo, ao vivo, partidas'
+  });
+
+  document.querySelectorAll('#match-filters .filter-tab').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#match-filters .filter-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('#match-group-filter .filter-tab').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#match-group-filter .filter-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    });
   });
 }
 

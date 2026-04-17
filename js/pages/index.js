@@ -10,6 +10,7 @@ import configuracoes from './configuracoes.js';
 import selecoes from './selecoes.js';
 import jogadores from './jogadores.js';
 import campeonatos from './campeonatos.js';
+import partida from './partida.js';
 
 export const pages = {
   inicio,
@@ -20,5 +21,6 @@ export const pages = {
   configuracoes,
   selecoes,
   jogadores,
-  campeonatos
+  campeonatos,
+  partida
 };

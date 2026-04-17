@@ -9,6 +9,24 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ## [Não-publicado]
 
+### Adicionado (Match Center 2.0 — página da partida)
+
+- **Nova rota `/partida/:slug`** com slug semântico (ex: `/partida/brasil-vs-franca-2026-06-20`).
+- **Match Hero adaptativo** muda layout conforme estado:
+  - **Pré-jogo:** countdown regressivo até kickoff, escudo e nome de cada seleção, info do estádio.
+  - **Ao vivo:** placar grande, indicador pulsante, status (1T/HT/2T) com minuto.
+  - **Pós-jogo:** placar final + selo "ENCERRADO".
+- **Modo PRÉ-JOGO:** previsão de IA, confronto direto (h2h via `/fixtures/headtohead`), 3 jogadores-chave de cada time, palpite +15 XP integrado ao bolão, info do estádio.
+- **Modo AO VIVO:** Pulse de torcida (4 emojis com contador local persistente), enquete efêmera ("Quem vai marcar o próximo gol?"), estatísticas ao vivo (posse, chutes, escanteios, faltas), timeline de eventos (gols, cartões, substituições) com auto-refresh a cada 30s.
+- **Modo PÓS-JOGO:** narrativa template-based ("X venceu Y por Z, gol de A aos B'"), avaliações dos jogadores (rating 0-10 com cores), estatísticas finais, eventos consolidados, resultado do palpite com XP (100 placar exato / 50 vencedor / 5 consolação).
+- **Lista `/jogos` reformulada:** filtros por fase (todos/ao-vivo/próximos/encerrados) + filtros por grupo (A-L), `matchCard` clicável → página da partida.
+- **Cache adaptativo** em `sessionStorage`: 30s LIVE, 5min pré-jogo, 24h encerrado.
+- **Polling inteligente:** 30s durante LIVE, sem polling em outros estados.
+- **Slug de partidas no sitemap:** 28 URLs novas (`/partida/...`) totalizando 86 URLs indexáveis.
+- **JSON-LD `SportsEvent`** por partida com `startDate`, `homeTeam`, `awayTeam`, `location`.
+- Novo `js/util/match.js`, `js/api/match.js`, `js/components/match/matchHero.js`, `js/components/match/matchSections.js`, `js/pages/partida.js`.
+- Helper `getMatchSlug(fixture)` em `data.js`.
+
 ### Alterado (BREAKING — URLs agora são pt-BR e semânticas)
 
 - **Rotas migradas de inglês+ID para pt-BR+slug** para SEO e legibilidade:
