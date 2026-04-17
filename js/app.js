@@ -24,6 +24,8 @@ class App {
 
   init() {
     this.mountShell();
+    this.setupRoutes();
+    this.bindInstallBanner();
 
     if (!this.state.user.onboarded) {
       mountWelcome(this.state, () => this.startApp());
@@ -64,9 +66,6 @@ class App {
     }
 
     setupInstallPrompt(this.state.settings.installDismissed);
-
-    this.setupRoutes();
-    this.bindInstallBanner();
 
     this.countdownInterval = setInterval(() => updateCountdown(), 1000);
 

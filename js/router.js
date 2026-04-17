@@ -9,7 +9,7 @@ export class Router {
     this.currentParams = [];
     this.onNavigate = null;
     this.basePath = basePath.replace(/\/$/, '');
-    this.defaultRoute = 'home';
+    this.defaultRoute = '';
     this.started = false;
 
     window.addEventListener('popstate', () => this._handleRoute());
@@ -28,7 +28,7 @@ export class Router {
     this._handleRoute();
   }
 
-  start(defaultRoute = 'home') {
+  start(defaultRoute = 'inicio') {
     this.defaultRoute = defaultRoute;
     this.started = true;
 

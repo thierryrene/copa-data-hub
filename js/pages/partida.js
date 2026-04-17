@@ -224,8 +224,8 @@ async function loadLiveOrFinished(fixture, home, away, phase) {
   }
 }
 
-function bindEvents(state, { router }) {
-  const slug = window.location.pathname.split('/').pop();
+function bindEvents(state, { router, params }) {
+  const slug = (params?.[0] || '').toLowerCase();
   const fixture = findFixtureBySlug(FIXTURES, slug);
 
   if (!fixture) {

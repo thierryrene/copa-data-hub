@@ -9,6 +9,12 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ## [Não-publicado]
 
+### Corrigido (rotas em F5)
+
+- **Race condition no bootstrap:** `setupRoutes()` agora é chamado em `init()` antes da decisão de onboarding, garantindo que handlers estejam registrados antes de qualquer possível disparo de `_handleRoute`.
+- **Default route inconsistente:** `Router.defaultRoute` não é mais `'home'` hardcoded (rota que não existe após migração pt-BR). Agora inicia vazio e é definido em `router.start('inicio')`.
+- **`partida.js` ignorava params do contrato:** usava `window.location.pathname.split('/').pop()` que retorna valor URL-encoded. Agora usa `params` do router (já decodificado), alinhado ao padrão das outras páginas.
+
 ### Adicionado (Match Center 2.0 — página da partida)
 
 - **Nova rota `/partida/:slug`** com slug semântico (ex: `/partida/brasil-vs-franca-2026-06-20`).
