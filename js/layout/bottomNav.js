@@ -30,14 +30,17 @@ const NAV_ITEMS = [
 ];
 
 export function renderBottomNav(activeRoute = 'inicio') {
-  const items = NAV_ITEMS.map((item) => `
-    <a class="nav-item ${item.route === activeRoute ? 'active' : ''}"
-       data-route="${item.route}" data-route-link href="/${item.route}"
-       id="nav-${item.route}" aria-label="${item.label}">
-      ${item.svg}
-      <span>${item.label}</span>
-    </a>
-  `).join('');
+  const items = NAV_ITEMS.map((item) => {
+    const href = item.route === 'inicio' ? '/' : `/${item.route}`;
+    return `
+      <a class="nav-item ${item.route === activeRoute ? 'active' : ''}"
+         data-route="${item.route}" data-route-link href="${href}"
+         id="nav-${item.route}" aria-label="${item.label}">
+        ${item.svg}
+        <span>${item.label}</span>
+      </a>
+    `;
+  }).join('');
 
   return `<nav class="bottom-nav" aria-label="Navegação principal">${items}</nav>`;
 }

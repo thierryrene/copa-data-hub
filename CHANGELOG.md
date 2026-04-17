@@ -9,6 +9,14 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ## [Não-publicado]
 
+### Alterado (home canônica em `/`)
+
+- Home do site agora é servida em `/` (não mais `/inicio`) como URL canônica.
+- Router detecta `/inicio` e automaticamente redireciona para `/` via `replaceState` (evita conteúdo duplicado no SEO).
+- `_buildPath('inicio', [])` gera `/` em vez de `/inicio` — navegações internas para home produzem URL limpa.
+- `bottomNav` usa `href="/"` no item Início.
+- Sitemap atualizado (86 URLs, começando por `/`).
+
 ### Corrigido (rotas em F5)
 
 - **Race condition no bootstrap:** `setupRoutes()` agora é chamado em `init()` antes da decisão de onboarding, garantindo que handlers estejam registrados antes de qualquer possível disparo de `_handleRoute`.

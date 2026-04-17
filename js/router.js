@@ -39,7 +39,12 @@ export class Router {
     }
 
     const { name } = this._parseLocation();
-    if (!name || !this.routes[name]) {
+    // Path vazio ("/") → renderiza default sem alterar URL
+    if (!name) {
+      this._handleRoute();
+      return;
+    }
+    if (!this.routes[name]) {
       this.navigate(defaultRoute, { replace: true });
       return;
     }
@@ -55,7 +60,18 @@ export class Router {
   }
 
   _handleRoute() {
-    const { name, params } = this._parseLocation();
+    const parsed = this._parseLocation();
+    let { name, params } = parsed;
+
+    // URL canônica "/" para a home: redireciona /inicio → / (evita conteúdo duplicado)
+    if (name === this.defaultRoute && (!params || !params.length) && this.started) {
+      window.history.replaceState({ route: name, params: [] }, '', `${this.basePath}/`);
+    }
+
+    // Path "/" → renderiza rota default sem alterar a URL
+    if (!name && this.defaultRoute && this.routes[this.defaultRoute]) {
+      name = this.defaultRoute;
+    }
 
     if (!name || !this.routes[name]) {
       if (this.started) {
@@ -103,6 +119,10 @@ export class Router {
   }
 
   _buildPath(name, params) {
+    // Rota default sem params vira "/" — home canônica em / sem /inicio
+    if (name === this.defaultRoute && (!params || !params.length)) {
+      return `${this.basePath}/`;
+    }
     const segments = [name, ...params].filter(Boolean).map((seg) => encodeURIComponent(String(seg)));
     return `${this.basePath}/${segments.join(ROUTE_SEPARATOR)}`;
   }

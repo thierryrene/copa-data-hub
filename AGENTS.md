@@ -99,7 +99,7 @@ word-cup-app/
 
 | URL | Página |
 |---|---|
-| `/inicio` | Home + countdown |
+| `/` | Home + countdown (URL canônica da home) |
 | `/jogos` | Match Center (lista filtrável por fase/grupo) |
 | `/partida/:slug` | Página da partida (pré/ao-vivo/pós) — slug `time1-vs-time2-data` |
 | `/grupos` | Fase de grupos |

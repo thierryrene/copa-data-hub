@@ -101,7 +101,7 @@ function bindEvents(_state, { router }) {
   setSEO({
     title: 'Dados, Previsões e Bolão do Mundial',
     description: 'Acompanhe o Mundial 2026 com dados ao vivo, previsões de IA, simulador de chaveamento e bolão gamificado. 48 seleções, 104 jogos, 16 estádios.',
-    canonical: '/inicio',
+    canonical: '/',
     keywords: 'mundial 2026, copa do mundo, futebol, bolão, previsões, 48 seleções, EUA, Canadá, México',
     jsonLd: schemaWebApp()
   });
