@@ -5,24 +5,25 @@ import { showToast } from '../components/toast.js';
 import { getXPProgress, saveState } from '../state.js';
 import { triggerInstall } from '../pwa.js';
 import { escapeHTML } from '../util/html.js';
+import { setSEO } from '../util/seo.js';
 
 function render(state) {
   const { level, xp } = getXPProgress(state);
   const favTeam = state.user.favoriteTeam ? getTeam(state.user.favoriteTeam) : null;
 
   return `
-    <div class="section-title">${icon('settings', 20)} Configurações</div>
+    <h1 class="section-title">${icon('settings', 20)} Configurações</h1>
 
     <div class="card card--gold mb-xl">
       <div class="flex items-center gap-lg">
         ${favTeam
-          ? `<a class="settings-profile__avatar settings-profile__avatar--link" href="/team/${encodeURIComponent(favTeam.code)}" data-route-link data-team-prefetch="${favTeam.code}" aria-label="Ver detalhes de ${favTeam.name}">${favTeam.flag}</a>`
+          ? `<a class="settings-profile__avatar settings-profile__avatar--link" href="/selecoes/${favTeam.slug}" data-route-link data-team-prefetch="${favTeam.code}" aria-label="Ver detalhes de ${favTeam.name}">${favTeam.flag}</a>`
           : `<div class="settings-profile__avatar">⚽</div>`}
         <div>
           <div class="font-display font-bold" style="font-size: var(--text-lg);">${state.user.name || 'Torcedor'}</div>
           <div class="text-sm text-muted">Nível ${level} · ${xp} XP · ${state.user.streak} dias de streak</div>
           ${favTeam
-            ? `<a class="settings-profile__team-link" href="/team/${encodeURIComponent(favTeam.code)}" data-route-link data-team-prefetch="${favTeam.code}">${favTeam.flag} ${escapeHTML(favTeam.name)} →</a>`
+            ? `<a class="settings-profile__team-link" href="/selecoes/${favTeam.slug}" data-route-link data-team-prefetch="${favTeam.code}">${favTeam.flag} ${escapeHTML(favTeam.name)} →</a>`
             : ''}
         </div>
       </div>
@@ -87,6 +88,12 @@ function render(state) {
 }
 
 function bindEvents(state) {
+  setSEO({
+    title: 'Configurações',
+    description: 'Personalize seu perfil, seleção favorita, notificações e instalação do app CopaDataHub 2026.',
+    canonical: '/configuracoes'
+  });
+
   const settingInstall = document.getElementById('setting-install');
   if (settingInstall) {
     settingInstall.addEventListener('click', () => triggerInstall());

@@ -3,6 +3,7 @@ import { getTodayFixtures } from '../data.js';
 import { renderCountdown } from '../components/countdown.js';
 import { renderXPBar } from '../components/xpBar.js';
 import { renderMatchCard } from '../components/matchCard.js';
+import { setSEO, schemaWebApp } from '../util/seo.js';
 
 function render(state) {
   const fixtures = getTodayFixtures();
@@ -12,14 +13,14 @@ function render(state) {
     ${renderCountdown()}
     ${renderXPBar(state)}
 
-    <a href="/champions" style="text-decoration: none; color: inherit; display: block; margin-bottom: var(--space-xl);">
+    <a href="/campeonatos" data-route-link style="text-decoration: none; color: inherit; display: block; margin-bottom: var(--space-xl);">
       <div class="card card--interactive" style="background: linear-gradient(135deg, rgba(30,58,138,0.2), rgba(10,14,26,0.95)); border: 1px solid rgba(147,197,253,0.2);">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-md">
             <span style="font-size: 1.5rem;">⭐</span>
             <div>
-              <div class="font-display font-bold" style="color: var(--color-ucl-star, #ffd700);">UCL DataHub Ao Vivo</div>
-              <div class="text-sm text-muted">Acesso aos jogos reais (Ao Vivo) da Champions</div>
+              <div class="font-display font-bold" style="color: var(--color-ucl-star, #ffd700);">Campeonatos Ao Vivo</div>
+              <div class="text-sm text-muted">Champions League, Brasileirão, Premier League</div>
             </div>
           </div>
           ${icon('chevronRight', 20, 'text-muted')}
@@ -27,9 +28,9 @@ function render(state) {
       </div>
     </a>
 
-    <div class="section-title">
+    <h1 class="section-title">
       ${icon('calendar', 20)} Próximos Jogos
-    </div>
+    </h1>
     <div class="matches-list">${matchCards}</div>
 
     <div class="mt-xl">
@@ -53,7 +54,7 @@ function render(state) {
     <div class="mt-xl">
       <div class="section-title">${icon('trophy', 20)} Acesse as Seções</div>
       <div class="matches-list">
-        <div class="card card--interactive card--gold" data-nav="groups">
+        <div class="card card--interactive card--gold" data-nav="grupos">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-md">
               ${icon('shield', 24, 'text-gold')}
@@ -66,7 +67,7 @@ function render(state) {
           </div>
         </div>
 
-        <div class="card card--interactive" data-nav="matches">
+        <div class="card card--interactive" data-nav="jogos">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-md">
               ${icon('target', 24, 'text-blue')}
@@ -97,6 +98,14 @@ function render(state) {
 }
 
 function bindEvents(_state, { router }) {
+  setSEO({
+    title: 'Dados, Previsões e Bolão do Mundial',
+    description: 'Acompanhe o Mundial 2026 com dados ao vivo, previsões de IA, simulador de chaveamento e bolão gamificado. 48 seleções, 104 jogos, 16 estádios.',
+    canonical: '/inicio',
+    keywords: 'mundial 2026, copa do mundo, futebol, bolão, previsões, 48 seleções, EUA, Canadá, México',
+    jsonLd: schemaWebApp()
+  });
+
   document.querySelectorAll('[data-nav]').forEach(el => {
     el.addEventListener('click', () => router.navigate(el.dataset.nav));
   });

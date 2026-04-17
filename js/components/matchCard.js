@@ -35,12 +35,12 @@ export function renderMatchCard(fixture) {
         ${statusHTML}
       </div>
       <div class="match-card__teams">
-        <a class="match-card__team match-card__team--link" href="/team/${encodeURIComponent(home.code)}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}">
+        <a class="match-card__team match-card__team--link" href="/selecoes/${home.slug}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}">
           <span class="match-card__flag">${home.flag}</span>
           <span class="match-card__name">${home.code}</span>
         </a>
         ${centerContent}
-        <a class="match-card__team match-card__team--link" href="/team/${encodeURIComponent(away.code)}" data-route-link data-team-prefetch="${away.code}" aria-label="Ver detalhes de ${away.name}">
+        <a class="match-card__team match-card__team--link" href="/selecoes/${away.slug}" data-route-link data-team-prefetch="${away.code}" aria-label="Ver detalhes de ${away.name}">
           <span class="match-card__flag">${away.flag}</span>
           <span class="match-card__name">${away.code}</span>
         </a>

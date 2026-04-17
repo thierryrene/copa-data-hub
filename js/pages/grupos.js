@@ -1,6 +1,7 @@
 import { icon } from '../icons.js';
-import { GROUPS } from '../data.js';
+import { GROUPS, getTeam } from '../data.js';
 import { renderGroupTable } from '../components/groupTable.js';
+import { setSEO } from '../util/seo.js';
 
 function render(_state) {
   const groupEntries = Object.entries(GROUPS);
@@ -19,7 +20,7 @@ function render(_state) {
   )).join('');
 
   return `
-    <div class="section-title">${icon('shield', 20)} Fase de Grupos</div>
+    <h1 class="section-title">${icon('shield', 20)} Fase de Grupos</h1>
     <p class="section-subtitle">12 grupos · Os 2 primeiros classificam-se diretamente + 8 melhores terceiros</p>
 
     ${filterHTML}
@@ -33,6 +34,13 @@ function render(_state) {
 }
 
 function bindEvents(_state, { router }) {
+  setSEO({
+    title: 'Grupos e Classificação do Mundial 2026',
+    description: 'Todos os 12 grupos do Mundial 2026 com as 48 seleções. Classificação, adversários e links para dossiê completo de cada seleção.',
+    canonical: '/grupos',
+    keywords: 'grupos mundial 2026, fase de grupos, classificação, 48 seleções'
+  });
+
   const filters = document.getElementById('group-filters');
   if (filters) {
     filters.addEventListener('click', (e) => {
@@ -50,7 +58,8 @@ function bindEvents(_state, { router }) {
   document.querySelectorAll('[data-team-detail]').forEach((trigger) => {
     trigger.addEventListener('click', () => {
       const code = trigger.dataset.teamDetail;
-      if (code) router.navigate('team', { params: [code] });
+      const team = getTeam(code);
+      if (team?.slug) router.navigate('selecoes', { params: [team.slug] });
     });
   });
 }

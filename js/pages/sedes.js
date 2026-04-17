@@ -1,6 +1,7 @@
 import { icon } from '../icons.js';
 import { STADIUMS } from '../data.js';
 import { renderStadiumCard } from '../components/stadiumCard.js';
+import { setSEO } from '../util/seo.js';
 
 function render(_state) {
   const filterHTML = `
@@ -13,7 +14,7 @@ function render(_state) {
   `;
 
   return `
-    <div class="section-title">${icon('mapPin', 20)} Sedes & Estádios</div>
+    <h1 class="section-title">${icon('mapPin', 20)} Sedes & Estádios</h1>
     <p class="section-subtitle">16 estádios em 3 países · 4 fusos horários</p>
 
     <div class="fanzone-stats mb-xl">
@@ -40,6 +41,13 @@ function render(_state) {
 }
 
 function bindEvents() {
+  setSEO({
+    title: 'Sedes e Estádios do Mundial 2026',
+    description: 'Os 16 estádios que sediam o Mundial 2026 em EUA, Canadá e México. Capacidade, cidades e fusos horários.',
+    canonical: '/sedes',
+    keywords: 'estádios mundial 2026, sedes copa 2026, EUA, Canadá, México'
+  });
+
   const filters = document.getElementById('stadium-filters');
   if (!filters) return;
   filters.addEventListener('click', (e) => {

@@ -1,4 +1,6 @@
 import { escapeHTML } from '../util/html.js';
+import { slugify } from '../util/slug.js';
+import { registerPlayerSlug } from '../api/player.js';
 
 function shortName(fullName) {
   if (!fullName) return '?';
@@ -9,8 +11,10 @@ function shortName(fullName) {
 
 function renderFieldPlayer(p, isGk) {
   const cls = isGk ? 'lineup-field__player lineup-field__player--gk' : 'lineup-field__player';
-  const href = p.id ? `/player/${encodeURIComponent(p.id)}` : '#';
-  const photoHTML = p.photo ? `<img class="lineup-field__photo" src="${escapeHTML(p.photo)}" alt="" loading="lazy" onerror="this.style.display='none'">` : '';
+  const slug = p.name ? slugify(p.name) : '';
+  const href = (p.id && slug) ? `/jogadores/${slug}` : '#';
+  if (p.id && slug) registerPlayerSlug(slug, p.id);
+  const photoHTML = p.photo ? `<img class="lineup-field__photo" src="${escapeHTML(p.photo)}" alt="${escapeHTML(p.name)}" loading="lazy" onerror="this.style.display='none'">` : '';
   return `
     <a class="${cls}" href="${href}" ${p.id ? 'data-route-link' : ''} title="${escapeHTML(p.name)}" aria-label="Ver detalhes de ${escapeHTML(p.name)}">
       ${photoHTML}

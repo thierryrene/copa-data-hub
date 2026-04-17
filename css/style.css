@@ -2912,3 +2912,402 @@ a.lineup-field__player:hover .lineup-field__name {
 .player-stats--skeleton .player-stats__grid {
   min-height: 80px;
 }
+
+
+/* ============================================================
+   Leagues Hub + Individual League Page
+   ============================================================ */
+
+.leagues-hub {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.league-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--league-color, #1a237e) 20%, transparent), transparent 60%),
+    var(--gradient-card);
+  border: 1px solid var(--color-bg-glass-border);
+  color: inherit;
+  text-decoration: none;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.league-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--league-accent, var(--color-gold));
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+
+.league-card__emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+}
+
+.league-card__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.league-card__name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-lg);
+  color: var(--color-text-primary);
+}
+
+.league-card__meta {
+  font-size: var(--text-xs);
+  color: var(--league-accent, var(--color-gold));
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.league-card__desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.league-card__arrow {
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+}
+
+
+/* ── League Hero ── */
+
+.league-hero {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-lg);
+  align-items: center;
+  padding: var(--space-xl);
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--league-color, #1a237e) 40%, transparent), transparent 70%),
+    var(--gradient-card);
+  border: 1px solid var(--color-bg-glass-border);
+  margin-bottom: var(--space-lg);
+}
+
+.league-hero__emoji {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.league-hero__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.league-hero__kicker {
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--league-accent, var(--color-gold));
+  font-weight: 700;
+}
+
+.league-hero__name {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-xl), 5vw, var(--text-3xl));
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+}
+
+.league-hero__country {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+
+/* ── League Fixtures ── */
+
+.league-fixtures {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.league-fixture {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.league-fixture--live {
+  border-color: rgba(244, 63, 94, 0.35);
+  box-shadow: 0 0 16px rgba(244, 63, 94, 0.15);
+}
+
+.league-fixture__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.league-fixture__status--live {
+  color: var(--color-rose);
+  font-weight: 700;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.league-fixture__body {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.league-fixture__team {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.league-fixture__team:last-child {
+  flex-direction: row-reverse;
+}
+
+.league-fixture__logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.league-fixture__logo-fallback {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.league-fixture__team-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.league-fixture__score,
+.league-fixture__vs {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-lg);
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+  padding: 0 var(--space-md);
+}
+
+.league-fixture__vs {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.league-fixture__score-sep {
+  color: var(--color-text-muted);
+  margin: 0 4px;
+}
+
+.league-fixture__footer {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.1);
+  padding-top: var(--space-sm);
+}
+
+
+/* ── Standings Table ── */
+
+.standings-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--color-bg-glass);
+  border: 1px solid var(--color-bg-glass-border);
+  border-radius: var(--radius-lg);
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.standings-table th,
+.standings-table td {
+  padding: var(--space-sm);
+  text-align: center;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.standings-table th {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  color: var(--color-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(245, 158, 11, 0.04);
+  position: sticky;
+  top: 0;
+}
+
+.standings-table td:nth-child(2) {
+  text-align: left;
+}
+
+.standings-table tbody tr:hover {
+  background: var(--color-bg-hover);
+}
+
+.standings-team {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.standings-team__logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.standings-team__name {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+
+/* ── Top Scorers ── */
+
+.top-scorers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.top-scorer {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-glass);
+  border: 1px solid var(--color-bg-glass-border);
+  border-radius: var(--radius-md);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.top-scorer:hover {
+  border-color: var(--color-gold);
+  background: var(--color-bg-hover);
+  text-decoration: none;
+}
+
+.top-scorer__rank {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--color-gold);
+  width: 24px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.top-scorer__photo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--color-bg-glass);
+}
+
+.top-scorer__photo-placeholder {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-bg-glass);
+  font-size: 0.875rem;
+}
+
+.top-scorer__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.top-scorer__name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-scorer__team {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.top-scorer__goals {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-base);
+  color: var(--color-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ── League tabs reuse existing .sub-tabs ── */
+
+.league-tab-content {
+  margin-top: var(--space-lg);
+}
+
+@media (min-width: 640px) {
+  .league-hero {
+    grid-template-columns: auto 1fr auto;
+  }
+}

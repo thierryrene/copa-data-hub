@@ -3,6 +3,7 @@ import { FIXTURES, TRIVIA, getTeam } from '../data.js';
 import { renderXPBar } from '../components/xpBar.js';
 import { showToast } from '../components/toast.js';
 import { getXPProgress, savePrediction, recordTrivia, addXP } from '../state.js';
+import { setSEO } from '../util/seo.js';
 
 function render(state) {
   const { level, xp } = getXPProgress(state);
@@ -44,7 +45,7 @@ function render(state) {
               <span class="text-xs text-muted">${f.date} · ${f.time}</span>
             </div>
             <div class="bolao-card__match">
-              <a class="bolao-card__team-info" href="/team/${encodeURIComponent(home.code)}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}">
+              <a class="bolao-card__team-info" href="/selecoes/${home.slug}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}">
                 <span style="font-size: 1.5rem">${home.flag}</span>
                 <span class="font-display" style="font-weight: 600; font-size: var(--text-sm)">${home.code}</span>
               </a>
@@ -57,7 +58,7 @@ function render(state) {
                      data-fixture="${f.id}" data-side="away"
                      value="${existing ? existing.awayScore : ''}"
                      placeholder="0" aria-label="Placar ${away.name}">
-              <a class="bolao-card__team-info" href="/team/${encodeURIComponent(away.code)}" data-route-link data-team-prefetch="${away.code}" aria-label="Ver detalhes de ${away.name}">
+              <a class="bolao-card__team-info" href="/selecoes/${away.slug}" data-route-link data-team-prefetch="${away.code}" aria-label="Ver detalhes de ${away.name}">
                 <span style="font-size: 1.5rem">${away.flag}</span>
                 <span class="font-display" style="font-weight: 600; font-size: var(--text-sm)">${away.code}</span>
               </a>
@@ -112,7 +113,7 @@ function render(state) {
 
           const entryTeam = entry.teamCode ? getTeam(entry.teamCode) : null;
           const teamMarkup = entryTeam
-            ? `<a class="leaderboard-item__team leaderboard-item__team--link" href="/team/${encodeURIComponent(entryTeam.code)}" data-route-link data-team-prefetch="${entryTeam.code}" aria-label="Ver detalhes de ${entryTeam.name}">${entryTeam.flag} ${entryTeam.code}</a>`
+            ? `<a class="leaderboard-item__team leaderboard-item__team--link" href="/selecoes/${entryTeam.slug}" data-route-link data-team-prefetch="${entryTeam.code}" aria-label="Ver detalhes de ${entryTeam.name}">${entryTeam.flag} ${entryTeam.code}</a>`
             : `<span class="leaderboard-item__team">⚽</span>`;
 
           return `
@@ -157,6 +158,13 @@ function render(state) {
 }
 
 function bindEvents(state, { router }) {
+  setSEO({
+    title: 'FanZone — Bolão, Trivia e Ranking do Mundial',
+    description: 'Jogue o bolão do Mundial 2026, responda perguntas de trivia e suba no ranking global. Ganhe XP e suba de nível.',
+    canonical: '/fanzone',
+    keywords: 'bolão mundial 2026, trivia futebol, ranking, gamificação'
+  });
+
   const fanzoneTabs = document.getElementById('fanzone-tabs');
   if (fanzoneTabs) {
     fanzoneTabs.addEventListener('click', (e) => {

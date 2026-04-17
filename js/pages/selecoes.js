@@ -1,5 +1,5 @@
 import { icon } from '../icons.js';
-import { getTeam, getTeamFixtures, getGroupForTeam } from '../data.js';
+import { getTeam, getTeamBySlug, getTeamFixtures, getGroupForTeam } from '../data.js';
 import { renderTeamChip } from '../components/teamChip.js';
 import { renderTeamFixtureRow } from '../components/teamFixtureRow.js';
 import { renderLineupField, renderLineupSkeleton } from '../components/lineupField.js';
@@ -10,6 +10,7 @@ import { setFavoriteTeam } from '../state.js';
 import { loadTeamDossier, getTeamDossierCached } from '../api/teamLoader.js';
 import { extractCuriosities } from '../api/wikipedia.js';
 import { fetchSquad, buildLineup } from '../api/squad.js';
+import { setSEO, schemaSportsTeam } from '../util/seo.js';
 
 function getNextMatch(teamCode, fixtures) {
   const now = Date.now();
@@ -52,20 +53,20 @@ function renderLineupSection(team, teamFixtures) {
   `;
 }
 
-function renderNotFound(rawCode) {
+function renderNotFound(rawSlug) {
   return `
     <div class="team-page__notfound">
       <div class="section-title">${icon('info', 20)} Seleção não encontrada</div>
-      <p class="section-subtitle">O código <strong>${escapeHTML(String(rawCode || '').toUpperCase())}</strong> não corresponde a uma das 48 seleções.</p>
-      <a class="btn btn--primary" href="/groups" data-route-link>${icon('shield', 16)} Voltar aos grupos</a>
+      <p class="section-subtitle">A seleção <strong>${escapeHTML(String(rawSlug || ''))}</strong> não corresponde a uma das 48 seleções.</p>
+      <a class="btn btn--primary" href="/grupos" data-route-link>${icon('shield', 16)} Voltar aos grupos</a>
     </div>
   `;
 }
 
 function render(state, params) {
-  const rawCode = (params?.[0] || '').toUpperCase();
-  const team = getTeam(rawCode);
-  if (!team) return renderNotFound(rawCode);
+  const rawSlug = (params?.[0] || '').toLowerCase();
+  const team = getTeamBySlug(rawSlug);
+  if (!team) return renderNotFound(rawSlug);
 
   const group = getGroupForTeam(team.code);
   const teamFixtures = getTeamFixtures(team.code);
@@ -269,10 +270,25 @@ function showDossierError() {
 
 function bindEvents(state, { router, params }) {
   const hero = document.querySelector('.team-page__hero');
-  if (!hero) return;
+  if (!hero) {
+    setSEO({
+      title: 'Seleção não encontrada',
+      description: 'A seleção procurada não foi encontrada no torneio.',
+      canonical: window.location.pathname
+    });
+    return;
+  }
   const teamCode = hero.dataset.teamCode;
   const team = getTeam(teamCode);
   if (!team) return;
+
+  setSEO({
+    title: `${team.name} no Mundial 2026`,
+    description: `Dossiê completo da seleção ${team.name} no Mundial 2026: escalação provável, elenco, jogos, curiosidades e estatísticas. Confederação ${team.confederation}, ranking FIFA #${team.ranking}.`,
+    canonical: `/selecoes/${team.slug}`,
+    keywords: `${team.name}, seleção ${team.name}, mundial 2026, ${team.confederation}, ${team.code}, escalação, elenco`,
+    jsonLd: schemaSportsTeam(team)
+  });
 
   const backBtn = document.getElementById('team-back-btn');
   if (backBtn) {
@@ -280,7 +296,7 @@ function bindEvents(state, { router, params }) {
       if (window.history.length > 1) {
         window.history.back();
       } else {
-        router.navigate('groups');
+        router.navigate('grupos');
       }
     });
   }
@@ -304,7 +320,7 @@ function bindEvents(state, { router, params }) {
       if (result.leveledUp) {
         setTimeout(() => showToast(`🎉 Nível ${result.newLevel} alcançado!`, 'success'), 800);
       }
-      router.navigate('team', { params: [code], replace: true });
+      router.navigate('selecoes', { params: [current.slug], replace: true });
     });
   }
 
@@ -317,7 +333,7 @@ function bindEvents(state, { router, params }) {
       const shareData = {
         title: `${current.name} no CopaDataHub 2026`,
         text: `Veja o dossiê de ${current.flag} ${current.name} no CopaDataHub 2026!`,
-        url: `${window.location.origin}/team/${encodeURIComponent(code)}`
+        url: `${window.location.origin}/selecoes/${current.slug}`
       };
       try {
         if (navigator.share) {

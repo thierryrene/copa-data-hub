@@ -1,22 +1,24 @@
 // Registro central de páginas. Cada página exporta default { render, bindEvents }.
 // app.js consome esta lista para montar as rotas sem if por nome.
 
-import home from './home.js';
-import matches from './matches.js';
-import groups from './groups.js';
+import inicio from './inicio.js';
+import jogos from './jogos.js';
+import grupos from './grupos.js';
 import fanzone from './fanzone.js';
-import stadiums from './stadiums.js';
-import settings from './settings.js';
-import team from './team.js';
-import player from './player.js';
+import sedes from './sedes.js';
+import configuracoes from './configuracoes.js';
+import selecoes from './selecoes.js';
+import jogadores from './jogadores.js';
+import campeonatos from './campeonatos.js';
 
 export const pages = {
-  home,
-  matches,
-  groups,
+  inicio,
+  jogos,
+  grupos,
   fanzone,
-  stadiums,
-  settings,
-  team,
-  player
+  sedes,
+  configuracoes,
+  selecoes,
+  jogadores,
+  campeonatos
 };

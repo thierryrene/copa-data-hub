@@ -3,11 +3,73 @@
 
 import { loadState } from '../state.js';
 import { fetchWikipediaPlayerSummary } from './wikipedia.js';
+import { slugify } from '../util/slug.js';
 
 const API_BASE = 'https://v3.football.api-sports.io';
 const CACHE_PREFIX = 'cdh_player_';
+const SLUG_PREFIX = 'cdh_player_slug_';
 const CACHE_TTL = 24 * 60 * 60 * 1000;
 const CURRENT_SEASON = 2024;
+
+// Índice slug → id mantido em sessionStorage para deep-links resolverem.
+export function registerPlayerSlug(slug, playerId) {
+  if (!slug || !playerId) return;
+  try {
+    sessionStorage.setItem(SLUG_PREFIX + slug, String(playerId));
+  } catch (_e) {}
+}
+
+function getRegisteredSlugId(slug) {
+  try {
+    const v = sessionStorage.getItem(SLUG_PREFIX + slug);
+    return v ? parseInt(v, 10) : null;
+  } catch (_e) {
+    return null;
+  }
+}
+
+export async function resolvePlayerIdBySlug(slug) {
+  if (!slug) return null;
+
+  // 1) índice direto em sessionStorage (navegação via squadList/lineup)
+  const cached = getRegisteredSlugId(slug);
+  if (cached) return cached;
+
+  // 2) busca reversa em players cacheados
+  for (let i = 0; i < sessionStorage.length; i++) {
+    const key = sessionStorage.key(i);
+    if (key && key.startsWith(CACHE_PREFIX) && !key.startsWith(SLUG_PREFIX)) {
+      try {
+        const entry = JSON.parse(sessionStorage.getItem(key));
+        if (entry?.data?.name && slugify(entry.data.name) === slug) {
+          registerPlayerSlug(slug, entry.data.id);
+          return entry.data.id;
+        }
+      } catch (_e) {}
+    }
+  }
+
+  // 3) busca na API-Football por nome (o slug vira query)
+  const apiKey = getApiKey();
+  if (!apiKey) return null;
+
+  const searchTerm = slug.replace(/-/g, ' ');
+  const url = `${API_BASE}/players?search=${encodeURIComponent(searchTerm)}&season=${CURRENT_SEASON}`;
+  try {
+    const response = await fetch(url, {
+      headers: { 'x-apisports-key': apiKey }
+    });
+    if (!response.ok) return null;
+    const data = await response.json();
+    const candidates = data?.response || [];
+    const match = candidates.find(e => slugify(e.player?.name || '') === slug) || candidates[0];
+    const id = match?.player?.id || null;
+    if (id) registerPlayerSlug(slug, id);
+    return id;
+  } catch (_e) {
+    return null;
+  }
+}
 
 function getApiKey() {
   const state = loadState();

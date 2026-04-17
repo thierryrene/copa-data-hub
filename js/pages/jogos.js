@@ -3,6 +3,7 @@ import { FIXTURES, getTeam } from '../data.js';
 import { renderMatchCard } from '../components/matchCard.js';
 import { renderStatBar } from '../components/statBar.js';
 import { renderPredictionBar } from '../components/predictionBar.js';
+import { setSEO } from '../util/seo.js';
 
 function render(_state) {
   const demoMatch = {
@@ -15,7 +16,7 @@ function render(_state) {
   };
 
   return `
-    <div class="section-title">${icon('target', 20)} Match Center</div>
+    <h1 class="section-title">${icon('target', 20)} Match Center</h1>
     <p class="section-subtitle">Acompanhe partidas ao vivo com estatísticas e previsão de IA</p>
 
     <div class="card card--gold mb-xl">
@@ -25,7 +26,7 @@ function render(_state) {
           <span class="match-card__status live">AO VIVO · ${demoMatch.clock}</span>
         </div>
         <div class="match-card__teams">
-          <a class="match-card__team match-card__team--link" href="/team/${encodeURIComponent(demoMatch.home.code)}" data-route-link data-team-prefetch="${demoMatch.home.code}" aria-label="Ver detalhes de ${demoMatch.home.name}">
+          <a class="match-card__team match-card__team--link" href="/selecoes/${demoMatch.home.slug}" data-route-link data-team-prefetch="${demoMatch.home.code}" aria-label="Ver detalhes de ${demoMatch.home.name}">
             <span class="match-card__flag">${demoMatch.home.flag}</span>
             <span class="match-card__name">${demoMatch.home.code}</span>
           </a>
@@ -34,7 +35,7 @@ function render(_state) {
             <span class="match-card__score-sep">:</span>
             <span>${demoMatch.awayScore}</span>
           </div>
-          <a class="match-card__team match-card__team--link" href="/team/${encodeURIComponent(demoMatch.away.code)}" data-route-link data-team-prefetch="${demoMatch.away.code}" aria-label="Ver detalhes de ${demoMatch.away.name}">
+          <a class="match-card__team match-card__team--link" href="/selecoes/${demoMatch.away.slug}" data-route-link data-team-prefetch="${demoMatch.away.code}" aria-label="Ver detalhes de ${demoMatch.away.name}">
             <span class="match-card__flag">${demoMatch.away.flag}</span>
             <span class="match-card__name">${demoMatch.away.code}</span>
           </a>
@@ -62,6 +63,13 @@ function render(_state) {
   `;
 }
 
-function bindEvents() {}
+function bindEvents() {
+  setSEO({
+    title: 'Match Center — Estatísticas e Previsões Ao Vivo',
+    description: 'Acompanhe partidas do Mundial 2026 ao vivo com estatísticas detalhadas (posse, xG, chutes), previsões de IA e calendário completo.',
+    canonical: '/jogos',
+    keywords: 'match center, jogos mundial 2026, estatísticas futebol, xG, previsão IA'
+  });
+}
 
 export default { render, bindEvents };

@@ -9,9 +9,49 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ## [Não-publicado]
 
-### Adicionado
+### Alterado (BREAKING — URLs agora são pt-BR e semânticas)
 
-- **Página de detalhes de jogador** (`/player/:id`) com:
+- **Rotas migradas de inglês+ID para pt-BR+slug** para SEO e legibilidade:
+  - `/home` → `/inicio`
+  - `/matches` → `/jogos`
+  - `/groups` → `/grupos`
+  - `/stadiums` → `/sedes`
+  - `/settings` → `/configuracoes`
+  - `/team/:code` → `/selecoes/:slug` (ex: `/selecoes/brasil`)
+  - `/player/:id` → `/jogadores/:slug` (ex: `/jogadores/vinicius-junior`)
+- Arquivos de páginas renomeados correspondentemente em `js/pages/`.
+- Bottom-nav, pages/index.js, app.js, e todos os ~17 links internos atualizados.
+- Link "UCL DataHub" na home substituído por "Campeonatos Ao Vivo" apontando para `/campeonatos`.
+
+### Adicionado (Campeonatos Ao Vivo)
+
+- **Hub de campeonatos** (`/campeonatos`) com 3 cards visuais (Champions League, Brasileirão, Premier League) cada um com cor/emoji/slug próprio.
+- **Páginas individuais por campeonato** (`/campeonatos/champions-league`, `/campeonatos/brasileirao`, `/campeonatos/premier-league`) com:
+  - Hero com identidade visual da liga (cor, emoji, país).
+  - 3 abas: Próximos Jogos, Classificação, Artilheiros.
+  - Dados ao vivo via API-Football (`/fixtures`, `/standings`, `/players/topscorers`).
+  - Cache `sessionStorage` com TTL 30min.
+- Novo `js/data/leagues.js` — catálogo de campeonatos indexado por slug.
+- Novo `js/api/leagues.js` — fetchs de fixtures/standings/top scorers com cache.
+- Novos componentes: `leagueCard.js`, `leagueFixtureList.js`, `standingsTable.js`, `topScorersList.js`.
+- Links para jogadores na lista de artilheiros navegam para `/jogadores/:slug`.
+
+### Adicionado (SEO)
+
+- Novo módulo `js/util/seo.js` com `setSEO({ title, description, canonical, og:*, twitter:*, jsonLd })` chamado por cada página.
+- Helpers de JSON-LD Schema.org: `SportsTeam`, `Person`, `SportsEvent`, `WebApplication`.
+- Meta tags dinâmicas por rota: title, description, keywords, canonical, Open Graph (Facebook/LinkedIn) e Twitter Card.
+- Preconnect e dns-prefetch para Google Fonts, Wikipedia e API-Football.
+- `<html lang="pt-BR">` confirmado, `<h1>` único e semântico em cada página.
+- Novo `robots.txt` permitindo indexação total.
+- Novo `sitemap.xml` gerado com 58 URLs (rotas fixas + 48 seleções + 3 campeonatos).
+- Meta `<meta name="author">` e `<meta name="robots" content="index, follow">`.
+- Slug em todas as 48 seleções (`TEAMS.BRA.slug === 'brasil'`) + helpers `getTeamBySlug`, `slugToCode`.
+- Slug computado de nome de jogador com cache inverso em `sessionStorage` (`registerPlayerSlug`, `resolvePlayerIdBySlug`) — deep-link `/jogadores/vinicius-junior` busca via API-Football se não estiver em cache.
+- Novo módulo `js/util/slug.js` (`slugify`, `deslugify`).
+- Dev-server passa a servir `.txt` e `.xml` com MIME correto.
+
+### Adicionado (Página de jogador) com:
   - Hero com foto, nome, nacionalidade, clube, posição, número, idade, dados físicos.
   - Grid de estatísticas da temporada (gols, assistências, jogos, minutos, rating, passes, dribles, chutes, desarmes, cartões, defesas para goleiros).
   - Dossiê enciclopédico da Wikipedia com busca inteligente por "futebolista" + curiosidades extraídas do texto.

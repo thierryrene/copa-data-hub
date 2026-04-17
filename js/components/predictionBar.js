@@ -5,10 +5,10 @@ export function renderPredictionBar(homePct, drawPct, awayPct, homeCode, awayCod
   const home = getTeam(homeCode);
   const away = getTeam(awayCode);
   const homeLabel = home
-    ? `<a class="prediction-bar__team" href="/team/${encodeURIComponent(home.code)}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}"><span>${home.flag}</span> ${home.code}</a>`
+    ? `<a class="prediction-bar__team" href="/selecoes/${home.slug}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}"><span>${home.flag}</span> ${home.code}</a>`
     : `<span class="prediction-bar__team">${homeCode}</span>`;
   const awayLabel = away
-    ? `<a class="prediction-bar__team" href="/team/${encodeURIComponent(away.code)}" data-route-link data-team-prefetch="${away.code}" aria-label="Ver detalhes de ${away.name}"><span>${away.flag}</span> ${away.code}</a>`
+    ? `<a class="prediction-bar__team" href="/selecoes/${away.slug}" data-route-link data-team-prefetch="${away.code}" aria-label="Ver detalhes de ${away.name}"><span>${away.flag}</span> ${away.code}</a>`
     : `<span class="prediction-bar__team">${awayCode}</span>`;
 
   return `

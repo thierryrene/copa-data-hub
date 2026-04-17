@@ -1,20 +1,21 @@
 import { icon } from '../icons.js';
 import { escapeHTML, isTrustedWikiUrl } from '../util/html.js';
+import { slugify } from '../util/slug.js';
+import { setSEO, schemaPerson } from '../util/seo.js';
 import { renderPlayerHero, renderPlayerHeroSkeleton } from '../components/playerHero.js';
 import { renderPlayerStats, renderPlayerStatsSkeleton } from '../components/playerStats.js';
 import { showToast } from '../components/toast.js';
-import { fetchPlayerDetails } from '../api/player.js';
+import { fetchPlayerDetails, resolvePlayerIdBySlug, registerPlayerSlug } from '../api/player.js';
 import { fetchWikipediaPlayerSummary, extractCuriosities } from '../api/wikipedia.js';
 
 function render(_state, params) {
-  const rawId = params?.[0] || '';
-  const playerId = parseInt(rawId, 10);
+  const rawSlug = (params?.[0] || '').toLowerCase();
 
-  if (!playerId || isNaN(playerId)) {
+  if (!rawSlug) {
     return `
       <div class="team-page__notfound">
         <div class="section-title">${icon('info', 20)} Jogador não encontrado</div>
-        <p class="section-subtitle">ID inválido. Volte para a página do time e tente novamente.</p>
+        <p class="section-subtitle">URL inválida.</p>
         <button class="btn btn--primary" id="player-back-btn" type="button">${icon('arrowLeft', 16)} Voltar</button>
       </div>
     `;
@@ -25,7 +26,7 @@ function render(_state, params) {
       ${icon('arrowLeft', 18)} <span>Voltar</span>
     </button>
 
-    <div id="player-hero-container" data-player-id="${playerId}">
+    <div id="player-hero-container" data-player-slug="${escapeHTML(rawSlug)}">
       ${renderPlayerHeroSkeleton()}
     </div>
 
@@ -67,7 +68,7 @@ function bindEvents(state, { router }) {
       if (window.history.length > 1) {
         window.history.back();
       } else {
-        router.navigate('home');
+        router.navigate('inicio');
       }
     });
   }
@@ -75,13 +76,20 @@ function bindEvents(state, { router }) {
   const heroContainer = document.getElementById('player-hero-container');
   if (!heroContainer) return;
 
-  const playerId = parseInt(heroContainer.dataset.playerId, 10);
-  if (!playerId) return;
+  const slug = heroContainer.dataset.playerSlug;
+  if (!slug) return;
 
-  loadPlayerContent(playerId, router);
+  // SEO inicial genérico até carregar dados
+  setSEO({
+    title: `Jogador — ${slug.replace(/-/g, ' ')}`,
+    description: 'Perfil, estatísticas e dossiê enciclopédico de jogador de futebol profissional.',
+    canonical: `/jogadores/${slug}`
+  });
+
+  loadPlayerContent(slug, router);
 }
 
-async function loadPlayerContent(playerId, router) {
+async function loadPlayerContent(slug, router) {
   const heroContainer = document.getElementById('player-hero-container');
   const statsContainer = document.getElementById('player-stats-container');
   const actionsEl = document.getElementById('player-actions');
@@ -92,27 +100,51 @@ async function loadPlayerContent(playerId, router) {
   let player = null;
 
   try {
-    player = await fetchPlayerDetails(playerId);
+    const playerId = await resolvePlayerIdBySlug(slug);
+    if (playerId) {
+      player = await fetchPlayerDetails(playerId);
+    }
   } catch (error) {
     console.error('Erro ao carregar dados do jogador:', error);
   }
 
-  if (heroContainer?.dataset.playerId !== String(playerId)) return;
+  if (heroContainer?.dataset.playerSlug !== slug) return;
 
   if (player) {
+    // Garante slug registrado para futuras navegações inversas
+    registerPlayerSlug(slugify(player.name), player.id);
+
     if (heroContainer) heroContainer.innerHTML = renderPlayerHero(player);
     if (statsContainer) statsContainer.innerHTML = renderPlayerStats(player);
     if (actionsEl) actionsEl.style.display = '';
     bindShareButton(player);
+
+    // SEO rico quando dados chegam
+    const description = [
+      player.position && `${player.position === 'Goalkeeper' ? 'Goleiro' : player.position === 'Defender' ? 'Defensor' : player.position === 'Midfielder' ? 'Meio-campista' : 'Atacante'}`,
+      player.currentTeam?.name && `jogador do ${player.currentTeam.name}`,
+      player.nationality && `(${player.nationality})`,
+      player.age && `${player.age} anos`
+    ].filter(Boolean).join(' · ');
+
+    setSEO({
+      title: player.name,
+      description: `${player.name}: ${description}. Estatísticas da temporada, dossiê enciclopédico e curiosidades.`,
+      canonical: `/jogadores/${slug}`,
+      image: player.photo || undefined,
+      keywords: `${player.name}, ${player.currentTeam?.name || ''}, ${player.nationality || ''}, futebolista, estatísticas`,
+      type: 'profile',
+      jsonLd: schemaPerson(player)
+    });
   } else {
     if (heroContainer) heroContainer.innerHTML = '<p class="text-sm text-muted">Não foi possível carregar os dados do jogador.</p>';
     if (statsContainer) statsContainer.innerHTML = '';
   }
 
-  loadPlayerWiki(player?.name, playerId, { wikiEl, curiositiesEl, linkEl });
+  loadPlayerWiki(player?.name, slug, { wikiEl, curiositiesEl, linkEl });
 }
 
-async function loadPlayerWiki(playerName, playerId, { wikiEl, curiositiesEl, linkEl }) {
+async function loadPlayerWiki(playerName, slug, { wikiEl, curiositiesEl, linkEl }) {
   if (!playerName) {
     if (wikiEl) wikiEl.innerHTML = '<p class="text-sm text-muted">Dossiê indisponível — nome do jogador não encontrado.</p>';
     if (curiositiesEl) curiositiesEl.innerHTML = '';
@@ -123,7 +155,7 @@ async function loadPlayerWiki(playerName, playerId, { wikiEl, curiositiesEl, lin
     const wiki = await fetchWikipediaPlayerSummary(playerName);
 
     const heroContainer = document.getElementById('player-hero-container');
-    if (heroContainer?.dataset.playerId !== String(playerId)) return;
+    if (heroContainer?.dataset.playerSlug !== slug) return;
 
     if (wiki) {
       const description = wiki.description ? escapeHTML(wiki.description) : '';
@@ -165,12 +197,13 @@ async function loadPlayerWiki(playerName, playerId, { wikiEl, curiositiesEl, lin
 function bindShareButton(player) {
   const shareBtn = document.getElementById('player-share-btn');
   if (!shareBtn || !player) return;
+  const slug = slugify(player.name);
 
   shareBtn.addEventListener('click', async () => {
     const shareData = {
       title: `${player.name} no CopaDataHub 2026`,
       text: `Veja o perfil de ${player.name} no CopaDataHub 2026!`,
-      url: `${window.location.origin}/player/${encodeURIComponent(player.id)}`
+      url: `${window.location.origin}/jogadores/${slug}`
     };
     try {
       if (navigator.share) {

@@ -46,7 +46,7 @@ class App {
         <div class="page active" id="page-container"></div>
       </main>
       ${renderInstallBanner()}
-      ${renderBottomNav('home')}
+      ${renderBottomNav('inicio')}
     `;
   }
 
@@ -70,7 +70,7 @@ class App {
 
     this.countdownInterval = setInterval(() => updateCountdown(), 1000);
 
-    this.router.start('home');
+    this.router.start('inicio');
 
     if (this.state.user.streak > 1) {
       setTimeout(() => {

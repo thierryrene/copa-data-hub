@@ -1,6 +1,8 @@
 // CopaDataHub 2026 — Tournament Data Module
 // All 48 teams, 12 groups, 16 stadiums, and fixture schedule
 
+import { slugify } from './util/slug.js';
+
 export const TOURNAMENT = {
   name: "Campeonato Mundial de Seleções 2026",
   startDate: "2026-06-11",
@@ -68,6 +70,13 @@ export const TEAMS = {
   NZL: { name: "Nova Zelândia", flag: "🇳🇿", code: "NZL", confederation: "OFC", ranking: 47 },
   HON: { name: "Honduras", flag: "🇭🇳", code: "HON", confederation: "CONCACAF", ranking: 48 }
 };
+
+// Popular slug em cada seleção + índice reverso slug → code
+const SLUG_TO_CODE = {};
+for (const [code, team] of Object.entries(TEAMS)) {
+  team.slug = slugify(team.name);
+  SLUG_TO_CODE[team.slug] = code;
+}
 
 // 12 Groups of 4 teams
 export const GROUPS = {
@@ -196,6 +205,18 @@ export function getTeamFormation(code) {
  */
 export function getTeam(code) {
   return TEAMS[code] || null;
+}
+
+/**
+ * Resolve team by its URL slug (e.g. "brasil" → TEAMS.BRA).
+ */
+export function getTeamBySlug(slug) {
+  const code = SLUG_TO_CODE[slug];
+  return code ? TEAMS[code] : null;
+}
+
+export function slugToCode(slug) {
+  return SLUG_TO_CODE[slug] || null;
 }
 
 /**

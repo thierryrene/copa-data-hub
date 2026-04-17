@@ -12,3 +12,7 @@ export { renderLineupField, renderLineupSkeleton } from './lineupField.js';
 export { renderSquadList, renderSquadSkeleton } from './squadList.js';
 export { renderPlayerHero, renderPlayerHeroSkeleton } from './playerHero.js';
 export { renderPlayerStats, renderPlayerStatsSkeleton } from './playerStats.js';
+export { renderLeagueCard } from './leagueCard.js';
+export { renderLeagueFixtureList, renderLeagueFixtureSkeleton } from './leagueFixtureList.js';
+export { renderStandingsTable, renderStandingsSkeleton } from './standingsTable.js';
+export { renderTopScorersList, renderTopScorersSkeleton } from './topScorersList.js';

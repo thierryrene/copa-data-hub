@@ -38,7 +38,7 @@ export function renderTeamFixtureRow(fixture, teamCode, userPrediction) {
       </div>
       <div class="team-fixture__body">
         <span class="team-fixture__vs-label">${isHome ? 'vs' : 'em'}</span>
-        <a class="team-fixture__opponent" href="/team/${encodeURIComponent(opponent.code)}" data-route-link data-team-prefetch="${opponent.code}">
+        <a class="team-fixture__opponent" href="/selecoes/${opponent.slug}" data-route-link data-team-prefetch="${opponent.code}">
           <span class="team-fixture__flag">${opponent.flag}</span>
           <span class="team-fixture__name">${opponent.name}</span>
         </a>
