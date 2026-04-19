@@ -3306,6 +3306,36 @@ a.lineup-field__player:hover .lineup-field__name {
   margin-top: var(--space-lg);
 }
 
+.sub-tab--refresh {
+  flex: 0 0 auto;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 1rem;
+}
+
+.sub-tab--refresh:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.league-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.league-error__icon {
+  font-size: 2rem;
+}
+
+.league-error__msg {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  max-width: 28ch;
+}
+
 @media (min-width: 640px) {
   .league-hero {
     grid-template-columns: auto 1fr auto;

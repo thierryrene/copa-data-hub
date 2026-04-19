@@ -2,7 +2,7 @@ import { icon } from '../icons.js';
 import { escapeHTML } from '../util/html.js';
 import { setSEO, schemaSportsEvent } from '../util/seo.js';
 import { listLeagues, getLeague } from '../data/leagues.js';
-import { fetchLeagueFixtures, fetchLeagueStandings, fetchLeagueTopScorers } from '../api/leagues.js';
+import { fetchLeagueFixtures, fetchLeagueStandings, fetchLeagueTopScorers, ApiError } from '../api/leagues.js';
 import { renderLeagueCard } from '../components/leagueCard.js';
 import { renderLeagueFixtureList, renderLeagueFixtureSkeleton } from '../components/leagueFixtureList.js';
 import { renderStandingsTable, renderStandingsSkeleton } from '../components/standingsTable.js';
@@ -38,25 +38,31 @@ function renderNotFound(slug) {
 
 function renderLeaguePage(league) {
   const headerStyle = `--league-color: ${league.color}; --league-accent: ${league.accent};`;
+  const isFinished = league.status === 'finished';
+  const fixturesLabel = isFinished ? '📋 Últimos Jogos' : '⚽ Próximos Jogos';
+  const kickerLabel = isFinished
+    ? `Temporada ${league.season} · Encerrada`
+    : `Temporada ${league.season}/${String(league.season + 1).slice(2)}`;
 
   return `
     <button class="team-page__back" id="campeonatos-back-btn" type="button" aria-label="Voltar">
       ${icon('arrowLeft', 18)} <span>Voltar</span>
     </button>
 
-    <section class="league-hero" data-league-slug="${escapeHTML(league.slug)}" style="${headerStyle}">
+    <section class="league-hero" data-league-slug="${escapeHTML(league.slug)}" data-league-status="${league.status}" style="${headerStyle}">
       <div class="league-hero__emoji">${league.emoji}</div>
       <div class="league-hero__info">
-        <div class="league-hero__kicker">Temporada ${league.season}/${String(league.season + 1).slice(2)}</div>
+        <div class="league-hero__kicker">${kickerLabel}</div>
         <h1 class="league-hero__name">${escapeHTML(league.name)}</h1>
         <div class="league-hero__country">${league.countryFlag} ${escapeHTML(league.country)}</div>
       </div>
     </section>
 
     <div class="sub-tabs" id="league-tabs">
-      <button class="sub-tab active" data-tab="jogos">⚽ Próximos Jogos</button>
+      <button class="sub-tab active" data-tab="jogos">${fixturesLabel}</button>
       <button class="sub-tab" data-tab="classificacao">🏆 Classificação</button>
       <button class="sub-tab" data-tab="artilheiros">🥇 Artilheiros</button>
+      <button class="sub-tab sub-tab--refresh" id="league-refresh-btn" type="button" aria-label="Atualizar dados">🔄</button>
     </div>
 
     <div class="league-tab-content" id="league-tab-jogos">
@@ -84,23 +90,65 @@ function render(_state, params) {
   return renderLeaguePage(league);
 }
 
-async function loadLeagueData(league) {
+function renderApiError(err) {
+  const msg = err instanceof ApiError ? err.message : 'Erro inesperado ao carregar dados.';
+  const isNoKey = err instanceof ApiError && err.code === 'NO_KEY';
+  return `
+    <div class="league-error">
+      <span class="league-error__icon">⚠️</span>
+      <p class="league-error__msg">${escapeHTML(msg)}</p>
+      ${isNoKey ? `<a class="btn btn--primary btn--sm" href="/configuracoes" data-route-link>Ir para Configurações</a>` : ''}
+    </div>
+  `;
+}
+
+async function loadLeagueData(league, { bustCache = false } = {}) {
   const fixturesEl = document.getElementById('league-tab-jogos');
   const standingsEl = document.getElementById('league-tab-classificacao');
   const scorersEl = document.getElementById('league-tab-artilheiros');
+  const refreshBtn = document.getElementById('league-refresh-btn');
 
-  const [fixtures, standings, scorers] = await Promise.all([
-    fetchLeagueFixtures(league, { next: 10 }).catch(() => []),
-    fetchLeagueStandings(league).catch(() => []),
-    fetchLeagueTopScorers(league, { limit: 10 }).catch(() => [])
+  if (bustCache) {
+    const prefix = `cdh_league_`;
+    Object.keys(sessionStorage)
+      .filter(k => k.startsWith(prefix) && k.includes(`_${league.apiId}_`))
+      .forEach(k => sessionStorage.removeItem(k));
+  }
+
+  if (refreshBtn) refreshBtn.disabled = true;
+
+  const fixtureOptions = league.status === 'finished'
+    ? { mode: 'last', last: 10 }
+    : { mode: 'mixed', last: 5, next: 10 };
+
+  const results = await Promise.allSettled([
+    fetchLeagueFixtures(league, fixtureOptions),
+    fetchLeagueStandings(league),
+    fetchLeagueTopScorers(league, { limit: 10 })
   ]);
 
   const currentHero = document.querySelector('.league-hero');
   if (!currentHero || currentHero.dataset.leagueSlug !== league.slug) return;
 
-  if (fixturesEl) fixturesEl.innerHTML = renderLeagueFixtureList(fixtures);
-  if (standingsEl) standingsEl.innerHTML = renderStandingsTable(standings);
-  if (scorersEl) scorersEl.innerHTML = renderTopScorersList(scorers);
+  const [fixturesResult, standingsResult, scorersResult] = results;
+
+  if (fixturesEl) {
+    fixturesEl.innerHTML = fixturesResult.status === 'fulfilled'
+      ? renderLeagueFixtureList(fixturesResult.value)
+      : renderApiError(fixturesResult.reason);
+  }
+  if (standingsEl) {
+    standingsEl.innerHTML = standingsResult.status === 'fulfilled'
+      ? renderStandingsTable(standingsResult.value)
+      : renderApiError(standingsResult.reason);
+  }
+  if (scorersEl) {
+    scorersEl.innerHTML = scorersResult.status === 'fulfilled'
+      ? renderTopScorersList(scorersResult.value)
+      : renderApiError(scorersResult.reason);
+  }
+
+  if (refreshBtn) refreshBtn.disabled = false;
 }
 
 function bindEvents(_state, { router, params }) {
@@ -155,6 +203,11 @@ function bindEvents(_state, { router, params }) {
         el.style.display = el.id === `league-tab-${tab}` ? '' : 'none';
       });
     });
+  }
+
+  const refreshBtn = document.getElementById('league-refresh-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => loadLeagueData(league, { bustCache: true }));
   }
 
   loadLeagueData(league);
