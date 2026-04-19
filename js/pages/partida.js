@@ -11,9 +11,16 @@ import { renderMatchHero, tickCountdown } from '../components/match/matchHero.js
 import {
   renderH2H, renderKeyPlayers, renderTimeline,
   renderPulse, bindPulse, renderPoll, bindPolls,
-  renderLiveStats, renderRecap, renderRatings, extractRatings
+  renderLiveStats, renderRecap, renderRatings, extractRatings,
+  renderHighlightCards, renderMatchTabs, bindMatchTabs,
+  renderMatchBriefing
 } from '../components/match/matchSections.js';
+import { renderMomentumChart } from '../components/attackMomentum.js';
+import { renderShotMap } from '../components/shotMap.js';
+import { renderXgTimeline } from '../components/xgTimeline.js';
 import { savePrediction, addXP } from '../state.js';
+import { openModoJogo, closeModoJogo } from '../components/matchModoJogo.js';
+import { bindPlayerCards } from '../components/playerQuickCard.js';
 
 let pollTimer = null;
 let countdownTimer = null;
@@ -28,7 +35,7 @@ function notFound(slug) {
   `;
 }
 
-function predictionBox(state, fixture) {
+function predictionBox(state, fixture, confidence) {
   const existing = state.user.predictions.find(p => p.fixtureId === fixture.id);
   const home = getTeam(fixture.home);
   const away = getTeam(fixture.away);
@@ -37,12 +44,15 @@ function predictionBox(state, fixture) {
   if (phase === 'finished') {
     if (!existing) return '';
     const xp = predictionResultXP(existing, fixture);
+    const multiplier = existing.confidence || 1;
+    const earnedXP = Math.round(xp * multiplier);
     const labelMap = { 100: '🎯 Placar exato!', 50: '✅ Acertou o vencedor', 5: '💪 Tente na próxima' };
     return `
       <div class="card prediction-result">
         <div class="prediction-result__lbl">Seu palpite</div>
         <div class="prediction-result__score">${existing.homeScore} × ${existing.awayScore}</div>
-        <div class="prediction-result__xp">+${xp} XP · ${labelMap[xp] || '—'}</div>
+        ${existing.confidence > 1 ? `<div class="prediction-result__conf">${'⭐'.repeat(existing.confidence)} confiança</div>` : ''}
+        <div class="prediction-result__xp">+${earnedXP} XP · ${labelMap[xp] || '—'}</div>
       </div>
     `;
   }
@@ -52,10 +62,12 @@ function predictionBox(state, fixture) {
       <div class="card prediction-locked">
         <div class="text-xs text-muted">Seu palpite (jogo iniciado)</div>
         <div class="font-display font-bold">${existing.homeScore} × ${existing.awayScore}</div>
+        ${existing.confidence > 1 ? `<div class="text-xs text-muted mt-xs">${'⭐'.repeat(existing.confidence)} confiança</div>` : ''}
       </div>
     ` : '';
   }
 
+  const confValue = existing?.confidence || 1;
   return `
     <div class="card prediction-box">
       <div class="prediction-box__title">${icon('target', 16)} Seu Palpite ${existing ? '(salvo)' : '(+15 XP)'}</div>
@@ -66,9 +78,23 @@ function predictionBox(state, fixture) {
         <input type="number" min="0" max="20" id="pred-away" value="${existing?.awayScore ?? ''}" placeholder="0" aria-label="Placar ${away.name}">
         <span>${away.flag} ${away.code}</span>
       </div>
+      <div class="prediction-box__confidence">
+        <span class="prediction-box__conf-label">Confiança:</span>
+        <div class="conf-stars" id="conf-stars">
+          ${[1, 2, 3].map(n => `
+            <button class="conf-star ${n <= confValue ? 'conf-star--active' : ''}" data-conf="${n}" type="button" aria-label="${n} estrela${n > 1 ? 's' : ''} de confiança">⭐</button>
+          `).join('')}
+        </div>
+        <span class="prediction-box__conf-hint" id="conf-hint">${confXpHint(confValue)}</span>
+      </div>
       <button class="btn btn--primary btn--sm btn--full" id="pred-save">${icon('check', 16)} Salvar Palpite</button>
     </div>
   `;
+}
+
+function confXpHint(conf) {
+  const map = { 1: 'Bônus normal', 2: '1.5× XP no acerto', 3: '2× XP no acerto' };
+  return map[conf] || '';
 }
 
 function transmissaoBox(stadium) {
@@ -80,6 +106,107 @@ function transmissaoBox(stadium) {
         <div class="font-display font-bold">${escapeHTML(stadium.name)}</div>
         <div class="text-xs text-muted">${escapeHTML(stadium.city)}, ${escapeHTML(stadium.country)} · ${stadium.capacity.toLocaleString('pt-BR')} lugares</div>
       </div>
+    </div>
+  `;
+}
+
+function renderPreContent(fixture, home, away) {
+  return `
+    <div class="match-tab-panel" data-panel="overview">
+      ${renderMatchBriefing(fixture, home, away)}
+      ${renderPredictionBar(55, 25, 20, fixture.home, fixture.away)}
+      <section class="match-section">
+        <div class="section-title">${icon('eye', 18)} Olho neles</div>
+        <div class="key-grid">
+          <div>
+            <div class="key-grid__lbl">${home.flag} ${escapeHTML(home.code)}</div>
+            <div id="match-key-home"><p class="text-sm text-muted">Carregando…</p></div>
+          </div>
+          <div>
+            <div class="key-grid__lbl">${away.flag} ${escapeHTML(away.code)}</div>
+            <div id="match-key-away"><p class="text-sm text-muted">Carregando…</p></div>
+          </div>
+        </div>
+      </section>
+      <section class="match-section">
+        <div class="section-title">${icon('shield', 18)} Retrospecto</div>
+        <div id="match-h2h"><p class="text-sm text-muted">Carregando histórico…</p></div>
+      </section>
+    </div>
+  `;
+}
+
+function renderLiveContent(fixture, home, away) {
+  return `
+    <div class="match-tab-panel" data-panel="live">
+      <section class="match-section">
+        <div class="section-title">${icon('flame', 18)} Pulse da Torcida</div>
+        ${renderPulse(fixture.id)}
+      </section>
+      <section class="match-section">
+        <div class="section-title">${icon('zap', 18)} Enquete da Partida</div>
+        ${renderPoll(fixture.id, 'Quem vai marcar o próximo gol?', [home.code, away.code, 'Sem gols'])}
+      </section>
+    </div>
+    <div class="match-tab-panel" data-panel="stats" hidden>
+      <section class="match-section">
+        <div class="section-title">${icon('barChart', 18)} Estatísticas Ao Vivo</div>
+        <div id="match-live-stats"><p class="text-sm text-muted">Carregando estatísticas…</p></div>
+      </section>
+      <section class="match-section" id="match-momentum-wrap" style="display:none">
+        <div class="section-title">${icon('zap', 18)} Pressão da Partida</div>
+        <div id="match-momentum"></div>
+      </section>
+    </div>
+    <div class="match-tab-panel" data-panel="events" hidden>
+      <section class="match-section">
+        <div class="section-title">${icon('calendar', 18)} Eventos da Partida</div>
+        <div id="match-timeline"><p class="text-sm text-muted">Aguardando eventos…</p></div>
+      </section>
+    </div>
+  `;
+}
+
+function renderFinishedContent(fixture, home, away) {
+  return `
+    <div class="match-tab-panel" data-panel="recap">
+      <section class="match-section">
+        <div class="section-title">${icon('sparkles', 18)} Destaques</div>
+        <div id="match-highlights"><p class="text-sm text-muted">Carregando destaques…</p></div>
+      </section>
+      <section class="match-section">
+        <div class="section-title">${icon('award', 18)} Avaliações</div>
+        <div id="match-ratings"><p class="text-sm text-muted">Carregando avaliações…</p></div>
+      </section>
+      <section class="match-section">
+        <div class="section-title">${icon('info', 18)} Resumo</div>
+        <div id="match-recap"><p class="text-sm text-muted">Carregando resumo…</p></div>
+      </section>
+    </div>
+    <div class="match-tab-panel" data-panel="stats" hidden>
+      <section class="match-section">
+        <div class="section-title">${icon('barChart', 18)} Estatísticas Finais</div>
+        <div id="match-final-stats"></div>
+      </section>
+      <section class="match-section" id="match-momentum-wrap" style="display:none">
+        <div class="section-title">${icon('zap', 18)} Pressão da Partida</div>
+        <div id="match-momentum"></div>
+      </section>
+      <section class="match-section" id="match-xg-wrap" style="display:none">
+        <div class="section-title">${icon('target', 18)} Expected Goals</div>
+        <div id="match-xg"></div>
+      </section>
+    </div>
+    <div class="match-tab-panel" data-panel="vizual" hidden>
+      <section class="match-section">
+        <div id="match-shotmap"><p class="text-sm text-muted">Carregando mapa de chutes…</p></div>
+      </section>
+    </div>
+    <div class="match-tab-panel" data-panel="events" hidden>
+      <section class="match-section">
+        <div class="section-title">${icon('calendar', 18)} Eventos</div>
+        <div id="match-timeline"></div>
+      </section>
     </div>
   `;
 }
@@ -96,6 +223,12 @@ function render(state, params) {
   const phase = matchPhase(fixture);
   const stadium = getStadium(fixture.stadium);
 
+  const tabContent = phase === 'pre'
+    ? renderPreContent(fixture, home, away)
+    : phase === 'live'
+    ? renderLiveContent(fixture, home, away)
+    : renderFinishedContent(fixture, home, away);
+
   return `
     <button class="team-page__back" id="match-back-btn" type="button" aria-label="Voltar">
       ${icon('arrowLeft', 18)} <span>Voltar</span>
@@ -107,75 +240,9 @@ function render(state, params) {
 
       ${predictionBox(state, fixture)}
 
-      ${phase === 'pre' ? `
-        <section class="match-section">
-          <div class="section-title">${icon('zap', 18)} Previsão IA</div>
-          ${renderPredictionBar(55, 25, 20, fixture.home, fixture.away)}
-        </section>
+      ${renderMatchTabs(phase)}
 
-        <section class="match-section">
-          <div class="section-title">${icon('shield', 18)} Confronto Direto</div>
-          <div id="match-h2h"><p class="text-sm text-muted">Carregando histórico…</p></div>
-        </section>
-
-        <section class="match-section">
-          <div class="section-title">${icon('users', 18)} Jogadores em Destaque</div>
-          <div class="key-grid">
-            <div>
-              <div class="key-grid__lbl">${home.flag} ${escapeHTML(home.code)}</div>
-              <div id="match-key-home"><p class="text-sm text-muted">Carregando…</p></div>
-            </div>
-            <div>
-              <div class="key-grid__lbl">${away.flag} ${escapeHTML(away.code)}</div>
-              <div id="match-key-away"><p class="text-sm text-muted">Carregando…</p></div>
-            </div>
-          </div>
-        </section>
-      ` : ''}
-
-      ${phase === 'live' ? `
-        <section class="match-section">
-          <div class="section-title">${icon('flame', 18)} Pulse da Torcida</div>
-          ${renderPulse(fixture.id)}
-        </section>
-
-        <section class="match-section">
-          <div class="section-title">${icon('zap', 18)} Enquete da Partida</div>
-          ${renderPoll(fixture.id, 'Quem vai marcar o próximo gol?', [home.code, away.code, 'Sem gols'])}
-        </section>
-
-        <section class="match-section">
-          <div class="section-title">${icon('barChart', 18)} Estatísticas Ao Vivo</div>
-          <div id="match-live-stats"><p class="text-sm text-muted">Carregando estatísticas…</p></div>
-        </section>
-
-        <section class="match-section">
-          <div class="section-title">${icon('calendar', 18)} Eventos da Partida</div>
-          <div id="match-timeline"><p class="text-sm text-muted">Aguardando eventos…</p></div>
-        </section>
-      ` : ''}
-
-      ${phase === 'finished' ? `
-        <section class="match-section">
-          <div class="section-title">${icon('sparkles', 18)} Resumo</div>
-          <div id="match-recap"><p class="text-sm text-muted">Carregando resumo…</p></div>
-        </section>
-
-        <section class="match-section">
-          <div class="section-title">${icon('award', 18)} Avaliações</div>
-          <div id="match-ratings"><p class="text-sm text-muted">Carregando avaliações…</p></div>
-        </section>
-
-        <section class="match-section">
-          <div class="section-title">${icon('barChart', 18)} Estatísticas Finais</div>
-          <div id="match-final-stats"></div>
-        </section>
-
-        <section class="match-section">
-          <div class="section-title">${icon('calendar', 18)} Eventos</div>
-          <div id="match-timeline"></div>
-        </section>
-      ` : ''}
+      ${tabContent}
 
       <section class="match-section">
         ${transmissaoBox(stadium)}
@@ -185,7 +252,7 @@ function render(state, params) {
   `;
 }
 
-async function loadPreMatch(fixture, home, away) {
+async function loadPreMatch(fixture, home, away, loadedSquads = {}) {
   const homeApi = getTeamApiId(home.code);
   const awayApi = getTeamApiId(away.code);
 
@@ -195,13 +262,33 @@ async function loadPreMatch(fixture, home, away) {
     fetchSquad(away.code).catch(() => null)
   ]);
 
+  if (homeSquad) loadedSquads[home.code] = homeSquad;
+  if (awaySquad) loadedSquads[away.code] = awaySquad;
+
   const h2hEl = document.getElementById('match-h2h');
   if (h2hEl) h2hEl.innerHTML = renderH2H(h2h, home, away);
 
   const keyHomeEl = document.getElementById('match-key-home');
   const keyAwayEl = document.getElementById('match-key-away');
-  if (keyHomeEl) keyHomeEl.innerHTML = renderKeyPlayers((homeSquad?.players || []).slice(0, 3));
-  if (keyAwayEl) keyAwayEl.innerHTML = renderKeyPlayers((awaySquad?.players || []).slice(0, 3));
+
+  if (keyHomeEl) {
+    keyHomeEl.innerHTML = renderKeyPlayers((homeSquad?.players || []).slice(0, 3));
+    keyHomeEl.querySelectorAll('.key-player').forEach((el, i) => {
+      const p = (homeSquad?.players || [])[i];
+      const name = p?.player?.name || p?.name || '';
+      if (name) el.setAttribute('data-player-card', escapeHTML(name));
+      el.setAttribute('data-team-code', home.code);
+    });
+  }
+  if (keyAwayEl) {
+    keyAwayEl.innerHTML = renderKeyPlayers((awaySquad?.players || []).slice(0, 3));
+    keyAwayEl.querySelectorAll('.key-player').forEach((el, i) => {
+      const p = (awaySquad?.players || [])[i];
+      const name = p?.player?.name || p?.name || '';
+      if (name) el.setAttribute('data-player-card', escapeHTML(name));
+      el.setAttribute('data-team-code', away.code);
+    });
+  }
 }
 
 async function loadLiveOrFinished(fixture, home, away, phase) {
@@ -214,13 +301,47 @@ async function loadLiveOrFinished(fixture, home, away, phase) {
   if (phase === 'live') {
     const statsEl = document.getElementById('match-live-stats');
     if (statsEl) statsEl.innerHTML = renderLiveStats(data.statistics, data.home, data.away);
+
+    const momEl = document.getElementById('match-momentum');
+    const momWrap = document.getElementById('match-momentum-wrap');
+    if (momEl && data.events?.length) {
+      momEl.innerHTML = renderMomentumChart(data.events, home, away);
+      if (momWrap) momWrap.style.display = '';
+    }
   } else {
+    const highlightsEl = document.getElementById('match-highlights');
+    if (highlightsEl) {
+      highlightsEl.innerHTML = renderHighlightCards(fixture, data.events, data.statistics, data.players, home, away)
+        || '<p class="text-sm text-muted">Destaques indisponíveis.</p>';
+    }
+
     const recapEl = document.getElementById('match-recap');
     if (recapEl) recapEl.innerHTML = renderRecap(fixture, data.events, home, away);
+
     const ratingsEl = document.getElementById('match-ratings');
     if (ratingsEl) ratingsEl.innerHTML = renderRatings(extractRatings(data.players));
+
     const fStatsEl = document.getElementById('match-final-stats');
     if (fStatsEl) fStatsEl.innerHTML = renderLiveStats(data.statistics, data.home, data.away);
+
+    const momEl = document.getElementById('match-momentum');
+    const momWrap = document.getElementById('match-momentum-wrap');
+    if (momEl && data.events?.length) {
+      momEl.innerHTML = renderMomentumChart(data.events, home, away);
+      if (momWrap) momWrap.style.display = '';
+    }
+
+    const xgEl = document.getElementById('match-xg');
+    const xgWrap = document.getElementById('match-xg-wrap');
+    if (xgEl && data.events?.length) {
+      xgEl.innerHTML = renderXgTimeline(data.events, home, away);
+      if (xgWrap) xgWrap.style.display = '';
+    }
+
+    const shotEl = document.getElementById('match-shotmap');
+    if (shotEl) {
+      shotEl.innerHTML = renderShotMap(data.events, home, away, data.statistics);
+    }
   }
 }
 
@@ -229,7 +350,7 @@ function bindEvents(state, { router, params }) {
   const fixture = findFixtureBySlug(FIXTURES, slug);
 
   if (!fixture) {
-    setSEO({ title: 'Partida não encontrada', description: 'Jogo não localizado no calendário.', canonical: window.location.pathname });
+    setSEO({ title: 'Partida não encontrada', description: 'Jogo não localizado.', canonical: window.location.pathname });
     return;
   }
 
@@ -240,9 +361,9 @@ function bindEvents(state, { router, params }) {
 
   setSEO({
     title: `${home.name} vs ${away.name} — ${dateLabel}`,
-    description: `${home.name} enfrenta ${away.name} pelo Grupo ${fixture.group} do Mundial 2026 em ${dateLabel}. Acompanhe escalações, estatísticas, eventos ao vivo e palpites.`,
+    description: `${home.name} enfrenta ${away.name} pelo Grupo ${fixture.group} do Mundial 2026 em ${dateLabel}.`,
     canonical: window.location.pathname,
-    keywords: `${home.name} x ${away.name}, mundial 2026, grupo ${fixture.group}, ao vivo, escalação`,
+    keywords: `${home.name} x ${away.name}, mundial 2026, grupo ${fixture.group}`,
     type: 'article',
     jsonLd: {
       '@context': 'https://schema.org',
@@ -263,14 +384,34 @@ function bindEvents(state, { router, params }) {
     else router.navigate('jogos');
   });
 
+  // Tabs
+  bindMatchTabs();
+
+  // Confiança no palpite
+  const confStars = document.getElementById('conf-stars');
+  let selectedConf = parseInt(confStars?.querySelector('.conf-star--active')?.dataset.conf || '1');
+  if (confStars) {
+    confStars.addEventListener('click', (e) => {
+      const btn = e.target.closest('.conf-star');
+      if (!btn) return;
+      selectedConf = parseInt(btn.dataset.conf);
+      confStars.querySelectorAll('.conf-star').forEach((s, idx) => {
+        s.classList.toggle('conf-star--active', idx < selectedConf);
+      });
+      const hint = document.getElementById('conf-hint');
+      if (hint) hint.textContent = confXpHint(selectedConf);
+    });
+  }
+
   // Palpite
   const saveBtn = document.getElementById('pred-save');
   if (saveBtn) saveBtn.addEventListener('click', () => {
-    const h = parseInt(document.getElementById('pred-home').value) || 0;
-    const a = parseInt(document.getElementById('pred-away').value) || 0;
-    savePrediction(state, fixture.id, h, a);
-    const r = addXP(state, 15);
-    showToast(`⚽ Palpite salvo! +15 XP`, 'xp');
+    const h = parseInt(document.getElementById('pred-home')?.value) || 0;
+    const a = parseInt(document.getElementById('pred-away')?.value) || 0;
+    savePrediction(state, fixture.id, h, a, selectedConf);
+    const xpBase = 15;
+    const r = addXP(state, xpBase);
+    showToast(`⚽ Palpite salvo! +${xpBase} XP ${'⭐'.repeat(selectedConf)}`, 'xp');
     if (r.leveledUp) setTimeout(() => showToast(`🎉 Nível ${r.newLevel}!`, 'success'), 800);
     setTimeout(() => router.navigate('partida', { params: { slug }, replace: true }), 600);
   });
@@ -279,23 +420,36 @@ function bindEvents(state, { router, params }) {
   bindPulse();
   bindPolls();
 
-  // Countdown ticker
+  // Countdown
   if (countdownTimer) clearInterval(countdownTimer);
   if (phase === 'pre') {
     countdownTimer = setInterval(() => tickCountdown(fixture), 1000);
   }
 
+  // Modo Jogo (segunda tela ao vivo)
+  const modoJogoBtn = document.getElementById('btn-modo-jogo');
+  if (modoJogoBtn) {
+    modoJogoBtn.addEventListener('click', () => openModoJogo(fixture, home, away));
+  }
+
+  // PlayerQuickCard — delegação de cliques no .match-page
+  const matchPageEl = document.querySelector('.match-page');
+  const loadedSquads = {};
+  if (matchPageEl) bindPlayerCards(matchPageEl, loadedSquads, home, away);
+
   // Carregamento por fase
   if (phase === 'pre') {
-    loadPreMatch(fixture, home, away);
+    loadPreMatch(fixture, home, away, loadedSquads);
   } else {
     loadLiveOrFinished(fixture, home, away, phase);
-    // Polling 30s para LIVE
     if (pollTimer) clearInterval(pollTimer);
     if (phase === 'live') {
       pollTimer = setInterval(() => loadLiveOrFinished(fixture, home, away, phase), 30000);
     }
   }
+
+  // Fecha Modo Jogo ao sair da página
+  return () => closeModoJogo();
 }
 
 export default { render, bindEvents };
