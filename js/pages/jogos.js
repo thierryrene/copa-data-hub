@@ -35,7 +35,8 @@ function categorize(fixtures) {
   };
 }
 
-function render() {
+function render(state) {
+  const predictions = state?.user?.predictions || [];
   const c = categorize(FIXTURES);
 
   // Contagens por rodada e por sede para os labels dos filtros
@@ -76,14 +77,17 @@ function render() {
     </div>
 
     <div class="matches-list" id="matches-container">
-      ${FIXTURES.map(f => `
+      ${FIXTURES.map(f => {
+        const pred = predictions.find(p => p.fixtureId === f.id) || null;
+        return `
         <div class="match-wrapper"
           data-status="${matchPhase(f)}"
           data-matchday="${MATCHDAY[f.id] || 1}"
           data-sede="${STADIUM_COUNTRY[f.stadium] || ''}">
-          ${renderMatchCard(f)}
+          ${renderMatchCard(f, pred)}
         </div>
-      `).join('')}
+        `;
+      }).join('')}
     </div>
   `;
 }

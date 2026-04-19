@@ -1,7 +1,7 @@
 import { icon } from '../icons.js';
 import { getTeam, getStadium, getMatchSlug } from '../data.js';
 
-export function renderMatchCard(fixture) {
+export function renderMatchCard(fixture, prediction = null) {
   const home = getTeam(fixture.home);
   const away = getTeam(fixture.away);
   const stadium = getStadium(fixture.stadium);
@@ -48,6 +48,13 @@ export function renderMatchCard(fixture) {
           <span class="match-card__name">${away.code}</span>
         </a>
       </div>
+      ${prediction ? `
+      <div class="match-card__prediction">
+        <span class="match-card__prediction-label">Meu palpite</span>
+        <span class="match-card__prediction-score">${prediction.homeScore} × ${prediction.awayScore}</span>
+        <span class="match-card__prediction-stars">${'⭐'.repeat(prediction.confidence || 1)}</span>
+      </div>
+      ` : ''}
       <a class="match-card__footer" href="${matchHref}" data-route-link>
         ${icon('mapPin', 14)} ${stadium ? stadium.city : '—'} <span class="match-card__cta">Ver partida →</span>
       </a>

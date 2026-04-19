@@ -3,6 +3,7 @@ import { FIXTURES, TRIVIA, getTeam } from '../data.js';
 import { renderXPBar } from '../components/xpBar.js';
 import { showToast } from '../components/toast.js';
 import { getXPProgress, savePrediction, recordTrivia, addXP } from '../state.js';
+import { matchPhase, predictionResultXP } from '../util/match.js';
 import { setSEO } from '../util/seo.js';
 import { escapeHTML } from '../util/html.js';
 
@@ -132,6 +133,7 @@ function render(state) {
   const subTabsHTML = `
     <div class="sub-tabs" id="fanzone-tabs">
       <button class="sub-tab active" data-tab="bolao">⚽ Bolão</button>
+      <button class="sub-tab" data-tab="palpites">📋 Palpites</button>
       <button class="sub-tab" data-tab="trivia">🧠 Trivia</button>
       <button class="sub-tab" data-tab="desafios">🎯 Desafios</button>
       <button class="sub-tab" data-tab="ranking">🏆 Ranking</button>
@@ -139,52 +141,63 @@ function render(state) {
   `;
 
   const bolaoFixtures = FIXTURES.slice(0, 4);
+  const upcomingAll = FIXTURES.filter(f => matchPhase(f) === 'pre');
+  const pendingCount = upcomingAll.filter(f => !state.user.predictions.find(p => p.fixtureId === f.id)).length;
+
   const bolaoHTML = `
     <div id="tab-bolao" class="fanzone-tab-content">
       <div class="section-title">${icon('target', 20)} Bolão Relâmpago</div>
       <p class="section-subtitle">Dê seus palpites e ganhe XP! Cada acerto vale 50 XP.</p>
+      ${pendingCount > 0 ? `<div class="pending-alert">${icon('alertCircle', 14)} <span><strong>${pendingCount}</strong> partida${pendingCount > 1 ? 's' : ''} sem palpite</span></div>` : `<div class="pending-alert pending-alert--done">${icon('check', 14)} Todos os palpites registrados!</div>`}
+      <div class="bolao-grid">
       ${bolaoFixtures.map(f => {
         const home = getTeam(f.home);
         const away = getTeam(f.away);
         const existing = state.user.predictions.find(p => p.fixtureId === f.id);
         const confVal = existing?.confidence || 1;
         return `
-          <div class="card bolao-card mb-md">
+          <div class="card bolao-card mb-md${existing ? ' bolao-card--saved' : ''}">
             <div class="match-card__header mb-sm">
               <span class="match-card__group">Grupo ${f.group}</span>
-              <span class="text-xs text-muted">${f.date} · ${f.time}</span>
+              <div class="flex items-center gap-sm">
+                <span class="text-xs text-muted">${f.date} · ${f.time}</span>
+                ${existing ? `<span class="bolao-card__badge bolao-card__badge--saved">${icon('check', 12)} Salvo</span>` : ''}
+              </div>
             </div>
             <div class="bolao-card__match">
               <a class="bolao-card__team-info" href="/selecoes/${home.slug}" data-route-link data-team-prefetch="${home.code}" aria-label="Ver detalhes de ${home.name}">
-                <span style="font-size: 1.5rem">${home.flag}</span>
-                <span class="font-display" style="font-weight: 600; font-size: var(--text-sm)">${home.code}</span>
+                <span class="bolao-card__flag">${home.flag}</span>
+                <span class="bolao-card__code">${home.code}</span>
               </a>
-              <input type="number" class="bolao-card__input" min="0" max="20"
-                     data-fixture="${f.id}" data-side="home"
-                     value="${existing ? existing.homeScore : ''}"
-                     placeholder="0" aria-label="Placar ${home.name}">
-              <span class="bolao-card__sep">✕</span>
-              <input type="number" class="bolao-card__input" min="0" max="20"
-                     data-fixture="${f.id}" data-side="away"
-                     value="${existing ? existing.awayScore : ''}"
-                     placeholder="0" aria-label="Placar ${away.name}">
+              <div class="bolao-card__scores">
+                <input type="number" class="bolao-card__input" min="0" max="20"
+                       data-fixture="${f.id}" data-side="home"
+                       value="${existing ? existing.homeScore : ''}"
+                       placeholder="–" aria-label="Placar ${home.name}">
+                <span class="bolao-card__sep">VS</span>
+                <input type="number" class="bolao-card__input" min="0" max="20"
+                       data-fixture="${f.id}" data-side="away"
+                       value="${existing ? existing.awayScore : ''}"
+                       placeholder="–" aria-label="Placar ${away.name}">
+              </div>
               <a class="bolao-card__team-info" href="/selecoes/${away.slug}" data-route-link data-team-prefetch="${away.code}" aria-label="Ver detalhes de ${away.name}">
-                <span style="font-size: 1.5rem">${away.flag}</span>
-                <span class="font-display" style="font-weight: 600; font-size: var(--text-sm)">${away.code}</span>
+                <span class="bolao-card__flag">${away.flag}</span>
+                <span class="bolao-card__code">${away.code}</span>
               </a>
             </div>
             <div class="bolao-card__confidence">
-              <span class="text-xs text-muted">Confiança:</span>
+              <span class="bolao-card__confidence-label">Confiança</span>
               <div class="conf-stars" id="conf-${f.id}">
                 ${[1,2,3].map(n => `<button class="conf-star ${n <= confVal ? 'conf-star--active' : ''}" data-fixture="${f.id}" data-conf="${n}" type="button">⭐</button>`).join('')}
               </div>
             </div>
             <button class="btn btn--primary btn--sm btn--full mt-sm save-prediction-btn" data-fixture="${f.id}">
-              ${icon('check', 16)} Salvar Palpite
+              ${icon('check', 16)} ${existing ? 'Atualizar Palpite' : 'Salvar Palpite'}
             </button>
           </div>
         `;
       }).join('')}
+      </div>
     </div>
   `;
 
@@ -248,6 +261,75 @@ function render(state) {
     </div>
   `;
 
+  const palpitesHTML = (() => {
+    const preds = state.user.predictions;
+    if (!preds.length) return `
+      <div id="tab-palpites" class="fanzone-tab-content" style="display: none;">
+        <div class="section-title">${icon('target', 20)} Meus Palpites</div>
+        <div class="empty-state">
+          <p class="text-muted text-sm">Você ainda não deu nenhum palpite.</p>
+          <p class="text-muted text-sm">Vá ao Bolão e registre seus palpites!</p>
+        </div>
+      </div>
+    `;
+
+    const groups = { exact: [], winner: [], miss: [], pending: [] };
+    preds.forEach(pred => {
+      const fixture = FIXTURES.find(f => f.id === pred.fixtureId);
+      if (!fixture) return;
+      const xp = predictionResultXP(pred, fixture);
+      const multiplier = pred.confidence || 1;
+      const earned = Math.round(xp * multiplier);
+      if (fixture.status !== 'FT') groups.pending.push({ pred, fixture, earned });
+      else if (xp === 100)         groups.exact.push({ pred, fixture, earned });
+      else if (xp === 50)          groups.winner.push({ pred, fixture, earned });
+      else                         groups.miss.push({ pred, fixture, earned });
+    });
+
+    const renderGroup = (label, items, colorClass) => {
+      if (!items.length) return '';
+      return `
+        <div class="prediction-group">
+          <div class="prediction-group__label ${colorClass}">${label} <span class="prediction-group__count">${items.length}</span></div>
+          <div class="prediction-list">
+            ${items.map(({ pred, fixture, earned }) => {
+              const home = getTeam(fixture.home);
+              const away = getTeam(fixture.away);
+              const isFinished = fixture.status === 'FT';
+              return `
+                <div class="prediction-item">
+                  <div class="prediction-item__teams">
+                    <span class="prediction-item__flag">${home.flag}</span>
+                    <span class="prediction-item__code">${home.code}</span>
+                    <span class="prediction-item__sep">×</span>
+                    <span class="prediction-item__code">${away.code}</span>
+                    <span class="prediction-item__flag">${away.flag}</span>
+                  </div>
+                  <div class="prediction-item__bet">
+                    <span class="prediction-item__score">${pred.homeScore}–${pred.awayScore}</span>
+                    <span class="prediction-item__conf">${'⭐'.repeat(pred.confidence || 1)}</span>
+                  </div>
+                  ${isFinished ? `<div class="prediction-item__xp ${colorClass}">+${earned} XP</div>` : `<div class="prediction-item__date">${fixture.date}</div>`}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    };
+
+    return `
+      <div id="tab-palpites" class="fanzone-tab-content" style="display: none;">
+        <div class="section-title">${icon('target', 20)} Meus Palpites</div>
+        <p class="section-subtitle">${preds.length} palpite${preds.length > 1 ? 's' : ''} registrado${preds.length > 1 ? 's' : ''}</p>
+        ${renderGroup('🎯 Placar exato', groups.exact, 'text-gold')}
+        ${renderGroup('✅ Acertou vencedor', groups.winner, 'text-emerald')}
+        ${renderGroup('⏳ Aguardando', groups.pending, 'text-blue')}
+        ${renderGroup('💪 Não acertou', groups.miss, 'text-muted')}
+      </div>
+    `;
+  })();
+
   return `
     <div class="section-title">${icon('gamepad', 20)} FanZone</div>
 
@@ -269,6 +351,7 @@ function render(state) {
     ${renderXPBar(state)}
     ${subTabsHTML}
     ${bolaoHTML}
+    ${palpitesHTML}
     ${triviaHTML}
     ${desafiosHTML}
     ${rankingHTML}

@@ -215,7 +215,12 @@ function render(state) {
     .filter(f => matchPhase(f) === 'pre')
     .sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`))
     .slice(0, 4);
-  const matchCards = upcoming.map(f => renderMatchCard(f)).join('');
+  const matchCards = upcoming.map(f => {
+    const pred = state.user.predictions.find(p => p.fixtureId === f.id) || null;
+    return renderMatchCard(f, pred);
+  }).join('');
+
+  const pendingInView = upcoming.filter(f => !state.user.predictions.find(p => p.fixtureId === f.id)).length;
 
   const isTournamentStarted = Date.now() >= new Date('2026-06-11T20:00:00-04:00').getTime();
 
@@ -267,8 +272,9 @@ function render(state) {
 
     <h1 class="section-title">
       ${icon('calendar', 20)} Próximos Jogos
+      ${pendingInView > 0 ? `<span class="pending-badge">${pendingInView} sem palpite</span>` : ''}
     </h1>
-    <div class="matches-list">${matchCards || '<p class="text-muted text-sm" style="padding: var(--space-md)">Todos os jogos encerrados.</p>'}</div>
+    <div class="matches-list matches-list--grid">${matchCards || '<p class="text-muted text-sm" style="padding: var(--space-md)">Todos os jogos encerrados.</p>'}</div>
 
     <div class="mt-xl">
       <div class="section-title">${icon('trophy', 20)} Acesse as Seções</div>
