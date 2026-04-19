@@ -1,0 +1,255 @@
+{
+  "BRA": {
+    "nickname": "A Seleção / A Canarinha",
+    "founded": 1914,
+    "coach": "Dorival Júnior",
+    "worldCups": [1958, 1962, 1970, 1994, 2002],
+    "bestResult": "Campeão (5×)",
+    "continentalTitles": [
+      {
+        "competition": "Copa América",
+        "years": [1919, 1922, 1949, 1989, 1997, 1999, 2004, 2007, 2019]
+      }
+    ],
+    "topScorer": {
+      "name": "Neymar",
+      "goals": 79
+    },
+    "mostCaps": {
+      "name": "Cafu",
+      "caps": 142
+    },
+    "bio": "A Seleção Brasileira é a equipe mais bem-sucedida da história das Copas do Mundo, conhecida globalmente pelo estilo de jogo ofensivo e criativo apelidado de 'Jogo Bonito'. Única nação a participar de todas as edições do Mundial, o Brasil é uma fonte inesgotável de talentos que moldam e encantam o futebol mundial há décadas.",
+    "curiosities": [
+      {
+        "icon": "🏆",
+        "category": "Títulos",
+        "text": "O Brasil é o único país a ostentar o título de pentacampeão mundial. Além disso, é a única seleção que já conseguiu levantar a taça da Copa do Mundo em três continentes diferentes (Europa, Américas e Ásia)."
+      },
+      {
+        "icon": "⭐",
+        "category": "Estrelas",
+        "text": "Com 79 gols em jogos oficiais, Neymar superou a marca lendária de Pelé e assumiu o posto de maior artilheiro da história da Seleção nas contas da FIFA. Ele se consolidou como a principal referência técnica da equipe na última década."
+      },
+      {
+        "icon": "📅",
+        "category": "História",
+        "text": "A traumática derrota na final da Copa do Mundo de 1950 no Maracanã, conhecida como 'Maracanazo', motivou a mudança da antiga camisa branca para o icônico uniforme amarelo. A nova cor estreou em 1954 e tornou-se um símbolo global."
+      },
+      {
+        "icon": "🎯",
+        "category": "Recordes",
+        "text": "Pelé continua sendo o único jogador na história do futebol a vencer três Copas do Mundo como atleta (1958, 1962 e 1970). É um recorde absoluto que permanece inquebrável desde o século passado."
+      },
+      {
+        "icon": "🌎",
+        "category": "Curiosidade",
+        "text": "A mística da camisa 10 brasileira começou quase por acaso na Copa de 1958, quando os números foram enviados sem critério pela federação à FIFA. O jovem Pelé acabou recebendo o número 10, que desde então virou sinônimo do craque do time."
+      }
+    ]
+  },
+  "ARG": {
+    "nickname": "La Albiceleste",
+    "founded": 1893,
+    "coach": "Lionel Scaloni",
+    "worldCups": [1978, 1986, 2022],
+    "bestResult": "Campeão (3×)",
+    "continentalTitles": [
+      {
+        "competition": "Copa América",
+        "years": [1921, 1925, 1927, 1929, 1937, 1941, 1945, 1946, 1947, 1955, 1957, 1959, 1991, 1993, 2021, 2024]
+      }
+    ],
+    "topScorer": {
+      "name": "Lionel Messi",
+      "goals": 112
+    },
+    "mostCaps": {
+      "name": "Lionel Messi",
+      "caps": 191
+    },
+    "bio": "A Argentina é uma superpotência do futebol mundial, caracterizada por sua paixão intensa, garra competitiva inigualável e pela produção de alguns dos maiores jogadores da história. Atual campeã mundial e bicampeã continental, La Albiceleste vive uma de suas eras mais vitoriosas e dominantes no cenário internacional.",
+    "curiosities": [
+      {
+        "icon": "🏆",
+        "category": "Títulos",
+        "text": "Ao conquistar o título em 2024, a Argentina isolou-se como a maior vencedora da história da Copa América, superando o Uruguai com incríveis 16 taças continentais conquistadas."
+      },
+      {
+        "icon": "⭐",
+        "category": "Estrelas",
+        "text": "Lionel Messi é a alma da seleção e detentor de praticamente todos os seus recordes individuais. O camisa 10 lidera de forma isolada as estatísticas de gols marcados, assistências e partidas disputadas pela Argentina."
+      },
+      {
+        "icon": "📅",
+        "category": "História",
+        "text": "O épico jogo contra a Inglaterra na Copa de 1986 eternizou Diego Maradona por dois momentos opostos e inesquecíveis: o polêmico gol de mão, a 'Mão de Deus', e o deslumbrante 'Gol do Século', no qual driblou meia equipe adversária."
+      },
+      {
+        "icon": "🎯",
+        "category": "Recordes",
+        "text": "Sob o comando de Lionel Scaloni, a Argentina estabeleceu um impressionante recorde nacional ao permanecer 36 jogos consecutivos invicta entre 2019 e 2022. A equipe parou a apenas um jogo do recorde mundial absoluto."
+      },
+      {
+        "icon": "🌎",
+        "category": "Curiosidade",
+        "text": "Uma das maiores superstições do futebol moderno ocorreu antes da final da Copa de 2022, quando milhares de fãs argentinos adotaram a música 'Muchachos' como um hino não-oficial que, segundo eles, ajudou a impulsionar a vitória da equipe."
+      }
+    ]
+  },
+  "FRA": {
+    "nickname": "Les Bleus",
+    "founded": 1919,
+    "coach": "Didier Deschamps",
+    "worldCups": [1998, 2018],
+    "bestResult": "Campeão (2×)",
+    "continentalTitles": [
+      {
+        "competition": "UEFA Eurocopa",
+        "years": [1984, 2000]
+      },
+      {
+        "competition": "UEFA Nations League",
+        "years": [2021]
+      }
+    ],
+    "topScorer": {
+      "name": "Olivier Giroud",
+      "goals": 57
+    },
+    "mostCaps": {
+      "name": "Hugo Lloris",
+      "caps": 145
+    },
+    "bio": "A França firmou-se como a principal potência do futebol europeu do século XXI, muito impulsionada pelo seu excepcional sistema de formação de atletas em Clairefontaine. Mesclando força física imponente, rigor tático e explosão técnica, Les Bleus alcançaram quatro finais de Copa do Mundo nos últimos trinta anos.",
+    "curiosities": [
+      {
+        "icon": "🏆",
+        "category": "Títulos",
+        "text": "A França foi a primeira seleção nacional a conseguir conquistar todos os torneios masculinos organizados pela FIFA e pela UEFA, fechando o ciclo com o título da Liga das Nações em 2021."
+      },
+      {
+        "icon": "⭐",
+        "category": "Estrelas",
+        "text": "Kylian Mbappé fez história ao marcar um hat-trick na final da Copa do Mundo de 2022, igualando um feito que não ocorria desde 1966. Ele é o grande rosto e líder da atual e fortíssima geração francesa."
+      },
+      {
+        "icon": "📅",
+        "category": "História",
+        "text": "A histórica conquista da Copa do Mundo de 1998, sediada em casa, popularizou o lema 'Black, Blanc, Beur' (Negro, Branco, Árabe). A expressão tornou-se um símbolo da força multicultural na formação da equipe moderna."
+      },
+      {
+        "icon": "🎯",
+        "category": "Recordes",
+        "text": "Didier Deschamps é uma das únicas três pessoas na história a vencer a Copa do Mundo tanto como capitão da equipe (1998) quanto como treinador (2018), juntando-se aos lendários Zagallo e Beckenbauer."
+      },
+      {
+        "icon": "🌎",
+        "category": "Curiosidade",
+        "text": "Existe um galo desenhado no escudo francês porque a palavra latina para Gália (antiga região da França) é 'Gallus', que também significa 'galo'. O animal virou o mascote e símbolo oficial da equipe e dos torcedores."
+      }
+    ]
+  },
+  "GER": {
+    "nickname": "Die Mannschaft",
+    "founded": 1900,
+    "coach": "Julian Nagelsmann",
+    "worldCups": [1954, 1974, 1990, 2014],
+    "bestResult": "Campeão (4×)",
+    "continentalTitles": [
+      {
+        "competition": "UEFA Eurocopa",
+        "years": [1972, 1980, 1996]
+      }
+    ],
+    "topScorer": {
+      "name": "Miroslav Klose",
+      "goals": 71
+    },
+    "mostCaps": {
+      "name": "Lothar Matthäus",
+      "caps": 150
+    },
+    "bio": "A Alemanha é sinônimo mundial de eficiência, organização tática e mentalidade vencedora inabalável. Historicamente conhecida por nunca desistir de uma partida até o apito final, a seleção tetracampeã mundial passa por um processo de renovação para recuperar sua supremacia europeia com base em jovens talentos dinâmicos.",
+    "curiosities": [
+      {
+        "icon": "🏆",
+        "category": "Títulos",
+        "text": "A Alemanha figura como a seleção que mais vezes disputou a final da Copa do Mundo na história (oito vezes no total), tendo convertido metade dessas grandes decisões no título mundial supremo."
+      },
+      {
+        "icon": "⭐",
+        "category": "Estrelas",
+        "text": "Os jovens talentos Jamal Musiala e Florian Wirtz, apelidados carinhosamente pela torcida de 'Wusiala', representam a criativa nova geração de meias que lideram as esperanças ofensivas da equipe alemã."
+      },
+      {
+        "icon": "📅",
+        "category": "História",
+        "text": "O 'Milagre de Berna' em 1954, quando a Alemanha Ocidental derrotou a invencível e favorita seleção da Hungria na final da Copa, é considerado o milagre esportivo que devolveu a autoestima ao povo alemão após a guerra."
+      },
+      {
+        "icon": "🎯",
+        "category": "Recordes",
+        "text": "O ex-atacante alemão Miroslav Klose é, de forma isolada, o maior artilheiro da história das Copas do Mundo da FIFA. Ele marcou 16 gols distribuídos ao longo de quatro edições do torneio."
+      },
+      {
+        "icon": "🌎",
+        "category": "Curiosidade",
+        "text": "Curiosamente, o branco adotado no uniforme titular alemão não tem relação com as cores da bandeira do país (preto, vermelho e amarelo), sendo na verdade uma homenagem secular às cores originais do Reino da Prússia."
+      }
+    ]
+  },
+  "ESP": {
+    "nickname": "La Roja",
+    "founded": 1909,
+    "coach": "Luis de la Fuente",
+    "worldCups": [2010],
+    "bestResult": "Campeão (1×)",
+    "continentalTitles": [
+      {
+        "competition": "UEFA Eurocopa",
+        "years": [1964, 2008, 2012, 2024]
+      },
+      {
+        "competition": "UEFA Nations League",
+        "years": [2023]
+      }
+    ],
+    "topScorer": {
+      "name": "David Villa",
+      "goals": 59
+    },
+    "mostCaps": {
+      "name": "Sergio Ramos",
+      "caps": 180
+    },
+    "bio": "A Espanha revolucionou para sempre o futebol moderno com o seu estilo focado na intensa posse de bola, troca de passes curtos e movimentação constante. Tendo dominado recentemente os torneios continentais com a Euro 2024 e a Liga das Nações, La Roja prova a força contínua de sua aclamada escola de desenvolvimento técnico.",
+    "curiosities": [
+      {
+        "icon": "🏆",
+        "category": "Títulos",
+        "text": "Ao vencer a Eurocopa de 2024 com uma campanha espetacular, a Espanha isolou-se como a maior vencedora isolada da história do torneio de seleções da UEFA, acumulando quatro conquistas no total."
+      },
+      {
+        "icon": "⭐",
+        "category": "Estrelas",
+        "text": "O atacante Lamine Yamal espantou o mundo na Euro 2024 ao quebrar múltiplos recordes de precocidade. Ele se tornou o jogador mais jovem a dar assistência, marcar gol e vencer a final da competição com apenas 17 anos recém-completados."
+      },
+      {
+        "icon": "📅",
+        "category": "História",
+        "text": "Entre os anos de 2008 e 2012, a seleção espanhola viveu uma dinastia perfeita e inédita no futebol global. A equipe conquistou de forma consecutiva a Eurocopa de 2008, a Copa do Mundo de 2010 e novamente a Euro de 2012."
+      },
+      {
+        "icon": "🎯",
+        "category": "Recordes",
+        "text": "O aguerrido zagueiro Sergio Ramos possui um recorde absoluto de 180 partidas oficiais disputadas vestindo a camisa de La Roja. Esse número expressivo o coloca na prateleira mais alta dos atletas europeus com mais jogos internacionais."
+      },
+      {
+        "icon": "🌎",
+        "category": "Curiosidade",
+        "text": "O inesquecível gol do título mundial de 2010, marcado pelo craque Andrés Iniesta na prorrogação contra a Holanda, foi celebrado com uma camisa branca que homenageava Dani Jarque, seu amigo e ex-jogador falecido tragicamente um ano antes."
+      }
+    ]
+  }
+}

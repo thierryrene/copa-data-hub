@@ -1,0 +1,2519 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-04-19",
+  "source": "Curadoria manual — dados históricos verificados. Técnicos referentes à data de geração.",
+  "teams": {
+    "ARG": {
+      "nickname": "La Albiceleste",
+      "founded": 1893,
+      "coach": "Lionel Scaloni",
+      "worldCups": [
+        1978,
+        1986,
+        2022
+      ],
+      "bestResult": "Campeão (3×)",
+      "continentalTitles": [
+        {
+          "competition": "Copa América",
+          "years": [
+            1921,
+            1925,
+            1927,
+            1929,
+            1937,
+            1941,
+            1945,
+            1946,
+            1947,
+            1955,
+            1957,
+            1959,
+            1991,
+            1993,
+            2021,
+            2024
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Lionel Messi",
+        "goals": 112
+      },
+      "mostCaps": {
+        "name": "Lionel Messi",
+        "caps": 191
+      },
+      "bio": "A Argentina é uma superpotência do futebol mundial, caracterizada por sua paixão intensa, garra competitiva inigualável e pela produção de alguns dos maiores jogadores da história. Atual campeã mundial e maior vencedora da Copa América com 16 títulos, La Albiceleste vive uma de suas eras mais vitoriosas, liderada por Lionel Messi.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Argentina conquistou a Copa do Mundo em três ocasiões: 1978, 1986 e 2022. Além disso, é a maior vencedora da Copa América com 16 títulos, isolando-se no ranking após a conquista de 2024."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Lionel Messi é o principal jogador da história recente do país, detendo os recordes de mais gols e mais partidas disputadas pela seleção. Diego Maradona foi o principal nome na conquista mundial de 1986."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A seleção argentina disputou a primeira final de Copa do Mundo em 1930, quando foi derrotada pelo Uruguai. O primeiro título mundial veio em 1978, quando sediou o torneio."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Entre 2019 e 2022, a equipe registrou uma série invicta de 36 partidas oficiais e amistosas sob o comando de Lionel Scaloni. A sequência foi interrompida com a derrota para a Arábia Saudita na Copa de 2022."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A rivalidade com o Brasil é uma das mais tradicionais do futebol mundial. O confronto é conhecido como Superclássico das Américas e reúne múltiplas conquistas de Copas do Mundo."
+        }
+      ]
+    },
+    "BRA": {
+      "nickname": "A Canarinha",
+      "founded": 1914,
+      "coach": "Dorival Júnior",
+      "worldCups": [
+        1958,
+        1962,
+        1970,
+        1994,
+        2002
+      ],
+      "bestResult": "Campeão (5×)",
+      "continentalTitles": [
+        {
+          "competition": "Copa América",
+          "years": [
+            1919,
+            1922,
+            1949,
+            1989,
+            1997,
+            1999,
+            2004,
+            2007,
+            2019
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Neymar",
+        "goals": 79
+      },
+      "mostCaps": {
+        "name": "Cafu",
+        "caps": 142
+      },
+      "bio": "A Seleção Brasileira é a equipe mais bem-sucedida da história das Copas do Mundo, conhecida globalmente pelo estilo de jogo ofensivo e criativo apelidado de 'Jogo Bonito'. Única nação a participar de todas as edições do Mundial, o Brasil é uma fonte inesgotável de talentos que moldam e encantam o futebol mundial há décadas.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Brasil é o único país a conquistar a Copa do Mundo em cinco oportunidades (1958, 1962, 1970, 1994 e 2002). A equipe também acumula nove títulos da Copa América e quatro Copas das Confederações."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Pelé é amplamente reconhecido como o maior ícone da equipe, sendo o único jogador a vencer três Copas do Mundo. Neymar, Ronaldo e Romário também figuram entre os principais artilheiros históricos."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A seleção brasileira participou de todas as edições da Copa do Mundo desde sua criação em 1930. A equipe conquistou seu primeiro troféu fora de seu continente na Suécia, em 1958."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "O Brasil detém o recorde de vitórias em Copas do Mundo, acumulando mais de 70 triunfos. A equipe venceu todos os sete jogos que disputou na edição de 2002 no Japão e Coreia do Sul."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "As cores amarela e verde foram adotadas a partir de 1954, após a derrota no Mundial de 1950 no Maracanã. Anteriormente, a seleção utilizava um uniforme inteiramente branco."
+        }
+      ]
+    },
+    "FRA": {
+      "nickname": "Les Bleus",
+      "founded": 1904,
+      "coach": "Didier Deschamps",
+      "worldCups": [
+        1998,
+        2018
+      ],
+      "bestResult": "Campeão (2×)",
+      "continentalTitles": [
+        {
+          "competition": "UEFA Eurocopa",
+          "years": [
+            1984,
+            2000
+          ]
+        },
+        {
+          "competition": "UEFA Nations League",
+          "years": [
+            2021
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Olivier Giroud",
+        "goals": 57
+      },
+      "mostCaps": {
+        "name": "Hugo Lloris",
+        "caps": 145
+      },
+      "bio": "A França firmou-se como a principal potência do futebol europeu do século XXI, muito impulsionada pelo seu excepcional sistema de formação de atletas em Clairefontaine. Mesclando força física, rigor tático e explosão técnica, Les Bleus alcançaram quatro finais de Copa do Mundo nos últimos trinta anos.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A França conquistou a Copa do Mundo duas vezes, em 1998 e 2018. A seleção também obteve sucesso continental, vencendo o Campeonato Europeu nas edições de 1984 e 2000."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Zinedine Zidane liderou a geração campeã de 1998, enquanto Kylian Mbappé foi peça central no título de 2018 e na campanha de 2022. Michel Platini destacou-se na década de 1980."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A França sediou o Mundial em duas ocasiões: 1938 e 1998. Na segunda ocasião, obteve seu primeiro título ao vencer o Brasil na final disputada em Saint-Denis."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Just Fontaine detém o recorde de mais gols marcados em uma única edição de Copa do Mundo. Ele anotou 13 gols no torneio realizado na Suécia, em 1958."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe é conhecida como 'Les Bleus' em referência à cor principal de seu uniforme. O galo gaulês, símbolo histórico e cultural do país, figura no escudo da Federação Francesa de Futebol."
+        }
+      ]
+    },
+    "ENG": {
+      "nickname": "Os Três Leões",
+      "founded": 1863,
+      "coach": "Thomas Tuchel",
+      "worldCups": [
+        1966
+      ],
+      "bestResult": "Campeão (1×)",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Harry Kane",
+        "goals": 69
+      },
+      "mostCaps": {
+        "name": "Peter Shilton",
+        "caps": 125
+      },
+      "bio": "A Inglaterra é a criadora do futebol moderno e detentora do único título mundial da história, conquistado em casa em 1966. Após décadas de frustrações, a seleção voltou a disputar finais sob o comando de Gareth Southgate e agora busca um novo ciclo de sucesso com Thomas Tuchel no comando.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Inglaterra conquistou seu único título da Copa do Mundo em 1966, jogando como país-sede. No cenário europeu, alcançou as finais da Eurocopa em 2020 e 2024."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Bobby Moore capitaneou a equipe na conquista mundial de 1966. Mais recentemente, Harry Kane assumiu a posição de maior artilheiro da história da seleção, superando Wayne Rooney."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A seleção inglesa disputou sua primeira partida internacional em 1872 contra a Escócia. Por razões políticas e esportivas, a equipe não participou das três primeiras Copas do Mundo, estreando apenas em 1950."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Geoff Hurst foi o primeiro jogador a marcar um hat-trick em uma final de Copa do Mundo, feito alcançado em 1966 contra a Alemanha Ocidental. Esse recorde foi posteriormente igualado em 2022."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O Estádio de Wembley, em Londres, serve como a principal casa da seleção inglesa desde 1923. O emblema da equipe exibe três leões, originados do brasão real da Inglaterra."
+        }
+      ]
+    },
+    "ESP": {
+      "nickname": "La Roja",
+      "founded": 1909,
+      "coach": "Luis de la Fuente",
+      "worldCups": [
+        2010
+      ],
+      "bestResult": "Campeão (1×)",
+      "continentalTitles": [
+        {
+          "competition": "UEFA Eurocopa",
+          "years": [
+            1964,
+            2008,
+            2012,
+            2024
+          ]
+        },
+        {
+          "competition": "UEFA Nations League",
+          "years": [
+            2023
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "David Villa",
+        "goals": 59
+      },
+      "mostCaps": {
+        "name": "Sergio Ramos",
+        "caps": 180
+      },
+      "bio": "A Espanha revolucionou para sempre o futebol moderno com o estilo focado na intensa posse de bola, troca de passes curtos e movimentação constante. Com quatro títulos europeus e a Euro 2024 conquistada com uma geração jovem, La Roja prova a força contínua de sua aclamada escola de desenvolvimento técnico.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Espanha venceu a Copa do Mundo pela primeira vez em 2010, na África do Sul. A equipe possui destaque no Campeonato Europeu, tendo vencido as edições de 1964, 2008, 2012 e 2024."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Iker Casillas e Sergio Ramos são os jogadores com maior número de partidas pela seleção. Xavi Hernández e Andrés Iniesta foram fundamentais no ciclo vitorioso entre 2008 e 2012."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "O país sediou a Copa do Mundo em 1982. A seleção viveu seu período mais expressivo entre 2008 e 2012, quando venceu dois torneios continentais consecutivos e o torneio mundial."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A Espanha estabeleceu um recorde ao conquistar três grandes competições internacionais em sequência: as Eurocopas de 2008 e 2012, além do Mundial de 2010. O time foi notável pelo estilo de posse de bola."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O estilo de jogo de passes curtos e rápidos adotado pela Espanha ficou conhecido como 'Tiki-taka'. A abordagem foi implementada com sucesso pelos técnicos Luis Aragonés e Vicente del Bosque."
+        }
+      ]
+    },
+    "POR": {
+      "nickname": "A Seleção das Quinas",
+      "founded": 1914,
+      "coach": "Roberto Martínez",
+      "worldCups": [],
+      "bestResult": "3º lugar — 1966",
+      "continentalTitles": [
+        {
+          "competition": "UEFA Eurocopa",
+          "years": [
+            2016
+          ]
+        },
+        {
+          "competition": "UEFA Nations League",
+          "years": [
+            2019
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Cristiano Ronaldo",
+        "goals": 133
+      },
+      "mostCaps": {
+        "name": "Cristiano Ronaldo",
+        "caps": 216
+      },
+      "bio": "Portugal é uma das seleções mais admiradas do futebol europeu, especialmente pela geração liderada por Cristiano Ronaldo, o maior artilheiro e jogador com mais partidas da história do futebol internacional. A conquista da Euro 2016 e a Nations League 2019 marcaram o auge de uma era dourada da seleção lusitana.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "Portugal obteve seu principal troféu em 2016, ao vencer o Campeonato Europeu na França. Em 2019, a seleção conquistou a primeira edição da Liga das Nações da UEFA."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Cristiano Ronaldo é o maior artilheiro e o jogador com mais convocações na história da seleção e do futebol de seleções global. Eusébio destacou-se anteriormente, conduzindo a equipe ao terceiro lugar na Copa de 1966."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A primeira participação de Portugal em uma Copa do Mundo ocorreu em 1966. O país sediou o Campeonato Europeu em 2004, chegando à final e terminando como vice-campeão diante da Grécia."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Cristiano Ronaldo estabeleceu o recorde mundial de gols por uma seleção nacional masculina, ultrapassando a marca de 100 gols e superando os números anteriores pertencentes ao iraniano Ali Daei."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A seleção portuguesa utiliza as cores da bandeira nacional, com predominância do vermelho e do verde. É comummente referida como 'Equipa das Quinas', em alusão aos escudos presentes na bandeira."
+        }
+      ]
+    },
+    "GER": {
+      "nickname": "Die Mannschaft",
+      "founded": 1900,
+      "coach": "Julian Nagelsmann",
+      "worldCups": [
+        1954,
+        1974,
+        1990,
+        2014
+      ],
+      "bestResult": "Campeão (4×)",
+      "continentalTitles": [
+        {
+          "competition": "UEFA Eurocopa",
+          "years": [
+            1972,
+            1980,
+            1996
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Miroslav Klose",
+        "goals": 71
+      },
+      "mostCaps": {
+        "name": "Lothar Matthäus",
+        "caps": 150
+      },
+      "bio": "A Alemanha é sinônimo mundial de eficiência, organização tática e mentalidade vencedora inabalável. Historicamente conhecida por nunca desistir até o apito final, a seleção tetracampeã mundial passa por um processo de renovação para recuperar sua supremacia com base em jovens talentos dinâmicos.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Alemanha possui quatro títulos da Copa do Mundo, conquistados em 1954, 1974, 1990 e 2014. No cenário continental, venceu o Campeonato Europeu em 1972, 1980 e 1996."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Franz Beckenbauer venceu o Mundial tanto como jogador quanto como treinador. Miroslav Klose, Gerd Müller e Lothar Matthäus também são figuras de grande importância na história da equipe."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "O país participou de todas as Copas do Mundo, exceto as edições de 1930 e 1950. Sediou o evento nas edições de 1974 e 2006, consolidando-se como uma das seleções mais presentes em finais mundiais."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Miroslav Klose é o maior artilheiro da história das Copas do Mundo, com 16 gols acumulados nas edições entre 2002 e 2014. Lothar Matthäus detém o recorde de mais partidas disputadas por um alemão no torneio."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A vitória de 1954 sobre a Hungria é historicamente denominada 'O Milagre de Berna'. Esse evento esportivo ocorreu no período pós-guerra e tornou-se um marco significativo para o país."
+        }
+      ]
+    },
+    "NED": {
+      "nickname": "Laranja Mecânica",
+      "founded": 1889,
+      "coach": "Ronald Koeman",
+      "worldCups": [],
+      "bestResult": "Vice-campeão (3×) — 1974, 1978, 2010",
+      "continentalTitles": [
+        {
+          "competition": "UEFA Eurocopa",
+          "years": [
+            1988
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Robin van Persie",
+        "goals": 50
+      },
+      "mostCaps": {
+        "name": "Wesley Sneijder",
+        "caps": 134
+      },
+      "bio": "A Holanda é famosa pelo 'Futebol Total' desenvolvido nos anos 1970 sob Johan Cruyff, que revolucionou o futebol mundial com a ideia de que todos os jogadores devem atacar e defender. Tricampeã vice-campeã da Copa do Mundo, a seleção laranja nunca conquistou o título máximo apesar de chegar a três finais.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Holanda conquistou o Campeonato Europeu de 1988, seu principal título até hoje. A seleção foi vice-campeã da Copa do Mundo em três oportunidades: 1974, 1978 e 2010."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Johan Cruyff é considerado o principal nome da história do futebol holandês e líder da equipe na década de 1970. Nomes como Marco van Basten e Ruud Gullit destacaram-se na conquista continental de 1988."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A seleção ganhou destaque mundial na década de 1970 ao introduzir uma nova abordagem tática. Após ausências em torneios nos anos 1980, retornou ao alto nível com a conquista europeia e consistentes participações mundiais."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Robin van Persie é o maior artilheiro da história da seleção, superando marcas de nomes expressivos como Patrick Kluivert. A equipe alcançou as quartas de final ou mais em várias Copas desde a virada do milênio."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A seleção é conhecida pelo termo 'Laranja Mecânica', apelido recebido durante o Mundial de 1974 devido ao seu estilo de jogo coletivo intenso e seus uniformes de cor laranja."
+        }
+      ]
+    },
+    "BEL": {
+      "nickname": "Os Diabos Vermelhos",
+      "founded": 1895,
+      "coach": "Domenico Tedesco",
+      "worldCups": [],
+      "bestResult": "3º lugar — 1986, 2018",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Romelu Lukaku",
+        "goals": 85
+      },
+      "mostCaps": {
+        "name": "Jan Vertonghen",
+        "caps": 157
+      },
+      "bio": "A Bélgica chegou ao topo do ranking FIFA em 2015 e liderou por seis anos consecutivos sem vencer nenhum grande torneio — fenômeno batizado de 'Geração Dourada'. Com Lukaku, De Bruyne e companhia, a seleção belga foi considerada uma das mais talentosas da história sem levantar um troféu.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Bélgica conquistou a medalha de ouro nos Jogos Olímpicos de 1920. Em Copas do Mundo, sua melhor campanha ocorreu na edição de 2018, quando alcançou o terceiro lugar."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "A chamada 'geração belga' recente teve em Kevin De Bruyne, Eden Hazard e Romelu Lukaku seus principais expoentes. O goleiro Thibaut Courtois também destacou-se durante este período."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A seleção belga participou da primeira Copa do Mundo em 1930. Em 1980, alcançou a final do Campeonato Europeu, terminando como vice-campeã ao ser derrotada pela Alemanha Ocidental."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Romelu Lukaku é o maior artilheiro da história da equipe nacional. A Bélgica também ocupou o primeiro lugar no ranking da FIFA durante vários meses consecutivos na década de 2010."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe é referida como os 'Diabos Vermelhos' (Les Diables Rouges/De Rode Duivels). O apelido foi cunhado por um jornalista no início do século XX após três vitórias consecutivas sobre seleções vizinhas."
+        }
+      ]
+    },
+    "ITA": {
+      "nickname": "Gli Azzurri",
+      "founded": 1898,
+      "coach": "Luciano Spalletti",
+      "worldCups": [
+        1934,
+        1938,
+        1982,
+        2006
+      ],
+      "bestResult": "Campeão (4×)",
+      "continentalTitles": [
+        {
+          "competition": "UEFA Eurocopa",
+          "years": [
+            1968,
+            2020
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Luigi Riva",
+        "goals": 35
+      },
+      "mostCaps": {
+        "name": "Gianluigi Buffon",
+        "caps": 176
+      },
+      "bio": "A Itália é uma das seleções mais históricas e táticas do futebol mundial, tetracampeã mundial e bicampeã europeia. Após o choque de não se classificar para as Copas de 2018 e (como reserva) de 2022 via repescagem, os Azzurri voltam ao palco mundial em busca de resgatar sua tradição.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Itália venceu a Copa do Mundo quatro vezes: 1934, 1938, 1982 e 2006. A seleção também conquistou o Campeonato Europeu em duas ocasiões, nos anos de 1968 e 2020."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Paolo Rossi destacou-se como artilheiro na campanha vitoriosa de 1982. O goleiro Gianluigi Buffon detém o recorde de presenças, e Roberto Baggio liderou o ataque nos anos 1990."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A equipe italiana dominou o cenário mundial na década de 1930 sob o comando de Vittorio Pozzo. Apesar de um período sem grandes conquistas, retomou o sucesso nas décadas de 1980 e 2000."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A Itália alcançou um recorde internacional ao registrar 37 partidas consecutivas de invencibilidade entre 2018 e 2021. A sequência ocorreu durante a campanha de preparação e conquista da Euro 2020."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O uniforme azul, que confere o apelido 'Azzurri', não consta na bandeira do país. A cor é uma homenagem à Casa de Saboia, que governou a Itália no passado."
+        }
+      ]
+    },
+    "CRO": {
+      "nickname": "Os Vatreni",
+      "founded": 1991,
+      "coach": "Zlatko Dalić",
+      "worldCups": [],
+      "bestResult": "Vice-campeão — 2018; 3º lugar — 1998, 2022",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Davor Šuker",
+        "goals": 45
+      },
+      "mostCaps": {
+        "name": "Luka Modrić",
+        "caps": 180
+      },
+      "bio": "A Croácia é uma das maiores surpresas do futebol mundial moderno — um país com apenas 4 milhões de habitantes que atingiu o patamar de vice-campeão mundial em 2018. Com Luka Modrić, o melhor jogador do mundo em 2018, a equipe mostrou que talento e organização podem superar limitações populacionais.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Croácia obteve o vice-campeonato na Copa do Mundo de 2018 e terminou em terceiro lugar nas edições de 1998 e 2022. A equipe também foi finalista da Liga das Nações em 2023."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Luka Modrić é o recordista de jogos pela seleção e o principal organizador da equipe ao longo das décadas de 2010 e 2020. Davor Šuker foi o artilheiro e destaque na campanha da Copa de 1998."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Após a independência, a Federação Croata foi reconhecida pela FIFA em 1992. O país estreou em Copas do Mundo em 1998, surpreendendo ao eliminar a Alemanha e alcançar as semifinais."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A equipe destacou-se pelo seu desempenho em prorrogações e disputas de pênaltis, vencendo múltiplas partidas eliminatórias nessas circunstâncias durantes os Mundiais de 2018 e 2022."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A seleção croata é rapidamente identificável por seu uniforme principal, que apresenta um padrão xadrez em vermelho e branco, replicando o tradicional brasão de armas do país."
+        }
+      ]
+    },
+    "COL": {
+      "nickname": "Los Cafeteros",
+      "founded": 1924,
+      "coach": "Néstor Lorenzo",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 2014",
+      "continentalTitles": [
+        {
+          "competition": "Copa América",
+          "years": [
+            2001
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Radamel Falcao",
+        "goals": 36
+      },
+      "mostCaps": {
+        "name": "David Ospina",
+        "caps": 128
+      },
+      "bio": "A Colômbia é conhecida pelo futebol alegre e improvisado, com um carnaval de talentos que inclui James Rodríguez e Luis Díaz. Após anos de instabilidade, a seleção cafeeira voltou a ser uma das forças do futebol sul-americano, chegando à final da Copa América 2024 de forma invicta.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O maior título da Colômbia foi a conquista da Copa América de 2001, edição na qual sediou o torneio. A equipe encerrou a competição de forma invicta e sem sofrer gols."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Carlos Valderrama, conhecido por seu visual característico e visão de jogo, foi a figura central nos anos 1990. James Rodríguez e Radamel Falcao García destacaram-se nas gerações posteriores."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A equipe participou pela primeira vez de um Mundial em 1962, no Chile. A melhor campanha do país no torneio ocorreu em 2014, quando alcançou as quartas de final."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Na Copa do Mundo de 2014, James Rodríguez finalizou a competição como o principal artilheiro, com seis gols marcados. Seu gol contra o Uruguai foi premiado pela FIFA como o melhor daquele ano."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A seleção colombiana é tradicionalmente conhecida como 'Los Cafeteros', termo que referencia o país como um dos mais proeminentes produtores de café no mercado mundial."
+        }
+      ]
+    },
+    "MAR": {
+      "nickname": "Leões do Atlas",
+      "founded": 1955,
+      "coach": "Walid Regragui",
+      "worldCups": [],
+      "bestResult": "4º lugar — 2022",
+      "continentalTitles": [
+        {
+          "competition": "Copa das Nações Africanas (CAN)",
+          "years": [
+            1976
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Ahmed Faras",
+        "goals": 42
+      },
+      "mostCaps": {
+        "name": "Noureddine Naybet",
+        "caps": 115
+      },
+      "bio": "O Marrocos escreveu uma das maiores páginas do futebol mundial ao alcançar as semifinais da Copa do Mundo de 2022, tornando-se a primeira seleção africana e árabe a chegar tão longe em um mundial. A geração de Achraf Hakimi e Youssef En-Nesyri representa a ascensão definitiva do futebol africano.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Marrocos sagrou-se campeão da Copa das Nações Africanas em 1976. Também venceu o Campeonato das Nações Africanas (CHAN) nos anos de 2018 e 2020."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Nomes como Mustapha Hadji e Noureddine Naybet sobressaíram nas décadas anteriores. Recentemente, Achraf Hakimi, Hakim Ziyech e Yassine Bounou formaram a base de sua campanha histórica em 2022."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "O país participou de seu primeiro Mundial em 1970. Em 1986, tornou-se a primeira equipe africana a superar a fase de grupos em uma Copa do Mundo da FIFA."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "No Mundial de 2022, o Marrocos tornou-se o primeiro país africano e árabe a alcançar a fase semifinal da competição, eliminando equipes europeias de peso durante o torneio."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "Os jogadores marroquinos são apelidados de 'Leões do Atlas', em referência a uma subespécie de leão que habitava a cordilheira do Atlas no Norte da África, atualmente extinta na natureza."
+        }
+      ]
+    },
+    "URU": {
+      "nickname": "La Celeste",
+      "founded": 1900,
+      "coach": "Marcelo Bielsa",
+      "worldCups": [
+        1930,
+        1950
+      ],
+      "bestResult": "Campeão (2×)",
+      "continentalTitles": [
+        {
+          "competition": "Copa América",
+          "years": [
+            1916,
+            1917,
+            1920,
+            1923,
+            1924,
+            1926,
+            1935,
+            1942,
+            1956,
+            1959,
+            1967,
+            1983,
+            1987,
+            1995,
+            2011
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Luis Suárez",
+        "goals": 69
+      },
+      "mostCaps": {
+        "name": "Diego Godín",
+        "caps": 161
+      },
+      "bio": "O Uruguai é um dos países mais bem-sucedidos da história do futebol considerando seu tamanho — uma nação de apenas 3,5 milhões de habitantes com dois títulos mundiais e 15 Copas América. A geração de Suárez e Cavani encerrou um ciclo glorioso, e Marcelo Bielsa inicia uma nova era.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Uruguai venceu a Copa do Mundo em 1930 e 1950. É uma das seleções mais bem-sucedidas no cenário sul-americano, possuindo 15 conquistas na Copa América."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "A equipe contou historicamente com Obdulio Varela no título de 1950. No século XXI, Luis Suárez, Edinson Cavani e Diego Forlán, que foi eleito o melhor jogador do Mundial de 2010, foram os principais destaques."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "O país foi o anfitrião e o vencedor da primeira Copa do Mundo, em 1930. Em 1950, a seleção protagonizou a vitória sobre o Brasil no Maracanã, em um evento historicamente conhecido como 'Maracanazo'."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Antes da criação da Copa do Mundo, o Uruguai obteve a medalha de ouro olímpica no futebol nas edições de 1924 e 1928, o que levou a equipe a estampar quatro estrelas em seu escudo oficial."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A alcunha 'Celeste Olímpica' remete tanto à cor da camisa adotada no início do século XX quanto aos triunfos nas Olimpíadas, que consolidaram o país como uma força precoce do esporte."
+        }
+      ]
+    },
+    "JPN": {
+      "nickname": "Samurais Azuis",
+      "founded": 1921,
+      "coach": "Hajime Moriyasu",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 2022",
+      "continentalTitles": [
+        {
+          "competition": "Copa Asiática (AFC)",
+          "years": [
+            1992,
+            2000,
+            2004,
+            2011
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Kunishige Kamamoto",
+        "goals": 75
+      },
+      "mostCaps": {
+        "name": "Yasuhito Endō",
+        "caps": 152
+      },
+      "bio": "O Japão é a maior potência do futebol asiático, com quatro títulos da Copa Asiática e presença constante nas fases finais das Copas do Mundo desde 1998. A geração atual combina jogadores da J-League com estrelas das principais ligas europeias, tendo alcançado as quartas de final em 2022.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Japão é a seleção de maior sucesso no futebol asiático, acumulando quatro títulos da Copa da Ásia, conquistados em 1992, 2000, 2004 e 2011."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Hidetoshi Nakata e Shunsuke Nakamura foram pioneiros em atuar com destaque na Europa. Shinji Kagawa e Keisuke Honda lideraram a equipe nos anos seguintes."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A primeira participação japonesa em uma Copa do Mundo ocorreu em 1998, na França. Quatro anos depois, o país sediou o torneio em conjunto com a Coreia do Sul, avançando pela primeira vez às oitavas de final."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "O Japão mantém o recorde de número de títulos da Copa da Ásia. A equipe também consolidou uma participação contínua em Mundiais, qualificando-se ininterruptamente desde a edição de 1998."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O escudo da Associação de Futebol do Japão apresenta o Yatagarasu, um corvo de três pernas da mitologia japonesa que é considerado um símbolo de intervenção divina e orientação."
+        }
+      ]
+    },
+    "SUI": {
+      "nickname": "A Nati",
+      "founded": 1895,
+      "coach": "Murat Yakin",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 1934, 1938, 1954",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Alexander Frei",
+        "goals": 42
+      },
+      "mostCaps": {
+        "name": "Granit Xhaka",
+        "caps": 133
+      },
+      "bio": "A Suíça é uma das seleções mais regulares do futebol europeu, chegando constantemente às oitavas de final de grandes torneios. Com uma geração multicultural que inclui nomes como Granit Xhaka, Xherdan Shaqiri e Breel Embolo, a equipe helvética combina organização e talento individual.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Suíça alcançou os quartos de final da Copa do Mundo em 1934, 1938 e 1954. Mais recentemente, avançou com regularidade às fases eliminatórias tanto no Mundial quanto no Campeonato Europeu."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Xherdan Shaqiri e Granit Xhaka figuram entre os jogadores com maior número de partidas e gols decisivos nas últimas décadas. Alexander Frei é o maior artilheiro histórico da seleção."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A Suíça sediou a Copa do Mundo de 1954. No cenário europeu, a nação co-sediou a Euro 2008 junto com a Áustria e obteve progressos constantes em competições subsequentes."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Na Copa do Mundo de 2006, a equipe suíça obteve a marca estatística de ser eliminada na fase de oitavas de final sem ter sofrido nenhum gol durante o tempo normal nos jogos da competição."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe é amplamente referida como 'Nati', um termo diminutivo para o nome da equipe nacional nos idiomas nacionais do país."
+        }
+      ]
+    },
+    "DEN": {
+      "nickname": "Danish Dynamite",
+      "founded": 1889,
+      "coach": "Kasper Hjulmand",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 1998",
+      "continentalTitles": [
+        {
+          "competition": "UEFA Eurocopa",
+          "years": [
+            1992
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Jon Dahl Tomasson / Poul Nielsen",
+        "goals": 52
+      },
+      "mostCaps": {
+        "name": "Simon Kjær",
+        "caps": 132
+      },
+      "bio": "A Dinamarca é famosa por sua surpreendente conquista da Eurocopa de 1992, quando foi convocada de última hora para substituir a Iugoslávia excluída por conflitos na região. Conhecida como 'Danish Dynamite', a seleção dinamarquesa combina solidez defensiva com jogadores de alto nível nas principais ligas europeias.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Dinamarca conquistou o Campeonato Europeu em 1992 e a Copa das Confederações em 1995. A equipe alcançou as quartas de final na Copa do Mundo de 1998."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Michael Laudrup e Brian Laudrup destacaram-se técnica e internacionalmente. O goleiro Peter Schmeichel foi essencial nas campanhas dos anos 1990, e Christian Eriksen assumiu a liderança na era contemporânea."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A seleção ingressou no cenário competitivo mundial com destaque durante a década de 1980. Na Euro 1992, participou a convite após a exclusão da Iugoslávia e conseguiu conquistar o título."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Jon Dahl Tomasson e Poul Nielsen dividem o posto de maiores artilheiros históricos da equipe nacional, ambos com 52 gols registrados pela Dinamarca."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A seleção da década de 1980 recebeu o apelido de 'Dinamáquina', devido ao ritmo imposto nas partidas ofensivas durante as Copas e Eurocopas do período."
+        }
+      ]
+    },
+    "AUT": {
+      "nickname": "Das Nationalteam",
+      "founded": 1904,
+      "coach": "Ralf Rangnick",
+      "worldCups": [],
+      "bestResult": "3º lugar — 1954",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Toni Polster",
+        "goals": 44
+      },
+      "mostCaps": {
+        "name": "Marko Arnautović",
+        "caps": 116
+      },
+      "bio": "A Áustria é uma seleção em crescimento acelerado sob o comando de Ralf Rangnick, que implementou um estilo de jogo intenso e vertical. David Alaba, considerado o maior jogador austríaco de todos os tempos, liderou a geração que voltou a fazer a Áustria relevante no cenário europeu.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O principal feito da Áustria em competições globais foi alcançar o terceiro lugar na Copa do Mundo de 1954, disputada na vizinha Suíça."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Matthias Sindelar, conhecido como 'O Homem de Papel', foi o líder tático da equipe nos anos 1930. Recentemente, David Alaba estabeleceu-se como a figura central da seleção austríaca."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A seleção experimentou seu apogeu durante a década de 1930 sob o apelido de 'Wunderteam'. A equipe esteve invicta em uma longa série de jogos sob o comando técnico de Hugo Meisl."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A Áustria protagonizou o jogo com o maior número de gols em uma Copa do Mundo da FIFA: uma vitória por 7 a 5 sobre a anfitriã Suíça, nas quartas de final da edição de 1954."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "Tradicionalmente, as cores do uniforme refletiam a bandeira austríaca com camisas brancas e calções pretos. Recentemente, passou-se a usar predominantemente o vermelho, em consonância com o brasão do país."
+        }
+      ]
+    },
+    "SEN": {
+      "nickname": "Leões de Teranga",
+      "founded": 1960,
+      "coach": "Aliou Cissé",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 2002",
+      "continentalTitles": [
+        {
+          "competition": "Copa das Nações Africanas (CAN)",
+          "years": [
+            2021
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Sadio Mané",
+        "goals": 43
+      },
+      "mostCaps": {
+        "name": "Idrissa Gueye",
+        "caps": 113
+      },
+      "bio": "O Senegal é a principal força do futebol africano contemporâneo, vencedor da Copa das Nações Africanas de 2021 com uma geração encabeçada por Sadio Mané. Em 2002, surpreendeu o mundo ao eliminar o campeão França na estreia e chegar às quartas de final — um dos resultados mais inesperados da história das Copas.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "Senegal obteve seu primeiro grande título internacional ao conquistar a Copa das Nações Africanas em 2021 (disputada no início de 2022). O time alcançou as quartas de final na Copa do Mundo de 2002."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Sadio Mané firmou-se como o maior destaque do futebol senegalês recente. Anteriormente, nomes como El Hadji Diouf foram essenciais na campanha pioneira de 2002."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A estreia do país na Copa do Mundo, em 2002, ficou marcada pela vitória contra a França, então atual campeã mundial e colonial histórica do país, no jogo de abertura do torneio."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Na Copa das Nações Africanas de 2021, a equipe superou suas campanhas anteriores de vice-campeonato e consolidou-se como a principal força do continente naquele ciclo competitivo."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe é referida local e internacionalmente como 'Os Leões da Teranga'. O termo 'Teranga' na língua uolofe expressa hospitalidade e recepção acolhedora."
+        }
+      ]
+    },
+    "KOR": {
+      "nickname": "Guerreiros Taeguk",
+      "founded": 1928,
+      "coach": "Hong Myung-bo",
+      "worldCups": [],
+      "bestResult": "4º lugar — 2002 (co-anfitrião)",
+      "continentalTitles": [
+        {
+          "competition": "Copa Asiática (AFC)",
+          "years": [
+            1956,
+            1960
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Cha Bum-kun",
+        "goals": 58
+      },
+      "mostCaps": {
+        "name": "Hong Myung-bo",
+        "caps": 136
+      },
+      "bio": "A Coreia do Sul é uma das seleções mais consistentes da Ásia, com presença em 11 Copas do Mundo consecutivas. A geração de 2002, que chegou ao 4º lugar como co-anfitriã, ainda é o maior feito do futebol asiático em um Mundial.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Coreia do Sul possui dois títulos da Copa da Ásia, vencendo as edições iniciais de 1956 e 1960. O país atingiu a quarta colocação na Copa do Mundo de 2002."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Son Heung-min assumiu o protagonismo nas décadas recentes. Nomes anteriores incluem Park Ji-sung, que obteve destaque na Europa, e Cha Bum-kun, um pioneiro nos campeonatos alemães."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Sua primeira participação no Mundial foi em 1954. No entanto, a equipe obteve notoriedade global ao co-sediar o torneio em 2002 e progredir até as semifinais do evento."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A equipe sul-coreana detém o recorde de mais qualificações consecutivas para a Copa do Mundo entre os representantes da Confederação Asiática de Futebol (AFC), participando continuamente desde 1986."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O emblema da federação inclui a imagem de um tigre branco. Por isso, as seleções de futebol da nação frequentemente recebem a denominação de 'Tigres da Ásia'."
+        }
+      ]
+    },
+    "AUS": {
+      "nickname": "Socceroos",
+      "founded": 1961,
+      "coach": "Tony Popovic",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 2006",
+      "continentalTitles": [
+        {
+          "competition": "Copa Asiática (AFC)",
+          "years": [
+            2015
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Tim Cahill",
+        "goals": 50
+      },
+      "mostCaps": {
+        "name": "Mark Schwarzer",
+        "caps": 109
+      },
+      "bio": "A Austrália é a maior potência do Pacífico no futebol e uma presença consistente em Copas do Mundo desde que migrou para a AFC em 2006. Tim Cahill, o maior artilheiro do país, é a figura histórica de uma geração que levou o futebol australiano ao seu auge.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Austrália conquistou a Copa das Nações da OFC em quatro oportunidades. Após mudar de confederação, venceu a Copa da Ásia em 2015 como país-sede."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Tim Cahill é reconhecido como o principal jogador histórico, destacando-se pela quantidade de gols em Mundiais. Harry Kewell e Mark Viduka também figuram na geração de maior projeção europeia do país."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A equipe participou pela primeira vez da Copa do Mundo na edição de 1974. A segunda participação ocorreu apenas em 2006, marcando o início de presenças consecutivas nas edições seguintes."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A seleção australiana detém a maior goleada já registrada em uma partida internacional oficial de seleções, vencendo a Samoa Americana por 31 a 0 nas eliminatórias para o Mundial de 2002."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe é amplamente conhecida pelo apelido 'Socceroos', um portmanteau criado a partir da palavra inglesa para o esporte, 'soccer', e do termo para canguru, animal que é símbolo do país."
+        }
+      ]
+    },
+    "UKR": {
+      "nickname": "Zbirna",
+      "founded": 1991,
+      "coach": "Serhiy Rebrov",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 2006",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Andriy Shevchenko",
+        "goals": 48
+      },
+      "mostCaps": {
+        "name": "Andriy Yarmolenko",
+        "caps": 122
+      },
+      "bio": "A Ucrânia é uma seleção jovem que surgiu após a independência em 1991 e rapidamente se tornou relevante no cenário europeu. Com Andriy Shevchenko como maior ídolo histórico, o país supera os desafios do conflito com a Rússia para manter seu futebol vivo e competitivo.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "Em sua história como nação independente, a Ucrânia teve como principal resultado o avanço até as quartas de final na Copa do Mundo da FIFA em 2006."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Andriy Shevchenko é o jogador de maior reconhecimento da Ucrânia, tendo ganhado prêmios internacionais e liderado a equipe nos anos 2000. Andriy Yarmolenko destacou-se nos anos seguintes."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Após a dissolução da União Soviética, a Ucrânia passou a competir como seleção independente em 1992. O país organizou e co-sediou o Campeonato Europeu de 2012 em conjunto com a Polônia."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Andriy Shevchenko mantém a liderança na artilharia histórica da seleção. Oleksandr Shovkovskyi foi o primeiro goleiro a não sofrer gols em uma disputa de pênaltis na história dos Mundiais, fato ocorrido em 2006."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O uniforme da equipe usa estritamente o azul e o amarelo, cores correspondentes à bandeira nacional. O distintivo incorpora o tridente, um símbolo estatal central da Ucrânia."
+        }
+      ]
+    },
+    "TUR": {
+      "nickname": "Ay-Yıldızlılar",
+      "founded": 1923,
+      "coach": "Vincenzo Montella",
+      "worldCups": [],
+      "bestResult": "3º lugar — 2002",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Hakan Şükür",
+        "goals": 51
+      },
+      "mostCaps": {
+        "name": "Rüştü Reçber",
+        "caps": 120
+      },
+      "bio": "A Turquia surpreendeu o mundo em 2002 ao terminar em 3º lugar na Copa do Mundo no Japão e Coreia — com Hakan Şükür marcando o gol mais rápido da história do torneio. A nova geração liderada por Arda Güler levou a equipe às quartas de final da Euro 2024.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O resultado internacional mais expressivo da Turquia foi a terceira colocação na Copa do Mundo de 2002, realizada na Ásia. Na Eurocopa, a equipe atingiu a semifinal em 2008."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Hakan Şükür, com extensa carreira de gols, é o principal artilheiro da história da seleção. Arda Turan e Rüştü Reçber foram fundamentais nas campanhas da equipe no início do século XXI."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A Turquia participou de sua primeira Copa do Mundo em 1954. Passaram-se várias décadas até a qualificação seguinte, que resultou em sua proeminente campanha mundialista em 2002."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Hakan Şükür detém o recorde de gol mais rápido da história das Copas do Mundo. Ele marcou aos 11 segundos de partida contra a Coreia do Sul na disputa pelo terceiro lugar em 2002."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe é conhecida regional e internacionalmente como 'Crescente e Estrela' (Ay-Yıldızlılar), designação que faz referência direta aos elementos presentes na bandeira da República Turca."
+        }
+      ]
+    },
+    "IRN": {
+      "nickname": "Team Melli",
+      "founded": 1920,
+      "coach": "Amir Ghalenoei",
+      "worldCups": [],
+      "bestResult": "Fase de grupos",
+      "continentalTitles": [
+        {
+          "competition": "Copa Asiática (AFC)",
+          "years": [
+            1968,
+            1972,
+            1976
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Ali Daei",
+        "goals": 109
+      },
+      "mostCaps": {
+        "name": "Javad Nekounam",
+        "caps": 151
+      },
+      "bio": "O Irã é uma das potências históricas do futebol asiático, tricampeão da Copa Asiática nos anos 1970. Ali Daei foi o maior artilheiro do futebol internacional por décadas, até ser superado por Cristiano Ronaldo — um fato histórico que o Irã ostenta com orgulho.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Irã é um dos países com maior sucesso na Ásia, possuindo três conquistas da Copa da Ásia vencidas consecutivamente nos anos de 1968, 1972 e 1976."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Ali Daei foi durante muitos anos o maior artilheiro do futebol mundial de seleções. Na contemporaneidade, Mehdi Taremi e Sardar Azmoun são as principais referências ofensivas da equipe."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A seleção iraniana teve sua estreia na Copa do Mundo em 1978. Ao longo das décadas posteriores, consolidou-se como representante frequente da confederação asiática no torneio mundial."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A equipe detém o registro de ter dominado os torneios continentais na década de 1970. Além disso, destacou-se por registrar longos períodos de invencibilidade dentro das competições classificatórias asiáticas."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A seleção do Irã adota a nomenclatura 'Team Melli', que se traduz do idioma persa simplesmente como 'Equipe Nacional', e é o termo universalmente utilizado para se referir ao esquadrão no país."
+        }
+      ]
+    },
+    "SRB": {
+      "nickname": "Os Águias",
+      "founded": 2006,
+      "coach": "Dragan Stojković",
+      "worldCups": [],
+      "bestResult": "Fase de grupos (como Sérvia; Iugoslávia chegou às semis em 1930 e 1962)",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Aleksandar Mitrović",
+        "goals": 58
+      },
+      "mostCaps": {
+        "name": "Dušan Tadić",
+        "caps": 111
+      },
+      "bio": "A Sérvia herdou a tradição da Iugoslávia, uma das maiores forças do futebol europeu no século XX. Com Aleksandar Mitrović como maior goleador da história, a seleção sérvia busca recuperar o prestígio dos tempos de Dragan Džajić e da 'Jugoslávia de Ouro' dos anos 1980.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Sérvia, como nação independente, não conquistou títulos de maior expressão no nível profissional adulto. No entanto, o país tem sucesso em categorias de base do futebol mundial e europeu."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Aleksandar Mitrović consolidou-se como o maior artilheiro da história da seleção nacional. Nemanja Vidić e Dejan Stanković foram importantes defensores com passagens destacadas na Europa."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A equipe é reconhecida pela FIFA e pela UEFA como sucessora legal das seleções da Iugoslávia e de Sérvia e Montenegro. A primeira Copa do Mundo disputada exclusivamente como Sérvia ocorreu em 2010."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Apesar de ausências no Campeonato Europeu ao longo dos anos, a equipe tem um histórico regular de classificação para a fase de grupos da Copa do Mundo no século XXI."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O emblema da seleção traz a águia bicéfala branca, símbolo presente no brasão de armas da Sérvia, que reflete a herança histórica do país nos Bálcãs."
+        }
+      ]
+    },
+    "POL": {
+      "nickname": "Os Brancos e Vermelhos",
+      "founded": 1919,
+      "coach": "Michał Probierz",
+      "worldCups": [],
+      "bestResult": "3º lugar — 1974, 1982",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Robert Lewandowski",
+        "goals": 83
+      },
+      "mostCaps": {
+        "name": "Robert Lewandowski",
+        "caps": 152
+      },
+      "bio": "A Polônia tem em Robert Lewandowski um dos maiores atacantes da história do futebol — artilheiro histórico da seleção com mais de 80 gols. A equipe busca resgatar a glória dos anos 1970 e 1980, quando foi uma das maiores forças do futebol mundial.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O principal êxito da Polônia foi a conquista da medalha de ouro nas Olimpíadas de 1972. A seleção também alcançou a terceira colocação nas Copas do Mundo de 1974 e 1982."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Robert Lewandowski é o maior artilheiro e recordista de partidas pela seleção, atuando como o principal destaque do país na era contemporânea. Grzegorz Lato e Zbigniew Boniek destacaram-se nas gerações anteriores."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A seleção viveu sua fase de maior destaque internacional durante as décadas de 1970 e 1980. O país estreou na Copa do Mundo em 1938, na França."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Robert Lewandowski detém recordes europeus de artilharia e consistência ofensiva pelas eliminatórias do Campeonato Europeu e da Copa do Mundo, impulsionando os resultados do país na década de 2010."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "As cores da seleção baseiam-se na bandeira da Polônia, predominando o branco e o vermelho. O escudo apresenta uma águia branca, o símbolo nacional polonês."
+        }
+      ]
+    },
+    "SCO": {
+      "nickname": "Os Tartan Army",
+      "founded": 1873,
+      "coach": "Steve Clarke",
+      "worldCups": [],
+      "bestResult": "Fase de grupos",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Denis Law / Kenny Dalglish",
+        "goals": 30
+      },
+      "mostCaps": {
+        "name": "Kenny Dalglish",
+        "caps": 102
+      },
+      "bio": "A Escócia é a seleção nacional mais antiga do mundo ao lado da Inglaterra, com o primeiro jogo internacional da história disputado entre as duas em 1872. Apesar de nunca ter passado da fase de grupos em uma Copa do Mundo, a seleção escocesa tem uma tradição apaixonada e torcedores (o Tartan Army) conhecidos como os mais simpáticos do futebol.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Escócia é a vencedora inaugural do extinto Campeonato Britânico Intercalado, dominando suas primeiras edições. A equipe não conquistou títulos da Copa do Mundo ou do Campeonato Europeu."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Denis Law e Kenny Dalglish estão entre os maiores nomes da história da equipe, liderando a Escócia durante campanhas em Copas. Andrew Robertson é uma das figuras centrais na atualidade."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A Escócia participou do primeiro jogo internacional oficial da história do futebol, enfrentando a Inglaterra em 1872. A equipe classificou-se frequentemente para Mundiais nas décadas de 1970 e 1980."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A seleção escocesa nunca conseguiu avançar para as fases eliminatórias de uma Copa do Mundo da FIFA em todas as suas participações, sendo sistematicamente eliminada na primeira fase."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A base de fãs da seleção é conhecida como 'Tartan Army' (Exército Tartã), caracterizando-se pelas vestimentas tradicionais escocesas e por sua lealdade nas partidas como visitante."
+        }
+      ]
+    },
+    "ECU": {
+      "nickname": "La Tri",
+      "founded": 1925,
+      "coach": "Sebastián Beccacece",
+      "worldCups": [],
+      "bestResult": "Oitavas de final — 2006",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Enner Valencia",
+        "goals": 41
+      },
+      "mostCaps": {
+        "name": "Iván Hurtado",
+        "caps": 168
+      },
+      "bio": "O Equador é um dos casos de ascensão mais notáveis do futebol sul-americano, passando de ausente nas Copas para presença regular. A abertura da Copa de 2022 foi a partida inaugural com o Equador vencendo o Catar — uma imagem poderosa para o futebol equatoriano.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Equador não possui conquistas na Copa América ou em Mundiais, porém suas categorias de base ganharam títulos, como o Sul-Americano Sub-20 em 2019."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Enner Valencia destacou-se como o maior artilheiro da história da seleção, principalmente em Copas do Mundo. Antonio Valencia e Agustín Delgado foram fundamentais em ciclos anteriores."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "O Equador qualificou-se para sua primeira Copa do Mundo na edição de 2002. Quatro anos depois, na Alemanha, a equipe registrou sua melhor campanha, avançando até as oitavas de final."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Enner Valencia obteve a marca estatística de marcar seis gols consecutivos de sua seleção em partidas de Copa do Mundo entre as edições de 2014 e 2022."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe atua habitualmente no Estádio Rodrigo Paz Delgado e no Estádio Olímpico Atahualpa em Quito. A altitude, que ultrapassa os 2.800 metros, historicamente representa um fator favorável à seleção em partidas como mandante."
+        }
+      ]
+    },
+    "NGA": {
+      "nickname": "Super Águias",
+      "founded": 1945,
+      "coach": "Augustine Eguavoen",
+      "worldCups": [],
+      "bestResult": "Oitavas de final — 1994, 1998, 2014",
+      "continentalTitles": [
+        {
+          "competition": "Copa das Nações Africanas (CAN)",
+          "years": [
+            1980,
+            1994,
+            2013
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Rashidi Yekini",
+        "goals": 37
+      },
+      "mostCaps": {
+        "name": "Ahmed Musa",
+        "caps": 110
+      },
+      "bio": "A Nigéria é a maior potência da África Ocidental no futebol, com três títulos da Copa das Nações Africanas e presença constante nas Copas do Mundo desde 1994. Conhecida pela velocidade, atletismo e talento individual, a seleção nigeriana sempre é vista como candidata a surpresa em grandes torneios.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Nigéria conquistou a Copa das Nações Africanas em três ocasiões: 1980, 1994 e 2013. A nação também foi medalhista de ouro nas Olimpíadas de 1996."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Nwankwo Kanu e Jay-Jay Okocha foram as estrelas da talentosa geração da década de 1990. Rashidi Yekini é também uma figura notável, sendo o autor do primeiro gol do país em Copas do Mundo."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A primeira participação do país no Mundial ocorreu em 1994, nos Estados Unidos, onde surpreendeu ao avançar para a fase eliminatória logo em sua estreia."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A Nigéria é o país africano que mais frequentemente alcançou a fase de oitavas de final em Copas do Mundo, obtendo sucesso em diferentes edições desde a sua primeira aparição."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A seleção adota o apelido 'Super Águias'. O nome faz referência ao escudo da associação de futebol e foi estabelecido após a declaração de independência do país."
+        }
+      ]
+    },
+    "PAR": {
+      "nickname": "La Albirroja",
+      "founded": 1906,
+      "coach": "Gustavo Alfaro",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 2010",
+      "continentalTitles": [
+        {
+          "competition": "Copa América",
+          "years": [
+            1953,
+            1979
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Roque Santa Cruz",
+        "goals": 32
+      },
+      "mostCaps": {
+        "name": "Paulo da Silva",
+        "caps": 148
+      },
+      "bio": "O Paraguai é uma surpresa recorrente do futebol sul-americano — uma nação pequena que já venceu duas Copas América e chegou às quartas de final em 2010. Famoso pela garra e pela mentalidade guerreira, o futebol paraguaio é maior do que seus recursos materiais sugerem.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Paraguai possui dois títulos da Copa América, conquistados nas edições de 1953 e 1979. Em competições mundiais, alcançou as quartas de final na Copa do Mundo de 2010."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "José Luis Chilavert, conhecido tanto por suas defesas quanto por suas cobranças de falta, foi uma figura essencial. Roque Santa Cruz e Carlos Gamarra foram destaque ofensivo e defensivo, respectivamente."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "O Paraguai participou da primeira edição da Copa do Mundo em 1930. A equipe registrou uma fase marcante entre 1998 e 2010, quando se classificou para quatro Mundiais consecutivos."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "José Luis Chilavert tornou-se o primeiro goleiro a marcar um gol de falta em uma partida das eliminatórias para a Copa do Mundo da FIFA."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A seleção é comumente referida como 'La Albirroja', uma denominação proveniente do espanhol que significa 'a branca e vermelha', cores predominantes em sua camisa listrada."
+        }
+      ]
+    },
+    "EGY": {
+      "nickname": "Os Faraós",
+      "founded": 1921,
+      "coach": "Hossam Hassan",
+      "worldCups": [],
+      "bestResult": "Fase de grupos — 1934, 1990, 2018",
+      "continentalTitles": [
+        {
+          "competition": "Copa das Nações Africanas (CAN)",
+          "years": [
+            1957,
+            1959,
+            1986,
+            1998,
+            2006,
+            2008,
+            2010
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Hossam Hassan",
+        "goals": 69
+      },
+      "mostCaps": {
+        "name": "Ahmed Hassan",
+        "caps": 184
+      },
+      "bio": "O Egito é o maior vencedor da Copa das Nações Africanas com 7 títulos — e durante anos teve em Ahmed Hassan o jogador com mais partidas internacionais do mundo. Com Mohamed Salah como estrela atual, a seleção busca finalmente passar da fase de grupos em uma Copa do Mundo.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Egito é o país com maior número de títulos na história da Copa das Nações Africanas, vencendo a competição sete vezes (1957, 1959, 1986, 1998, 2006, 2008 e 2010)."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Mohamed Salah é a principal figura contemporânea e líder técnico. Mahmoud El Khatib e Mohamed Aboutrika foram protagonistas em campanhas de títulos continentais nas décadas anteriores."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "O Egito foi a primeira nação africana a disputar a Copa do Mundo, participando da edição de 1934 na Itália. Passaram-se várias décadas até o retorno ao torneio em 1990 e, posteriormente, em 2018."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A seleção egípcia detém o recorde de conquistas consecutivas na Copa das Nações Africanas, vencendo as três edições disputadas entre 2006 e 2010 sob o comando do técnico Hassan Shehata."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe recebe a alcunha de 'Os Faraós', em referência à história antiga do Egito, fato que é frequentemente retratado pela mídia e utilizado no contexto cultural do futebol no país."
+        }
+      ]
+    },
+    "CMR": {
+      "nickname": "Leões Indomáveis",
+      "founded": 1960,
+      "coach": "Marc Brys",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 1990",
+      "continentalTitles": [
+        {
+          "competition": "Copa das Nações Africanas (CAN)",
+          "years": [
+            1984,
+            1988,
+            2000,
+            2002,
+            2017,
+            2021
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Samuel Eto'o",
+        "goals": 56
+      },
+      "mostCaps": {
+        "name": "Rigobert Song",
+        "caps": 137
+      },
+      "bio": "Camarões é a seleção africana mais bem-sucedida em Copas do Mundo, tendo chegado às quartas de final em 1990 — feito que transformou o país no símbolo do futebol africano no cenário global. Roger Milla e Samuel Eto'o são os ícones de duas gerações douradas dos Leões Indomáveis.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "Camarões possui cinco conquistas da Copa das Nações Africanas (1984, 1988, 2000, 2002 e 2017). A seleção também garantiu a medalha de ouro nos Jogos Olímpicos de 2000."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Roger Milla e Samuel Eto'o figuram entre os principais atacantes da história da seleção, com destaque mundial. Thomas N'Kono foi notável no cenário global pela sua atuação defensiva na década de 1990."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Na Copa do Mundo de 1990, na Itália, Camarões marcou história ao tornar-se a primeira equipe do continente africano a atingir as quartas de final de um Mundial da FIFA."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Roger Milla detém o recorde de jogador mais velho a marcar um gol em uma Copa do Mundo. Ele atingiu esse feito na edição de 1994, com a idade de 42 anos e 39 dias."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe adota a nomenclatura 'Leões Indomáveis'. Essa designação é usada de forma oficial e é amplamente reconhecida no cenário esportivo global, originando-se do início dos anos 1970."
+        }
+      ]
+    },
+    "CRC": {
+      "nickname": "Los Ticos",
+      "founded": 1921,
+      "coach": "Claudio Vivas",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 2014",
+      "continentalTitles": [
+        {
+          "competition": "Copa Ouro da CONCACAF",
+          "years": [
+            1963,
+            1969,
+            1989
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Rolando Fonseca",
+        "goals": 47
+      },
+      "mostCaps": {
+        "name": "Celso Borges",
+        "caps": 163
+      },
+      "bio": "A Costa Rica escreveu uma das maiores histórias do futebol moderno em 2014, quando avançou das quartas de final eliminando Uruguai, Itália e Inglaterra na fase de grupos. Uma nação de apenas 5 milhões de habitantes que superou gigantes do futebol com organização e garra.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Costa Rica conquistou o Campeonato da CONCACAF em três edições (1963, 1969 e 1989). A equipe obteve também múltiplos títulos da Copa Centroamericana ao longo de sua história."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "O goleiro Keylor Navas é o jogador costarriquenho de maior projeção internacional. Bryan Ruiz e Paulo Wanchope também desempenharam papéis essenciais durante os torneios mundiais."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A equipe estreou na Copa do Mundo de 1990, avançando para a segunda fase. Sua campanha mais marcante ocorreu em 2014, ao superar um grupo com ex-campeões mundiais e chegar às quartas de final."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Na Copa de 2014, a Costa Rica liderou o Grupo D sem sofrer derrotas, mesmo enfrentando Uruguai, Itália e Inglaterra. O time foi eliminado nas quartas de final através de uma disputa por pênaltis."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O apelido da equipe nacional e de seus torcedores é 'Los Ticos'. A palavra origina-se da tendência linguística dos habitantes da Costa Rica de formar diminutivos terminando com a partícula 'tico'."
+        }
+      ]
+    },
+    "GHA": {
+      "nickname": "Black Stars",
+      "founded": 1957,
+      "coach": "Otto Addo",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 2010",
+      "continentalTitles": [
+        {
+          "competition": "Copa das Nações Africanas (CAN)",
+          "years": [
+            1963,
+            1965,
+            1978,
+            1982
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Asamoah Gyan",
+        "goals": 51
+      },
+      "mostCaps": {
+        "name": "André Ayew",
+        "caps": 120
+      },
+      "bio": "Gana é a seleção africana mais regular nas Copas do Mundo do século XXI, tendo disputado quatro mundiais desde 2006. Em 2010, na Copa do Mundo em solo africano, chegou às quartas de final e quase levou o continente às semifinais em um jogo inesquecível contra o Uruguai.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "Gana venceu a Copa das Nações Africanas quatro vezes (1963, 1965, 1978 e 1982). A seleção avançou até as quartas de final da Copa do Mundo da FIFA em 2010."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Asamoah Gyan é o maior artilheiro da história da seleção, notabilizando-se por seu rendimento em Copas. Abedi Pelé e Tony Yeboah foram nomes pioneiros de destaque na equipe entre os anos 1980 e 1990."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Apesar do sucesso continental na primeira metade do século, a equipe estreou em Copas do Mundo apenas em 2006. Em 2010, tornou-se o terceiro país africano a atingir as quartas de final."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Asamoah Gyan é o maior artilheiro africano da história das Copas do Mundo, superando outros atacantes do continente ao anotar um total de seis gols ao longo de suas participações no torneio."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A seleção é comumente referida como 'Estrelas Negras' (Black Stars), em direta referência ao elemento central presente no design da bandeira nacional de Gana."
+        }
+      ]
+    },
+    "TUN": {
+      "nickname": "Os Águias de Cartago",
+      "founded": 1956,
+      "coach": "Kais Yaâkoubi",
+      "worldCups": [],
+      "bestResult": "Fase de grupos — 1978 (única vitória histórica em Copas antes de 2022)",
+      "continentalTitles": [
+        {
+          "competition": "Copa das Nações Africanas (CAN)",
+          "years": [
+            2004
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Issam Jemaa",
+        "goals": 36
+      },
+      "mostCaps": {
+        "name": "Radhi Jaïdi",
+        "caps": 105
+      },
+      "bio": "A Tunísia é uma das seleções africanas mais presentes nas Copas do Mundo, com seis participações. Em 1978, tornou-se a primeira seleção africana a vencer uma partida em um mundial — e campeã africana em 2004, seu maior título.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Tunísia conquistou a Copa das Nações Africanas em 2004, torneio no qual sediou a competição e venceu a decisão contra a equipe de Marrocos."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Wahbi Khazri e Youssef Msakni são jogadores com considerável impacto ofensivo na última década. Radhi Jaïdi participou com consistência defensiva durante a conquista do título africano."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Em 1978, a seleção da Tunísia participou da Copa do Mundo na Argentina. Na ocasião, registrou uma vitória sobre o México, que representou o primeiro triunfo de um time da África em um Mundial."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A seleção é a detentora do recorde de maior número de presenças consecutivas na Copa das Nações Africanas, qualificando-se ininterruptamente para o evento desde a metade da década de 1990."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "As Águias de Cartago, como são denominadas, fazem uma referência histórica a Cartago, um antigo império e cidade cujo território histórico localiza-se dentro das fronteiras da atual Tunísia."
+        }
+      ]
+    },
+    "SAU": {
+      "nickname": "Os Falcões Verdes",
+      "founded": 1959,
+      "coach": "Herve Renard",
+      "worldCups": [],
+      "bestResult": "Oitavas de final — 1994",
+      "continentalTitles": [
+        {
+          "competition": "Copa Asiática (AFC)",
+          "years": [
+            1984,
+            1988,
+            1996
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Majed Abdullah",
+        "goals": 72
+      },
+      "mostCaps": {
+        "name": "Mohamed Al-Deayea",
+        "caps": 178
+      },
+      "bio": "A Arábia Saudita é a maior potência do futebol árabe, com quatro títulos da Copa Asiática. Em 2022, protagonizou uma das maiores surpresas da história ao vencer a Argentina de Messi por 2×1 — um resultado que parou o mundo do futebol.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Arábia Saudita venceu a Copa da Ásia em três edições (1984, 1988 e 1996). A nação também detém títulos da Copa do Golfo Árabe. Seu melhor desempenho no Mundial ocorreu em 1994."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Sami Al-Jaber e Majed Abdullah são figuras históricas centrais devido ao número de gols em competições internacionais. Na atualidade, Salem Al-Dawsari atua como a principal referência do elenco."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Sua primeira Copa do Mundo ocorreu nos Estados Unidos, em 1994. A seleção surpreendeu ao progredir para a fase de oitavas de final após triunfos contra adversários europeus no grupo."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A vitória contra a equipe da Argentina, que posteriormente se consagraria campeã no Mundial de 2022, resultou no encerramento da expressiva invencibilidade de 36 partidas que os sul-americanos ostentavam."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe é amplamente referida por dois apelidos: os 'Falcões Verdes', em associação às cores de sua bandeira, e 'Os Filhos do Deserto', em referência às características geográficas do território."
+        }
+      ]
+    },
+    "JAM": {
+      "nickname": "Reggae Boyz",
+      "founded": 1910,
+      "coach": "Steve McClaren",
+      "worldCups": [],
+      "bestResult": "Fase de grupos — 1998",
+      "continentalTitles": [],
+      "topScorer": {
+        "name": "Luton Shelton",
+        "goals": 35
+      },
+      "mostCaps": {
+        "name": "Ian Goodison",
+        "caps": 128
+      },
+      "bio": "A Jamaica é conhecida pelos Reggae Boyz, apelido que reflete o espírito musical e colorido da nação caribenha. Sua única Copa do Mundo foi em 1998 na França, quando levou 100 mil torcedores entusiasmados e fez o torneio sorrir com sua alegria e velocidade.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Jamaica possui seis títulos da Copa do Caribe. No âmbito continental da CONCACAF, alcançou a final da Copa Ouro em duas oportunidades recentes (2015 e 2017), obtendo o vice-campeonato em ambas."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Luton Shelton e Deon Burton destacaram-se como atacantes do país. Leon Bailey e Michail Antonio constituem a liderança ofensiva em tempos recentes após experiências no futebol europeu."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A principal conquista histórica do país ocorreu ao garantir classificação para a Copa do Mundo de 1998. Na ocasião, o time conseguiu uma vitória oficial contra a seleção do Japão."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A Jamaica tornou-se o primeiro país caribenho de língua inglesa a participar de uma edição da Copa do Mundo, solidificando sua posição na região perante as federações globais."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A denominação oficial conferida à equipe é 'Reggae Boyz'. O nome presta uma homenagem direta ao gênero musical reggae, de profunda importância cultural para a identidade do país."
+        }
+      ]
+    },
+    "QAT": {
+      "nickname": "Os Maroons",
+      "founded": 1960,
+      "coach": "Tintín Márquez",
+      "worldCups": [],
+      "bestResult": "Fase de grupos — 2022 (eliminado como anfitrião)",
+      "continentalTitles": [
+        {
+          "competition": "Copa Asiática (AFC)",
+          "years": [
+            2019,
+            2023
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Almoez Ali",
+        "goals": 54
+      },
+      "mostCaps": {
+        "name": "Hassan Al-Haydos",
+        "caps": 183
+      },
+      "bio": "O Catar entrou para a história ao sediar a Copa do Mundo de 2022 — o menor país já a receber o torneio e o primeiro na região árabe. A seleção local, porém, foi eliminada na fase de grupos sem vencer um jogo, tornando-se o primeiro anfitrião a ser eliminado na rodada inaugural.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Catar assegurou os títulos da Copa da Ásia nas edições de 2019 e 2023. A seleção possui histórico vitorioso na Copa do Golfo Árabe."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Almoez Ali e Akram Afif assumiram papel proeminente ao conduzirem o sucesso asiático. Hassan Al-Haydos, com premiações continentais, foi outra peça-chave no meio-campo."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Após longo processo sem qualificações, a seleção estreou na Copa do Mundo em 2022. A participação aconteceu por conta do status de país-sede do torneio garantido na eleição da FIFA."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A campanha no título asiático de 2019 registrou números excepcionais: a equipe catariana marcou um total de 19 gols ao longo das partidas e sofreu apenas um único gol na final da competição."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "Os jogadores envergam a coloração vinho e branca inspirada em sua bandeira. Eles recebem a denominação 'Al Annabi', expressão em árabe que significa literalmente 'Os Marrons'."
+        }
+      ]
+    },
+    "PER": {
+      "nickname": "La Blanquirroja",
+      "founded": 1922,
+      "coach": "Jorge Fossati",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 1970, 1978",
+      "continentalTitles": [
+        {
+          "competition": "Copa América",
+          "years": [
+            1939,
+            1975
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Paolo Guerrero",
+        "goals": 40
+      },
+      "mostCaps": {
+        "name": "Roberto Palacios",
+        "caps": 128
+      },
+      "bio": "O Peru é um país de rica tradição futebolística que viveu seu auge nos anos 1970 com Teófilo Cubillas — um dos maiores jogadores da América do Sul de todos os tempos. Após 36 anos de ausência, voltou às Copas em 2018 e agora retorna ao palco mundial em 2026.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Peru venceu a Copa América em duas oportunidades, nas edições de 1939 e 1975. Em Mundiais, o país atingiu as quartas de final nos anos de 1970 e 1978."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Teófilo Cubillas foi o expoente máximo na década de 1970, liderando a geração mais destacada. Paolo Guerrero converteu-se no maior artilheiro da seleção em competições contemporâneas."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A equipe participou da edição inicial do Mundial de 1930 no Uruguai. Após o auge do desempenho nas décadas de 70, o Peru encerrou um longo hiato ao retornar à Copa do Mundo da Rússia em 2018."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A seleção peruana registra notável continuidade nos confrontos eliminatórios, como foi o caso das repescagens intercontinentais para as Copas da Rússia (2018) e do Catar (2022)."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O apelido 'La Blanquirroja' remete ao clássico uniforme peruano: uma camisa predominantemente branca atravessada por uma espessa faixa diagonal vermelha, utilizada oficialmente a partir de 1936."
+        }
+      ]
+    },
+    "CHL": {
+      "nickname": "La Roja del Sur",
+      "founded": 1895,
+      "coach": "Ricardo Gareca",
+      "worldCups": [],
+      "bestResult": "3º lugar — 1962 (anfitrião)",
+      "continentalTitles": [
+        {
+          "competition": "Copa América",
+          "years": [
+            2015,
+            2016
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Alexis Sánchez",
+        "goals": 51
+      },
+      "mostCaps": {
+        "name": "Alexis Sánchez",
+        "caps": 163
+      },
+      "bio": "O Chile viveu sua era mais gloriosa entre 2015 e 2016, quando venceu duas Copas América consecutivas com a geração de Alexis Sánchez e Arturo Vidal — um nível nunca antes atingido pelo futebol chileno. Em 1962, como anfitrião, chegou ao 3º lugar na Copa do Mundo.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Chile conquistou o campeonato da Copa América nas edições de 2015 e 2016, a última delas, a edição comemorativa do Centenário. No Mundial, a seleção obteve o terceiro lugar em 1962."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "A Geração Dourada da década de 2010 contou com atletas essenciais como Alexis Sánchez e Arturo Vidal. Elías Figueroa destacou-se nas décadas passadas pelo desempenho em torneios globais."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "O país participou do Mundial pioneiro de 1930 e co-organizou a edição de 1962, onde logrou seu melhor desempenho. Retornou com competitividade acentuada sob o comando de técnicos adeptos à pressão alta."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A nação encerrou uma ausência quase secular de troféus ao triunfar consecutivamente nas duas edições de Copa América contra a equipe da Argentina, através da disputa por penalidades máximas em ambas."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A equipe é reconhecida pela alcunha 'La Roja' (A Vermelha). É frequente que seus torcedores entoem o grito 'Chi-Chi-Chi, Le-Le-Le, Viva Chile!' em todas as partidas disputadas em estádios."
+        }
+      ]
+    },
+    "BOL": {
+      "nickname": "La Verde",
+      "founded": 1925,
+      "coach": "Oscar Villegas",
+      "worldCups": [],
+      "bestResult": "Fase de grupos",
+      "continentalTitles": [
+        {
+          "competition": "Copa América",
+          "years": [
+            1963
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Marcelo Martins",
+        "goals": 31
+      },
+      "mostCaps": {
+        "name": "Marcelo Martins",
+        "caps": 108
+      },
+      "bio": "A Bolívia é famosa pelo seu estádio em La Paz, a 3.640 metros de altitude — o mais alto dos mundiais e o mais intimidador do mundo para visitantes. Embora não seja uma potência, é o único país a vencer uma Copa América sem convidar seleções de outros continentes.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Bolívia conquistou o título da Copa América de 1963, organizada dentro de suas fronteiras. A equipe obteve também um vice-campeonato continental no ano de 1997."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Marco Etcheverry destacou-se técnica e ofensivamente ao liderar a geração responsável pela classificação na década de 1990. Marcelo Martins Moreno figura como o artilheiro histórico em anos recentes."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "O país foi uma das nações convidadas a disputar a primeira Copa do Mundo em 1930. A equipe participou adicionalmente do torneio mundial de 1950, no Brasil, e do evento sediado nos Estados Unidos em 1994."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Em 1993, a Bolívia aplicou a primeira derrota da história da seleção do Brasil durante uma partida válida pelas eliminatórias continentais para a Copa do Mundo."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O nome 'La Verde' baseia-se na tradicional camiseta utilizada pelos atletas. A vantagem como mandante no Estádio Hernando Siles, a mais de 3.600 metros de altitude em La Paz, é frequentemente observada."
+        }
+      ]
+    },
+    "ALG": {
+      "nickname": "Os Fennecs",
+      "founded": 1962,
+      "coach": "Vladimir Petkovic",
+      "worldCups": [],
+      "bestResult": "Oitavas de final — 2014",
+      "continentalTitles": [
+        {
+          "competition": "Copa das Nações Africanas (CAN)",
+          "years": [
+            1990,
+            2019
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Islam Slimani",
+        "goals": 46
+      },
+      "mostCaps": {
+        "name": "Lakhdar Belloumi",
+        "caps": 100
+      },
+      "bio": "A Argélia é uma das seleções mais vitoriosas da África, com dois títulos da Copa das Nações Africanas. Em 2014 no Brasil, chegou às oitavas de final e deu um susto na Alemanha, que precisou da prorrogação para eliminar os argelinos por 2×1.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Argélia é bicampeã da Copa das Nações Africanas, com triunfos nas edições de 1990 e 2019. A equipe também faturou a Copa Árabe no ano de 2021."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Riyad Mahrez alcançou notabilidade em competições internacionais contemporâneas. Lakhdar Belloumi obteve destaque nos Mundiais passados, juntamente com Islam Slimani, atual goleador do time."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A equipe argelina alcançou sua primeira participação em Mundiais em 1982, vencendo a Alemanha Ocidental logo na primeira fase. Sua progressão mais distante ocorreu na edição realizada em 2014."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "A Argélia registrou a expressiva sequência de 35 partidas sem derrotas no período de 2018 a 2022. O índice representou a mais longa trajetória de invencibilidade da história no continente africano."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "Os atletas representam os 'Fennecs', ou raposas-do-deserto, pequenos animais adaptados às condições extremas do Norte da África, cujas feições tornaram-se símbolo nacional esportivo."
+        }
+      ]
+    },
+    "CIV": {
+      "nickname": "Os Elefantes",
+      "founded": 1960,
+      "coach": "Emerse Faé",
+      "worldCups": [],
+      "bestResult": "Fase de grupos — 2006, 2010, 2014",
+      "continentalTitles": [
+        {
+          "competition": "Copa das Nações Africanas (CAN)",
+          "years": [
+            1992,
+            2015,
+            2023
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Didier Drogba",
+        "goals": 65
+      },
+      "mostCaps": {
+        "name": "Didier Zokora",
+        "caps": 123
+      },
+      "bio": "A Costa do Marfim é a maior potência do futebol da África Ocidental, com três títulos da Copa das Nações Africanas. A geração liderada por Didier Drogba, considerado um dos melhores atacantes africanos de todos os tempos, não conseguiu passar da fase de grupos em Copas apesar do enorme talento.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Costa do Marfim venceu a Copa das Nações Africanas em 1992, 2015 e 2023. A nação tem retrospecto consistente nos torneios do continente nas últimas décadas."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Didier Drogba foi peça-chave para o reconhecimento global do futebol do país. Yaya Touré obteve prestígio em clubes de elite europeus. Laurent Pokou notabilizou-se como principal nome das antigas gerações."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "O país participou pela primeira vez do torneio em 2006. Seguiram-se outras classificações contínuas nas edições de 2010 e 2014, época em que sua Geração de Ouro esteve ativa na seleção."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Em competições regionais, os marfinenses ostentaram recorde por atuarem no mais longo desempate de pênaltis de finais da Copa das Nações Africanas nas edições de 1992 e 2015."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "Os membros da equipe são vulgarmente descritos como os 'Elefantes'. O mamífero de grande porte, além de representar força e união, também está integrado à figura do brasão oficial."
+        }
+      ]
+    },
+    "NZL": {
+      "nickname": "All Whites",
+      "founded": 1891,
+      "coach": "Darren Bazeley",
+      "worldCups": [],
+      "bestResult": "Fase de grupos — 1982, 2010",
+      "continentalTitles": [
+        {
+          "competition": "Copa das Nações da OFC",
+          "years": [
+            1973,
+            1998,
+            2002,
+            2008,
+            2016,
+            2024
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Chris Wood",
+        "goals": 34
+      },
+      "mostCaps": {
+        "name": "Ivan Vicelich",
+        "caps": 88
+      },
+      "bio": "A Nova Zelândia é melhor conhecida pelo rugby, mas sua seleção de futebol tem histórias surpreendentes. Em 2010, na Copa do Mundo na África do Sul, os All Whites fizeram história ao terminar a fase de grupos invictos — com três empates — e ainda assim foram eliminados.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A Nova Zelândia dominou historicamente a Copa das Nações da OFC em seis ocasiões, consolidando seu papel de relevância ao lado e após a transferência regional da Austrália."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Wynton Rufer firmou-se como artilheiro nas temporadas pretéritas. Nos períodos subsequentes, Chris Wood e Ryan Nelsen mantiveram atuação destacada pela seleção no futebol europeu."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Sua incursão debutante na Copa do Mundo aconteceu no ano de 1982. A seleção retornou à fase de grupos do Mundial de 2010 na África do Sul após vencer repescagens."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Na Copa do Mundo de 2010, a equipe encerrou o torneio em caráter invicto, computando três empates em três partidas realizadas contra Itália, Eslováquia e Paraguai."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "Na contrapartida em relação aos atletas da modalidade rugby (os All Blacks), o plantel nacional de futebol adotou o cognome de 'All Whites' em função dos uniformes padronizados que usavam em 1982."
+        }
+      ]
+    },
+    "HON": {
+      "nickname": "Los Catrachos",
+      "founded": 1948,
+      "coach": "Reinaldo Rueda",
+      "worldCups": [],
+      "bestResult": "Fase de grupos",
+      "continentalTitles": [
+        {
+          "competition": "Copa Ouro da CONCACAF",
+          "years": [
+            1981
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Carlos Pavón",
+        "goals": 57
+      },
+      "mostCaps": {
+        "name": "Maynor Figueroa",
+        "caps": 181
+      },
+      "bio": "Honduras é a menor nação da CONCACAF a classificar-se regularmente para Copas do Mundo — com uma identidade de jogo garra e galpão defensivo. Sua presença em 2026 é especialmente significativa por ser um dos países anfitriões da Copa (México é o mais próximo geograficamente).",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "Honduras assegurou o Campeonato da CONCACAF no ano de 1981 e também as honrarias na Copa Centroamericana em diversas campanhas pontuais durante o passar dos anos."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Carlos Pavón configura como o artilheiro com maiores registros para a nação. Amado Guevara, bem como David Suazo e Wilson Palacios, estruturaram a organização nacional no século presente."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Os hondurenhos compareceram pela primeira vez à Copa do Mundo na temporada de 1982, repetindo seu ingresso perante os certames globais somente em 2010 e, na sequência, 2014."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Nas participações registradas nas competições de 1982 e 2010, Honduras destacou-se por ter segurado empates contra anfitriões (Espanha) e seleções tecnicamente cotadas (Suíça)."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "Os adeptos frequentemente denominam o escrete como 'La Bicolor', derivando esse título em apreço à coloração estrita do branco e do azul pertencentes aos símbolos do país caribenho."
+        }
+      ]
+    },
+    "USA": {
+      "nickname": "Team USA",
+      "founded": 1913,
+      "coach": "Mauricio Pochettino",
+      "worldCups": [],
+      "bestResult": "3º lugar — 1930",
+      "continentalTitles": [
+        {
+          "competition": "Copa Ouro da CONCACAF",
+          "years": [
+            1991,
+            2002,
+            2005,
+            2007,
+            2013,
+            2017,
+            2021
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Clint Dempsey / Landon Donovan",
+        "goals": 57
+      },
+      "mostCaps": {
+        "name": "Cobi Jones",
+        "caps": 164
+      },
+      "bio": "Os Estados Unidos são um dos países anfitriões do Mundial 2026 e vivem o maior momento de interesse pelo futebol em toda a sua história. Com a MLS em crescimento, jogadores formados nas melhores academias europeias e um país de 330 milhões de pessoas, a geração atual é a mais talentosa da história.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "A seleção dos Estados Unidos contabiliza múltiplas láureas da Copa Ouro da CONCACAF, em paralelo com as vitórias na inauguração das temporadas da Liga das Nações da mesma entidade."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Landon Donovan, juntamente com Clint Dempsey, são os maiores goleadores americanos. Christian Pulisic desponta como principal liderança nos anos em curso."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Em 1930, a equipe atuou na edição fundamental de Mundiais e atingiu ali a fase semifinal. Em 1994, desempenhou as prerrogativas de nação organizadora e propulsora do certame."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "O país figura em um recorde histórico, pois obteve a expressiva marca demográfica como evento futebolístico de maior comparecimento coletivo de públicos aos estádios locais no torneio de 1994."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "O programa nacional adota internamente a denominação 'USMNT', servindo assim para discernir, de forma direta e estrutural, a entidade masculina das atletas femininas no desporto em tela."
+        }
+      ]
+    },
+    "CAN": {
+      "nickname": "Les Rouges",
+      "founded": 1912,
+      "coach": "Jesse Marsch",
+      "worldCups": [],
+      "bestResult": "Fase de grupos — 1986",
+      "continentalTitles": [
+        {
+          "competition": "Copa Ouro da CONCACAF",
+          "years": [
+            1985,
+            2000
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Cyle Larin",
+        "goals": 29
+      },
+      "mostCaps": {
+        "name": "Atiba Hutchinson",
+        "caps": 104
+      },
+      "bio": "O Canadá está vivendo seu momento mais importante no futebol, após qualificar-se pela segunda vez para uma Copa do Mundo em 2022 após 36 anos de ausência. Com Jonathan David e Alphonso Davies, a seleção tem dois dos melhores jovens talentos do futebol mundial.",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O Canadá venceu o Campeonato da CONCACAF em 1985 e conquistou a Copa Ouro na edição de 2000. O país atingiu o estágio de oitavas na edição recém disputada de certames americanos."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Alphonso Davies emergiu de forma global e impulsionou as dinâmicas competitivas nacionais recentes. Atiba Hutchinson destacou-se por suas campanhas de longevidade nas atuações da seleção e Jonathan David solidificou-se como artilheiro."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "A incursão histórica inaugural de canadenses sobre os campos de Mundiais incidiu no certame de 1986. Transcorreram cerca de trinta e seis anos, restabelecendo presença somente nas seletivas ao evento global de 2022."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "Durante as fases competitivas em andamento para o torneio passado, Alphonso Davies foi incumbido de marcar o pioneiro gol da comitiva no Mundial sediado perante a audiência no Catar."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "A terminologia adotada em canais televisivos baseia-se muitas vezes na nomenclatura 'Les Rouges' pelos francófonos, indicando unicamente as camisas rubras que a federação exibe reiteradamente em atividades."
+        }
+      ]
+    },
+    "MEX": {
+      "nickname": "El Tri",
+      "founded": 1927,
+      "coach": "Javier Aguirre",
+      "worldCups": [],
+      "bestResult": "Quartas de final — 1970, 1986",
+      "continentalTitles": [
+        {
+          "competition": "Copa Ouro da CONCACAF",
+          "years": [
+            1965,
+            1971,
+            1977,
+            1993,
+            1996,
+            1998,
+            2003,
+            2009,
+            2011,
+            2015,
+            2019,
+            2023
+          ]
+        }
+      ],
+      "topScorer": {
+        "name": "Javier Hernández",
+        "goals": 52
+      },
+      "mostCaps": {
+        "name": "Andrés Guardado",
+        "caps": 179
+      },
+      "bio": "O México é a maior potência da CONCACAF em termos de títulos — com 12 Copas Ouro — e o anfitrião mais apaixonado da Copa de 2026. El Tri tem uma das maiores torcidas do mundo e o Estadio Azteca é o único a ter sediado três Copas do Mundo (1970, 1986 e 2026).",
+      "curiosities": [
+        {
+          "icon": "🏆",
+          "category": "Títulos",
+          "text": "O México estabelece vasta vantagem quantitativa em relação ao domínio da Copa Ouro da CONCACAF. Assegurou adicionalmente o título da Copa das Confederações em evento formal de 1999."
+        },
+        {
+          "icon": "⭐",
+          "category": "Estrelas",
+          "text": "Hugo Sánchez notabilizou-se como figura clássica incontornável do esquadrão, acompanhado do defensor Rafael Márquez. Javier Hernández atua atualmente no patamar de principal goleador dos dados oficiais."
+        },
+        {
+          "icon": "📅",
+          "category": "História",
+          "text": "Os mexicanos contam atuações desde o campeonato formativo em 1930 e já albergaram com regularidade dupla as atuações em 1970 e 1986. Nas duas ocasiões pátrias, prosseguiram até a marca das quartas de final."
+        },
+        {
+          "icon": "🎯",
+          "category": "Recordes",
+          "text": "O escrete dispõe do marco particular relativo à frequência continuada de passagens aos oitavos de final perante mundiais de 1994 a 2018, etapa que configurou contínua barreira limitadora da jornada mexicana."
+        },
+        {
+          "icon": "🌎",
+          "category": "Curiosidade",
+          "text": "Os representantes e devotos reportam-se às três cores de matizes visuais como 'El Tri'. A paleta incorpora o verde, encarnado e branco, replicados de sua padronagem vexilológica nacional."
+        }
+      ]
+    }
+  }
+}
