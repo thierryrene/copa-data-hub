@@ -8,7 +8,7 @@ import { showToast } from '../components/toast.js';
 import { escapeHTML, isTrustedWikiUrl } from '../util/html.js';
 import { setFavoriteTeam } from '../state.js';
 import { loadTeamDossier, getTeamDossierCached } from '../api/teamLoader.js';
-import { extractCuriosities } from '../api/wikipedia.js';
+import { loadEnrichedTeams, getTeamEnriched } from '../api/enriched.js';
 import { fetchSquad, buildLineup } from '../api/squad.js';
 import { setSEO, schemaSportsTeam } from '../util/seo.js';
 
@@ -63,6 +63,139 @@ function renderNotFound(rawSlug) {
   `;
 }
 
+// ── Honras: Copas do Mundo + títulos continentais ──
+function renderHonors(enriched) {
+  if (!enriched) return '<p class="text-sm text-muted">Carregando honras…</p>';
+
+  const wc = enriched.worldCups || [];
+  const continental = enriched.continentalTitles || [];
+
+  const wcBlock = wc.length
+    ? `
+      <div class="honor-block">
+        <div class="honor-block__header">
+          <span class="honor-block__trophy">🏆</span>
+          <span class="honor-block__label">Copa do Mundo (${wc.length}×)</span>
+        </div>
+        <div class="honor-block__years">${wc.map(y => `<span>${y}</span>`).join('')}</div>
+      </div>`
+    : `
+      <div class="honor-block honor-block--none">
+        <div class="honor-block__header">
+          <span class="honor-block__trophy">⚽</span>
+          <span class="honor-block__label">Nunca venceu a Copa do Mundo</span>
+        </div>
+      </div>`;
+
+  const contBlocks = continental.map(ct => {
+    const count = ct.years.length;
+    const shown = ct.years.slice(-4);
+    const extra = ct.years.length > 4 ? ct.years.length - 4 : 0;
+    return `
+      <div class="honor-block">
+        <div class="honor-block__header">
+          <span class="honor-block__trophy">🥇</span>
+          <span class="honor-block__label">${escapeHTML(ct.competition)} (${count}×)</span>
+        </div>
+        <div class="honor-block__years">
+          ${shown.map(y => `<span>${y}</span>`).join('')}
+          ${extra ? `<span class="honor-block__years-more">+${extra}</span>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  return `<div class="honors-grid">${wcBlock}${contBlocks}</div>`;
+}
+
+// ── Copa a Copa: histórico visual de Copas do Mundo ──
+const ALL_WORLD_CUPS = [1930,1934,1938,1950,1954,1958,1962,1966,1970,1974,1978,1982,1986,1990,1994,1998,2002,2006,2010,2014,2018,2022];
+
+function renderWorldCupTimeline(enriched, teamCode) {
+  if (!enriched) return '';
+  const wins = new Set(enriched.worldCups || []);
+  const best = enriched.bestResult || null;
+
+  if (!wins.size && !best) return '';
+
+  // Participações baseadas em confederação e tamanho do torneio
+  // (lógica aproximada: UEFA/CONMEBOL = participaram desde 1934; times africanos/asiáticos desde anos 70/80)
+  const hasLongHistory = ['ARG','BRA','GER','ITA','FRA','ENG','ESP','POR','URU','BEL','NED','CRO'].includes(teamCode);
+  const hasMidHistory = ['SEN','NGA','CMR','GHA','EGY','CIV','JPN','KOR','AUS','IRN','COL','MEX'].includes(teamCode);
+  const startYear = hasLongHistory ? 1930 : hasMidHistory ? 1982 : 2006;
+
+  const relevantCups = ALL_WORLD_CUPS.filter(y => y >= startYear);
+  const wonCount = wins.size;
+
+  return `
+    <div class="wc-timeline">
+      <div class="wc-timeline__header">
+        ${wonCount ? `<span class="wc-timeline__badges">${'🏆'.repeat(Math.min(wonCount, 5))} ${wonCount > 5 ? `+${wonCount - 5}` : ''}</span>` : ''}
+        <span class="wc-timeline__best">${escapeHTML(best || 'Sem títulos mundiais')}</span>
+      </div>
+      <div class="wc-timeline__grid">
+        ${relevantCups.map(y => {
+          const isWin = wins.has(y);
+          return `
+            <div class="wc-timeline__item ${isWin ? 'wc-timeline__item--win' : ''}">
+              <span class="wc-timeline__year">${y}</span>
+              ${isWin ? `<span class="wc-timeline__trophy">🏆</span>` : `<span class="wc-timeline__dot"></span>`}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ── Records: topScorer + mostCaps ──
+function renderRecords(enriched) {
+  if (!enriched) return '';
+  const { topScorer, mostCaps } = enriched;
+  if (!topScorer && !mostCaps) return '';
+  return `
+    <div class="team-records">
+      ${topScorer ? `
+        <div class="team-record">
+          <span class="team-record__icon">⚽</span>
+          <div class="team-record__body">
+            <span class="team-record__label">Maior artilheiro</span>
+            <span class="team-record__value">${escapeHTML(topScorer.name)}</span>
+            <span class="team-record__sub">${topScorer.goals} gols</span>
+          </div>
+        </div>` : ''}
+      ${mostCaps ? `
+        <div class="team-record">
+          <span class="team-record__icon">🎽</span>
+          <div class="team-record__body">
+            <span class="team-record__label">Mais jogos</span>
+            <span class="team-record__value">${escapeHTML(mostCaps.name)}</span>
+            <span class="team-record__sub">${mostCaps.caps} partidas</span>
+          </div>
+        </div>` : ''}
+    </div>
+  `;
+}
+
+// ── Curiosidades como cards categorizados ──
+function renderCuriosityCards(curiosities) {
+  if (!curiosities?.length) {
+    return '<p class="text-sm text-muted">Sem curiosidades disponíveis.</p>';
+  }
+  return `
+    <div class="curiosity-cards">
+      ${curiosities.map(c => `
+        <div class="curiosity-card">
+          <div class="curiosity-card__header">
+            <span class="curiosity-card__icon">${c.icon}</span>
+            <span class="curiosity-card__category">${escapeHTML(c.category)}</span>
+          </div>
+          <p class="curiosity-card__text">${escapeHTML(c.text)}</p>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
 function render(state, params) {
   const rawSlug = String(params?.slug || '').toLowerCase();
   const team = getTeamBySlug(rawSlug);
@@ -86,31 +219,53 @@ function render(state, params) {
     ? teamFixtures.map(f => renderTeamFixtureRow(f, team.code, predictionsByFixture.get(f.id))).join('')
     : '<p class="text-sm text-muted">Nenhum jogo cadastrado ainda para esta seleção no MVP.</p>';
 
+  // ── Comparativo split-bar ──
+  function splitBar(leftVal, rightVal, leftLabel, rightLabel, lowerIsBetter = false) {
+    const l = Number(leftVal) || 0;
+    const r = Number(rightVal) || 0;
+    const total = l + r || 1;
+    const lPct = Math.round((l / total) * 100);
+    const rPct = 100 - lPct;
+    const leftWins = lowerIsBetter ? l < r : l > r;
+    const rightWins = lowerIsBetter ? r < l : r > l;
+    return `
+      <div class="split-stat">
+        <span class="split-stat__val ${leftWins ? 'split-stat__val--win' : ''}">${leftLabel}</span>
+        <div class="split-stat__bar">
+          <div class="split-stat__seg split-stat__seg--left" style="width:${lPct}%"></div>
+          <div class="split-stat__seg split-stat__seg--right" style="width:${rPct}%"></div>
+        </div>
+        <span class="split-stat__val split-stat__val--right ${rightWins ? 'split-stat__val--win' : ''}">${rightLabel}</span>
+      </div>
+    `;
+  }
+
   const compareHTML = canCompare ? `
     <div class="team-page__compare" id="team-compare">
       <div class="team-page__compare-header">
         ${icon('gitCompare', 18, 'text-blue')}
-        <span class="team-page__compare-title">Comparar com ${favoriteTeam.flag} ${escapeHTML(favoriteTeam.name)}</span>
+        <span class="team-page__compare-title">Comparativo</span>
       </div>
-      <div class="team-page__compare-grid">
-        <div class="team-page__compare-col">
-          <div class="team-page__compare-flag">${favoriteTeam.flag}</div>
-          <div class="team-page__compare-name">${escapeHTML(favoriteTeam.name)}</div>
-          <div class="team-page__compare-row"><span>Ranking</span><strong>#${favoriteTeam.ranking}</strong></div>
-          <div class="team-page__compare-row"><span>Confederação</span><strong>${escapeHTML(favoriteTeam.confederation)}</strong></div>
-          <div class="team-page__compare-row"><span>Grupo</span><strong>${getGroupForTeam(favoriteTeam.code)?.id || '—'}</strong></div>
-        </div>
-        <div class="team-page__compare-vs">VS</div>
-        <div class="team-page__compare-col">
-          <div class="team-page__compare-flag">${team.flag}</div>
-          <div class="team-page__compare-name">${escapeHTML(team.name)}</div>
-          <div class="team-page__compare-row"><span>Ranking</span><strong>#${team.ranking}</strong></div>
-          <div class="team-page__compare-row"><span>Confederação</span><strong>${escapeHTML(team.confederation)}</strong></div>
-          <div class="team-page__compare-row"><span>Grupo</span><strong>${group?.id || '—'}</strong></div>
-        </div>
+      <div class="compare-teams-header">
+        <div class="compare-team-flag">${favoriteTeam.flag}<br><span>${escapeHTML(favoriteTeam.code)}</span></div>
+        <div class="compare-vs-badge">VS</div>
+        <div class="compare-team-flag">${team.flag}<br><span>${escapeHTML(team.code)}</span></div>
       </div>
-      <div class="team-page__compare-hint">
-        Ranking FIFA mais baixo é melhor · diferença de ${Math.abs(favoriteTeam.ranking - team.ranking)} posições
+      <div class="split-stats">
+        <div class="split-stat__lbl">Ranking FIFA <span class="split-stat__hint">(menor = melhor)</span></div>
+        ${splitBar(48 - favoriteTeam.ranking, 48 - team.ranking, `#${favoriteTeam.ranking}`, `#${team.ranking}`, false)}
+        <div class="split-stat__lbl">Copas do Mundo <span class="split-stat__hint" id="compare-wc-hint"></span></div>
+        <div id="compare-wc-row"><div class="split-stat__text"><span>—</span><span>—</span></div></div>
+        <div class="split-stat__lbl">Confederação</div>
+        <div class="split-stat__text">
+          <span>${escapeHTML(favoriteTeam.confederation)}</span>
+          <span>${escapeHTML(team.confederation)}</span>
+        </div>
+        <div class="split-stat__lbl">Grupo</div>
+        <div class="split-stat__text">
+          <span>Grupo ${getGroupForTeam(favoriteTeam.code)?.id || '—'}</span>
+          <span>Grupo ${group?.id || '—'}</span>
+        </div>
       </div>
     </div>
   ` : '';
@@ -126,14 +281,15 @@ function render(state, params) {
     <section class="team-page__hero" data-team-code="${escapeHTML(team.code)}">
       <div class="team-page__hero-flag" aria-hidden="true">${team.flag}</div>
       <div class="team-page__hero-info">
-        <div class="team-page__hero-kicker">Seleção Nacional</div>
+        <div class="team-page__hero-kicker">Seleção Nacional · ${escapeHTML(team.confederation)}</div>
         <h1 class="team-page__hero-name">${escapeHTML(team.name)}</h1>
         <div class="team-page__hero-tags">
           <span class="team-page__tag">${escapeHTML(team.code)}</span>
-          <span class="team-page__tag team-page__tag--muted">${escapeHTML(team.confederation)}</span>
           ${group ? `<span class="team-page__tag team-page__tag--muted">Grupo ${group.id}</span>` : ''}
+          <span class="team-page__tag team-page__tag--muted" id="hero-nickname">—</span>
           ${isFavorite ? `<span class="team-page__tag team-page__tag--gold">${icon('heartFilled', 12)} Sua seleção</span>` : ''}
         </div>
+        <div class="team-page__hero-coach" id="hero-coach"></div>
       </div>
       <div class="team-page__hero-stats">
         <div class="team-page__hero-stat">
@@ -141,12 +297,12 @@ function render(state, params) {
           <span class="team-page__hero-stat-label">Ranking FIFA</span>
         </div>
         <div class="team-page__hero-stat">
-          <span class="team-page__hero-stat-value">${teamFixtures.length}</span>
-          <span class="team-page__hero-stat-label">Jogos no MVP</span>
+          <span class="team-page__hero-stat-value" id="hero-wc-count">—</span>
+          <span class="team-page__hero-stat-label">Títulos Mundiais</span>
         </div>
         <div class="team-page__hero-stat">
-          <span class="team-page__hero-stat-value">${group ? group.id : '—'}</span>
-          <span class="team-page__hero-stat-label">Grupo</span>
+          <span class="team-page__hero-stat-value">${teamFixtures.length}</span>
+          <span class="team-page__hero-stat-label">Jogos no Torneio</span>
         </div>
       </div>
     </section>
@@ -175,7 +331,30 @@ function render(state, params) {
       </div>
     ` : ''}
 
+    <div class="team-page__section">
+      <div class="section-title">🏆 Copa a Copa</div>
+      <div id="team-wc-timeline">
+        <div class="team-page__skeleton"></div>
+      </div>
+    </div>
+
+    <div class="team-page__section">
+      <div class="section-title">🏅 Honras e Títulos</div>
+      <div id="team-honors">
+        <div class="team-page__skeleton team-page__skeleton--lg"></div>
+      </div>
+      <div id="team-records"></div>
+    </div>
+
     ${renderLineupSection(team, teamFixtures)}
+
+    <div class="team-page__section" id="team-curiosities-section">
+      <div class="section-title">${icon('sparkles', 18)} Curiosidades</div>
+      <div id="team-curiosities">
+        <div class="team-page__skeleton"></div>
+        <div class="team-page__skeleton"></div>
+      </div>
+    </div>
 
     <div class="team-page__section" id="team-wiki-section">
       <div class="section-title">${icon('globe', 18)} Dossiê enciclopédico</div>
@@ -186,38 +365,82 @@ function render(state, params) {
       </div>
     </div>
 
-    <div class="team-page__section" id="team-curiosities-section">
-      <div class="section-title">${icon('sparkles', 18)} Curiosidades</div>
-      <ul class="team-page__curiosities" id="team-curiosities">
-        <li class="team-page__skeleton"></li>
-        <li class="team-page__skeleton"></li>
-        <li class="team-page__skeleton"></li>
-      </ul>
-    </div>
-
-    <div class="team-page__section" id="team-news-section">
-      <div class="section-title">${icon('newspaper', 18)} Notícias em destaque</div>
-      <div class="team-page__news" id="team-news">
-        <div class="team-page__skeleton"></div>
-        <div class="team-page__skeleton"></div>
-      </div>
-    </div>
-
     <div class="team-page__source" id="team-wiki-link"></div>
   `;
 }
 
+// ── Hidrata dados enriquecidos (teams.json) ──
+function hydrateEnriched(team, enriched) {
+  const hero = document.querySelector('.team-page__hero');
+  if (!hero || hero.dataset.teamCode !== team.code) return;
+
+  // Hero: apelido, técnico, títulos mundiais
+  const nicknameEl = document.getElementById('hero-nickname');
+  if (nicknameEl && enriched.nickname) nicknameEl.textContent = enriched.nickname;
+
+  const coachEl = document.getElementById('hero-coach');
+  if (coachEl && enriched.coach) {
+    coachEl.innerHTML = `${icon('users', 13)} Técnico: <strong>${escapeHTML(enriched.coach)}</strong>`;
+  }
+
+  const wcCountEl = document.getElementById('hero-wc-count');
+  if (wcCountEl) {
+    wcCountEl.textContent = enriched.worldCups?.length || '0';
+  }
+
+  // Copa a Copa
+  const wcTimelineEl = document.getElementById('team-wc-timeline');
+  if (wcTimelineEl) wcTimelineEl.innerHTML = renderWorldCupTimeline(enriched, team.code);
+
+  // Honras
+  const honorsEl = document.getElementById('team-honors');
+  if (honorsEl) honorsEl.innerHTML = renderHonors(enriched);
+
+  // Recordes
+  const recordsEl = document.getElementById('team-records');
+  if (recordsEl) recordsEl.innerHTML = renderRecords(enriched);
+
+  // Curiosidades
+  const curiositiesEl = document.getElementById('team-curiosities');
+  if (curiositiesEl) curiositiesEl.innerHTML = renderCuriosityCards(enriched.curiosities);
+
+  // Comparativo: linha de Copas do Mundo
+  const compareWcRow = document.getElementById('compare-wc-row');
+  if (compareWcRow) {
+    const favoriteCode = document.querySelector('.compare-teams-header .compare-team-flag span')?.textContent;
+    const favTeam = favoriteCode ? null : null; // resolvido abaixo via DOM
+    const favEnriched = getTeamEnriched(
+      document.querySelector('[id="team-compare"] .compare-team-flag span')?.textContent || ''
+    );
+
+    const favWc = favEnriched?.worldCups?.length || 0;
+    const teamWc = enriched.worldCups?.length || 0;
+    const total = favWc + teamWc || 1;
+    const lPct = Math.round((favWc / total) * 100);
+    const rPct = 100 - lPct;
+    const leftWins = favWc > teamWc;
+    const rightWins = teamWc > favWc;
+    compareWcRow.innerHTML = `
+      <div class="split-stat">
+        <span class="split-stat__val ${leftWins ? 'split-stat__val--win' : ''}">${favWc}×</span>
+        <div class="split-stat__bar">
+          <div class="split-stat__seg split-stat__seg--left" style="width:${lPct}%"></div>
+          <div class="split-stat__seg split-stat__seg--right" style="width:${rPct}%"></div>
+        </div>
+        <span class="split-stat__val split-stat__val--right ${rightWins ? 'split-stat__val--win' : ''}">${teamWc}×</span>
+      </div>`;
+  }
+}
+
+// ── Hidrata dossiê Wikipedia (só a seção de texto longo) ──
 function hydrateDossier(team, payload) {
   const hero = document.querySelector('.team-page__hero');
   if (!hero || hero.dataset.teamCode !== team.code) return;
 
   const wikiEl = document.getElementById('team-wiki-content');
-  const curiositiesEl = document.getElementById('team-curiosities');
-  const newsEl = document.getElementById('team-news');
   const linkEl = document.getElementById('team-wiki-link');
 
   const wiki = payload?.wiki;
-  const news = payload?.news;
 
   if (wikiEl) {
     const description = wiki?.description ? escapeHTML(wiki.description) : '';
@@ -230,27 +453,6 @@ function hydrateDossier(team, payload) {
     `;
   }
 
-  if (curiositiesEl) {
-    const curiosities = extractCuriosities(wiki?.extract || '');
-    curiositiesEl.innerHTML = curiosities.length
-      ? curiosities.map(item => `<li>${escapeHTML(item)}</li>`).join('')
-      : '<li class="text-sm text-muted">Sem curiosidades disponíveis para esta seleção.</li>';
-  }
-
-  if (newsEl) {
-    const safeNews = (news || []).filter(item => isTrustedWikiUrl(item.url));
-    if (safeNews.length) {
-      newsEl.innerHTML = safeNews.map(item => `
-        <a class="team-page__news-item" href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">
-          <span class="team-page__news-title">${escapeHTML(item.title)}</span>
-          ${item.description ? `<span class="team-page__news-desc">${escapeHTML(item.description)}</span>` : ''}
-        </a>
-      `).join('');
-    } else {
-      newsEl.innerHTML = '<p class="text-sm text-muted">Nenhuma notícia recente relacionada nos últimos dias.</p>';
-    }
-  }
-
   if (linkEl) {
     const safeWikiUrl = isTrustedWikiUrl(wiki?.url) ? wiki.url : '';
     linkEl.innerHTML = safeWikiUrl
@@ -261,11 +463,7 @@ function hydrateDossier(team, payload) {
 
 function showDossierError() {
   const wikiEl = document.getElementById('team-wiki-content');
-  const curiositiesEl = document.getElementById('team-curiosities');
-  const newsEl = document.getElementById('team-news');
-  if (wikiEl) wikiEl.innerHTML = '<p class="text-sm text-muted">Não foi possível carregar o dossiê agora. Verifique sua conexão e tente novamente.</p>';
-  if (curiositiesEl) curiositiesEl.innerHTML = '<li class="text-sm text-muted">Curiosidades indisponíveis no momento.</li>';
-  if (newsEl) newsEl.innerHTML = '<p class="text-sm text-muted">Notícias indisponíveis no momento.</p>';
+  if (wikiEl) wikiEl.innerHTML = '<p class="text-sm text-muted">Não foi possível carregar o dossiê agora.</p>';
 }
 
 function bindEvents(state, { router, params }) {
@@ -293,11 +491,8 @@ function bindEvents(state, { router, params }) {
   const backBtn = document.getElementById('team-back-btn');
   if (backBtn) {
     backBtn.addEventListener('click', () => {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        router.navigate('grupos');
-      }
+      if (window.history.length > 1) window.history.back();
+      else router.navigate('grupos');
     });
   }
 
@@ -306,20 +501,12 @@ function bindEvents(state, { router, params }) {
     favoriteBtn.addEventListener('click', () => {
       const code = favoriteBtn.dataset.team;
       const result = setFavoriteTeam(state, code);
-      if (!result.changed) {
-        showToast('Esta já é a sua seleção favorita.', 'info');
-        return;
-      }
+      if (!result.changed) { showToast('Esta já é a sua seleção favorita.', 'info'); return; }
       const current = getTeam(code);
       const flag = current ? current.flag : '⚽';
-      if (result.xpAwarded > 0) {
-        showToast(`${flag} Seleção favorita definida! +${result.xpAwarded} XP`, 'xp');
-      } else {
-        showToast(`${flag} Nova seleção favorita: ${current?.name || code}`, 'success');
-      }
-      if (result.leveledUp) {
-        setTimeout(() => showToast(`🎉 Nível ${result.newLevel} alcançado!`, 'success'), 800);
-      }
+      if (result.xpAwarded > 0) showToast(`${flag} Seleção favorita definida! +${result.xpAwarded} XP`, 'xp');
+      else showToast(`${flag} Nova seleção favorita: ${current?.name || code}`, 'success');
+      if (result.leveledUp) setTimeout(() => showToast(`🎉 Nível ${result.newLevel} alcançado!`, 'success'), 800);
       router.navigate('selecoes', { params: { slug: current.slug }, replace: true });
     });
   }
@@ -336,30 +523,38 @@ function bindEvents(state, { router, params }) {
         url: `${window.location.origin}/selecoes/${current.slug}`
       };
       try {
-        if (navigator.share) {
-          await navigator.share(shareData);
-        } else if (navigator.clipboard?.writeText) {
+        if (navigator.share) await navigator.share(shareData);
+        else if (navigator.clipboard?.writeText) {
           await navigator.clipboard.writeText(shareData.url);
           showToast('🔗 Link copiado para a área de transferência', 'success');
-        } else {
-          showToast('Compartilhamento não suportado neste navegador.', 'error');
-        }
+        } else showToast('Compartilhamento não suportado neste navegador.', 'error');
       } catch (error) {
-        if (error?.name !== 'AbortError') {
-          showToast('Não foi possível compartilhar agora.', 'error');
-        }
+        if (error?.name !== 'AbortError') showToast('Não foi possível compartilhar agora.', 'error');
       }
     });
   }
 
+  // ── Dados enriquecidos (teams.json) — carrega primeiro ──
+  loadEnrichedTeams().then(() => {
+    const enriched = getTeamEnriched(team.code);
+    if (enriched) hydrateEnriched(team, enriched);
+    else {
+      const honorsEl = document.getElementById('team-honors');
+      if (honorsEl) honorsEl.innerHTML = '<p class="text-sm text-muted">Informações detalhadas indisponíveis.</p>';
+      const curiositiesEl = document.getElementById('team-curiosities');
+      if (curiositiesEl) curiositiesEl.innerHTML = '<p class="text-sm text-muted">Curiosidades indisponíveis.</p>';
+    }
+  });
+
+  // ── Dossiê Wikipedia (texto longo) ──
   const cached = getTeamDossierCached(team.code);
   if (cached) {
     hydrateDossier(team, cached);
   } else {
     loadTeamDossier(team)
       .then(payload => hydrateDossier(team, payload))
-      .catch((error) => {
-        console.error('Erro ao carregar dossiê da seleção:', error);
+      .catch(err => {
+        console.error('Erro ao carregar dossiê:', err);
         showDossierError();
       });
   }
