@@ -1,8 +1,15 @@
 // CopaDataHub 2026 — State Management (LocalStorage)
+//
+// VERSIONAMENTO: ao mudar qualquer valor default em settings (ex: apiKey, provider),
+// incremente STATE_VERSION e adicione uma função em MIGRATIONS para corrigir o estado
+// salvo. Isso garante que usuários com localStorage antigo recebam a atualização
+// automaticamente, sem perder dados de usuário (XP, palpites, streak).
 
 const STORAGE_KEY = 'copadatahub_state';
+const STATE_VERSION = 2;
 
 const DEFAULT_STATE = {
+  _version: STATE_VERSION,
   user: {
     id: null,
     name: '',
@@ -20,23 +27,46 @@ const DEFAULT_STATE = {
   settings: {
     notifications: true,
     installDismissed: false,
-    apiKey: 'ec01475ea2eeb3485b0664b8ae9cd21e'
+    apiKey: '63dac64042df41209e99b787a87da1b4'
   }
 };
+
+// Cada entrada recebe o state e retorna o state migrado.
+// Índice 0 = migração da v1 para v2, índice 1 = v2 para v3, etc.
+const MIGRATIONS = [
+  // v1 → v2: troca chave api-sports pela chave football-data.org
+  (state) => {
+    state.settings.apiKey = DEFAULT_STATE.settings.apiKey;
+    return state;
+  }
+];
 
 // XP thresholds per level
 const LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000, 1500, 2200, 3000, 4000, 5500, 7500, 10000];
 
-/**
- * Load state from localStorage
- */
+function runMigrations(state) {
+  const savedVersion = state._version || 1;
+  if (savedVersion >= STATE_VERSION) return state;
+  let s = state;
+  for (let v = savedVersion; v < STATE_VERSION; v++) {
+    if (MIGRATIONS[v - 1]) s = MIGRATIONS[v - 1](s);
+  }
+  s._version = STATE_VERSION;
+  return s;
+}
+
 export function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const saved = JSON.parse(raw);
-      // Merge with defaults for new fields
-      return deepMerge(DEFAULT_STATE, saved);
+      const savedVersion = saved._version || 1;
+      // Migra antes do merge para que os valores corretos vençam o deepMerge
+      const migrated = savedVersion < STATE_VERSION ? runMigrations(saved) : saved;
+      const state = deepMerge(DEFAULT_STATE, migrated);
+      state._version = STATE_VERSION;
+      if (savedVersion < STATE_VERSION) saveState(state);
+      return state;
     }
   } catch (e) {
     console.warn('Failed to load state:', e);
