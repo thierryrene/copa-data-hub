@@ -5,15 +5,24 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/champions/:path*", "destination": "/champions.html" },
-    { "source": "/((?!.*\\.).*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
-      "source": "/(.*)\\.(js|css|json|png|webp|svg)",
+      "source": "/(.*)\\.(js|css|png|webp|svg)",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
         }
       ]
     }
