@@ -1,4 +1,6 @@
 import { escapeHTML } from '../util/html.js';
+import { renderSpiderChart } from './spiderChart.js';
+import { renderPlayerHeatmap } from './playerHeatmap.js';
 
 function statItem(emoji, label, value, highlight = false) {
   const cls = highlight ? 'player-stats__item player-stats__item--highlight' : 'player-stats__item';
@@ -9,6 +11,15 @@ function statItem(emoji, label, value, highlight = false) {
       <span class="player-stats__label">${label}</span>
     </div>
   `;
+}
+
+function ratingBadge(rating) {
+  if (rating == null) return '';
+  const cls = rating >= 8 ? 'badge-rating--elite'
+    : rating >= 7 ? 'badge-rating--great'
+    : rating >= 6 ? 'badge-rating--good'
+    : 'badge-rating--avg';
+  return `<span class="badge-rating ${cls}" title="Avaliação média na temporada">${rating.toFixed(1)}</span>`;
 }
 
 export function renderPlayerStats(player) {
@@ -26,25 +37,37 @@ export function renderPlayerStats(player) {
   const seasonLabel = season ? `${season}/${String(season + 1).slice(2)}` : '';
 
   return `
-    <div class="player-stats">
-      <div class="player-stats__header">
-        <span class="player-stats__title">Estatísticas ${seasonLabel}</span>
-        <span class="player-stats__league">${leagueName}</span>
+    <div class="player-stats-wrap">
+
+      <div class="player-viz-row">
+        ${renderSpiderChart(player)}
+        ${renderPlayerHeatmap(player)}
       </div>
-      <div class="player-stats__grid">
-        ${statItem('⚽', 'Gols', s.goals, s.goals > 0)}
-        ${statItem('🎯', 'Assist.', s.assists, s.assists > 0)}
-        ${statItem('📋', 'Jogos', s.appearances)}
-        ${statItem('⏱', 'Minutos', s.minutes ? s.minutes.toLocaleString('pt-BR') : '—')}
-        ${statItem('📊', 'Rating', ratingStr, player.rating >= 7.0)}
-        ${statItem('🎯', 'Passes', passAcc)}
-        ${statItem('💨', 'Dribles', dribblesStr)}
-        ${statItem('🔥', 'Chutes', s.shotsTotal || '—')}
-        ${statItem('🛡', 'Desarmes', s.tackles || '—')}
-        ${statItem('🟡', 'Amarelos', s.yellowCards)}
-        ${statItem('🟥', 'Vermelhos', s.redCards)}
-        ${player.position === 'Goalkeeper' ? statItem('🧤', 'Defesas', s.saves) : ''}
+
+      <div class="player-stats">
+        <div class="player-stats__header">
+          <span class="player-stats__title">Estatísticas ${seasonLabel}</span>
+          <div class="player-stats__header-right">
+            ${ratingBadge(player.rating)}
+            <span class="player-stats__league">${leagueName}</span>
+          </div>
+        </div>
+        <div class="player-stats__grid">
+          ${statItem('⚽', 'Gols', s.goals, s.goals > 0)}
+          ${statItem('🎯', 'Assist.', s.assists, s.assists > 0)}
+          ${statItem('📋', 'Jogos', s.appearances)}
+          ${statItem('⏱', 'Minutos', s.minutes ? s.minutes.toLocaleString('pt-BR') : '—')}
+          ${statItem('📊', 'Rating', ratingStr, player.rating >= 7.0)}
+          ${statItem('🎯', 'Passes', passAcc)}
+          ${statItem('💨', 'Dribles', dribblesStr)}
+          ${statItem('🔥', 'Chutes', s.shotsTotal || '—')}
+          ${statItem('🛡', 'Desarmes', s.tackles || '—')}
+          ${statItem('🟡', 'Amarelos', s.yellowCards)}
+          ${statItem('🟥', 'Vermelhos', s.redCards)}
+          ${player.position === 'Goalkeeper' ? statItem('🧤', 'Defesas', s.saves) : ''}
+        </div>
       </div>
+
     </div>
   `;
 }

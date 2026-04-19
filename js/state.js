@@ -126,11 +126,12 @@ export function getXPProgress(state) {
 }
 
 /**
- * Save a prediction
+ * Save a prediction (confidence: 1=normal, 2=1.5×XP, 3=2×XP)
  */
-export function savePrediction(state, fixtureId, homeScore, awayScore) {
+export function savePrediction(state, fixtureId, homeScore, awayScore, confidence = 1) {
   const existing = state.user.predictions.findIndex(p => p.fixtureId === fixtureId);
-  const pred = { fixtureId, homeScore, awayScore, timestamp: Date.now() };
+  const safeConf = Math.max(1, Math.min(3, Math.round(confidence)));
+  const pred = { fixtureId, homeScore, awayScore, confidence: safeConf, timestamp: Date.now() };
 
   if (existing >= 0) {
     state.user.predictions[existing] = pred;
