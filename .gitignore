@@ -40,3 +40,4 @@ Thumbs.db
 
 # Específicos de ferramentas locais
 .claude/
+.mcp.json
