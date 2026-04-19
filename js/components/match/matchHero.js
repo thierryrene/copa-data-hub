@@ -17,15 +17,21 @@ export function renderMatchHero(fixture, home, away) {
         <span><b id="cd-s">${t.secs}</b>s</span>
       </div>
       <div class="match-hero__kickoff">${fixture.time} · ${new Date(`${fixture.date}T12:00:00`).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}</div>
-    ` : `<div class="match-hero__live">⚽ AO VIVO</div>`;
+    ` : `<div class="match-hero__live match-hero__live--pulse">⚽ AO VIVO</div>`;
   } else if (phase === 'live') {
     center = `
-      <div class="match-hero__score">
-        <span>${fixture.homeScore ?? 0}</span>
+      <div class="match-hero__score match-hero__score--live">
+        <span id="live-score-home">${fixture.homeScore ?? 0}</span>
         <span class="match-hero__sep">:</span>
-        <span>${fixture.awayScore ?? 0}</span>
+        <span id="live-score-away">${fixture.awayScore ?? 0}</span>
       </div>
-      <div class="match-hero__live">🔴 AO VIVO</div>
+      <div class="match-hero__live match-hero__live--pulse">
+        <span class="match-hero__live-dot"></span>
+        AO VIVO
+      </div>
+      <button class="match-hero__modo-jogo" id="btn-modo-jogo" type="button">
+        ${icon('maximize', 14)} Modo Jogo
+      </button>
     `;
   } else {
     center = `
