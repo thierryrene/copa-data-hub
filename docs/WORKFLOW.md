@@ -60,12 +60,22 @@ Rode este checklist no navegador antes de abrir PR:
 - [ ] **Persistência:** adicionar XP (ex.: fazer trivia), recarregar, XP permanece no badge do header.
 - [ ] **Offline:** DevTools → Network → "Offline" → navegar entre páginas continua funcionando (conteúdo estático).
 - [ ] **PWA manifest:** DevTools → Application → Manifest sem erros.
-- [ ] **Rotas diretas:** abrir `/groups`, `/stadiums` direto na URL carrega a página certa (em server com rewrite, como `npx serve -s .` ou Vercel).
-- [ ] **Botão voltar:** navegar home → groups → stadiums; back retorna na ordem inversa sem recarregar.
+- [ ] **Rotas diretas:** abrir `/grupos`, `/sedes` direto na URL carrega a página certa (em server com rewrite, como `npx serve -s .` ou Vercel).
+- [ ] **Botão voltar:** navegar home → grupos → sedes; back retorna na ordem inversa sem recarregar.
 - [ ] **Instalação:** no Chrome, deve aparecer banner "Instalar CopaDataHub" ou ícone de instalação na barra de endereço.
 - [ ] **Console limpo:** sem erros vermelhos ao navegar por todas as páginas.
 - [ ] **Mobile viewport:** DevTools → modo responsivo (iPhone 12, Pixel 5) — sem scroll horizontal, bottom-nav visível.
 - [ ] **Dark mode:** checar visual em dark (padrão do app).
+
+**Checklist adicional — Foco Informativo (segunda tela):**
+
+- [ ] **Home — pré-torneio:** countdown visível, bloco "O Torneio" com 4 stats estáticas (48/104/16/3), "Meu Copa" com time favorito.
+- [ ] **Home — durante torneio** (simule setando `homeScore` em um fixture em `data.js`): "Copa em Números" aparece com jogos/gols/média calculados; widget "Hoje na Copa" mostra todos os jogos do dia com status.
+- [ ] **Home — jogo ao vivo** (simule `status: 'LIVE'` num fixture): banner vermelho "AO VIVO" aparece no topo com placar e link.
+- [ ] **Briefing pré-jogo:** abrir `/partida/<slug>` de uma partida futura → seção "O que está em jogo" visível com grupo, rodada, pontos dos dois times.
+- [ ] **Modo Jogo:** em partida com `status: 'LIVE'`, botão "Modo Jogo" aparece no hero → clicar abre overlay full-screen → fechar com X restaura a página.
+- [ ] **Ficha Rápida:** em partida pré-jogo, aguardar carregamento de escalação → clicar em jogador → bottom sheet sobe com dados → fechar com X ou backdrop.
+- [ ] **Copa a Copa:** abrir `/selecoes/brasil` ou `/selecoes/argentina` → seção "Copa a Copa" exibe linha do tempo com troféus nos anos vencidos em ouro.
 
 Para mudanças em fluxo de APIs externas (Wikipedia), testar online **e** com rede offline/lenta.
 

@@ -6,11 +6,13 @@
 
 ## 1. O que é o projeto
 
-**CopaDataHub 2026** é um **Progressive Web App** mobile-first de dados, previsões e bolão para o Mundial de 2026 (48 seleções, EUA + Canadá + México). O MVP atual é deliberadamente **vanilla** (HTML5 + CSS + JS ES6 modules, zero build step, zero dependências) — decisão guiada pela filosofia *Fail Fast, Learn Faster* e pela necessidade de FCP ultra-rápido em redes móveis congestionadas.
+**CopaDataHub 2026** é um **Progressive Web App** mobile-first focado em ser o **companheiro informativo de quem está assistindo a Copa do Mundo ao vivo ou acompanhando o torneio em tempo real**. Funciona como uma "segunda tela" — o usuário assiste na TV e usa o app no celular para contexto, dados e engajamento.
+
+O MVP é deliberadamente **vanilla** (HTML5 + CSS + JS ES6 modules, zero build step, zero dependências) — decisão guiada pela filosofia *Fail Fast, Learn Faster* e pela necessidade de FCP ultra-rápido em redes móveis congestionadas durante eventos de alta concorrência.
 
 **Contexto de produto** (resumo extraído de [Documentacao_CopaDataHub2026.pdf](Documentacao_CopaDataHub2026.pdf)):
 
-- **Pilares:** (1) dados + análise preditiva em tempo real, (2) simulador de chaveamento das 495 combinações possíveis, (3) gamificação + coleta de Zero-Party Data.
+- **Pilares:** (1) **informação contextual em tempo real** para quem assiste o jogo, (2) dados + análise preditiva, (3) gamificação + coleta de Zero-Party Data.
 - **Linha vermelha legal:** plataforma é **Pick'em / Daily Fantasy** — **nunca** dinheiro real, nunca apostas regulamentadas. Pontos virtuais apenas.
 - **Proteção de marcas FIFA:** **não** usar logos/nomes oficiais da FIFA ou do torneio sem licenciamento. Linguagem genérica ("o maior torneio do Mundo", "Mundial 2026"). Nada de "FIFA World Cup™".
 - **LGPD/GDPR:** Zero-Party Data só com consentimento explícito; preferências armazenadas em `localStorage` no MVP.
@@ -69,11 +71,12 @@ word-cup-app/
 │   │   ├── playerHero.js, playerStats.js    # Página de jogador
 │   │   ├── leagueCard.js, leagueFixtureList.js,
 │   │   ├── standingsTable.js, topScorersList.js  # Campeonatos
+│   │   ├── matchModoJogo.js                  # Overlay "Modo Jogo" (segunda tela ao vivo)
+│   │   ├── playerQuickCard.js                # Bottom sheet de ficha rápida de jogador
 │   │   └── match/                            # Componentes da partida
 │   │       ├── matchHero.js                  # Hero adaptativo (pré/live/finished)
-│   │       └── matchSections.js              # h2h, key players, timeline,
-│   │                                         #   pulse, poll, live stats,
-│   │                                         #   recap, ratings
+│   │       └── matchSections.js              # h2h, key players, timeline, briefing,
+│   │                                         #   pulse, poll, live stats, recap, ratings
 │   └── pages/
 │       ├── index.js          # Registro de rotas
 │       ├── inicio.js         # Home (/inicio)
@@ -167,6 +170,16 @@ Este projeto consome APIs externas (Wikipedia/Wikimedia) e renderiza conteúdo d
 - Design system em [css/style.css](css/style.css) via Custom Properties (`--color-*`, `--space-*`, `--radius-*`). **Sempre** consumir tokens existentes antes de introduzir valor mágico.
 - Suportar dark mode (já implementado via variáveis). Não hardcode `#fff` / `#000`.
 - Glassmorphism e animações já têm padrões; reutilize classes antes de criar novas.
+
+### 3.8 Foco informativo — "segunda tela"
+
+O app é projetado para quem **assiste o jogo ao vivo** e usa o celular como tela de contexto. Ao adicionar novas features, priorize:
+
+1. **Hierarquia de urgência:** conteúdo ao vivo (jogo acontecendo agora) > conteúdo do dia (jogos de hoje) > contexto pré-jogo > gamificação.
+2. **Modo Jogo** (`matchModoJogo.js`): overlay de tela cheia para partidas ao vivo. Se adicionar dados ao vivo, considere exibi-los aqui também.
+3. **Briefing contextual** (`renderMatchBriefing` em `matchSections.js`): toda partida pré-jogo deve ter contexto de grupo, stakes e jogadores-chave. Ao adicionar dados de confronto direto ou histórico, integre nesta função.
+4. **PlayerQuickCard** (`playerQuickCard.js`): qualquer elemento que exiba nome de jogador e tenha `data-player-card="<nome>"` + `data-team-code="<CODE>"` automaticamente abre a ficha rápida via delegação de eventos.
+5. **Copa a Copa** (`renderWorldCupTimeline` em `selecoes.js`): usa `enriched.worldCups` e `enriched.bestResult`. Se o JSON `data/enriched/teams.json` for expandido com dados por edição, esta função pode ser enriquecida.
 
 ---
 

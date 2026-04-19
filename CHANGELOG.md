@@ -7,6 +7,77 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ---
 
+## 2026-04-19
+
+### Adicionado (Foco Informativo — App de Segunda Tela)
+
+Reorientação do app para servir quem está **assistindo os jogos ao vivo ou acompanhando a Copa em tempo real**. Inspirado em SofaScore, FotMob, Amazon Prime Video X-Ray e ESPN Match Preview.
+
+#### Home — Dashboard "O que acontece agora"
+
+- **Banner "Ao Vivo"** (`renderLiveBanner`): aparece no topo da home quando há jogo em andamento, com placar, minuto e link direto para o modo jogo. Desaparece quando não há jogos ao vivo.
+- **Widget "Hoje na Copa"** reformulado: exibe **todos** os jogos do dia (não apenas 2), com badge de status em linha — `AO VIVO` (pulsante vermelho), `FIM` (cinza) ou horário (pré-jogo). Inclui contagem de jogos ao vivo vs. encerrados em tempo real.
+- **"Copa em Números"** (`renderTournamentNumbers`): bloco de 4 estatísticas calculadas dinamicamente dos dados do torneio — jogos disputados, total de gols, média de gols/jogo, e artilheiro por seleção. Exibido somente após início do torneio (≥ 11/06/2026).
+- **Hierarquia nova da home**: Live Banner → Hoje/Contagem → Copa em Números → XP Bar → Meu Copa → Campeonatos → Seções de navegação. Antes: countdown → XP → Meu Copa → stats estáticas → navegação.
+- Antes do início do torneio, home mantém countdown com bloco "O Torneio" (48 seleções / 104 jogos / 16 estádios / 3 países).
+- "Próximos Jogos" agora usa apenas fixtures com `phase === 'pre'` ordenados por data (não mais os jogos do dia hardcoded).
+- Novos estilos CSS: `.live-banner`, `.today-widget__status`, `.today-widget__status--live`, `.today-widget__status--fin`, `.today-widget__score--live`, `.tournament-numbers`, `.tournament-numbers__grid`, `.tournament-numbers__stat`.
+
+#### Partida — Briefing Pré-Jogo
+
+- **Seção "Briefing Pré-Jogo"** (`renderMatchBriefing` em `matchSections.js`): exibida acima do bolão em toda partida com estado `pre`. Contém:
+  - Badge de grupo e rodada (`Grupo H · Rodada 1`).
+  - Bloco **"O que está em jogo"** com texto gerado automaticamente baseado na classificação atual — estreia, time sem pontos, time já classificado, pontuações atuais.
+  - **Situação atual** dos dois times: posição no grupo, pontos, jogos disputados.
+- `computeGroupStandings(groupId)` — função interna que calcula classificação ao vivo do grupo a partir dos FIXTURES com placar preenchido.
+- `matchdayLabel(fixture)` — detecta automaticamente a rodada (1ª, 2ª ou 3ª) de cada partida.
+- `stakesText(...)` — gera texto contextual de stakes baseado no estágio de pontuação dos dois times.
+- Aba "H2H" do pré-jogo foi consolidada dentro da aba "Pré-Jogo" como seção "Retrospecto" — o H2H agora aparece por padrão sem precisar trocar de aba.
+- Seção "Jogadores em Destaque" renomeada para **"Olho neles"** com novo ícone `eye`.
+- Novos estilos CSS: `.match-briefing`, `.match-briefing__header`, `.match-briefing__tag`, `.match-briefing__stakes`, `.match-briefing__standings`, `.match-briefing__team-row`.
+
+#### Partida — Modo Jogo (Second Screen Mode)
+
+- **Botão "Modo Jogo"** no hero de partidas ao vivo: abre overlay full-screen otimizado para segunda tela (segurar o celular enquanto assiste na TV).
+- **Overlay `matchModoJogo`** (`js/components/matchModoJogo.js`): exibe placar grande com times, badge "AO VIVO" pulsante com minuto, seções "Eventos" e "Estatísticas" (lidas do DOM da página, sem chamada extra de API) e bloco **"Você sabia?"** com fato contextual rotativo sobre a Copa.
+- Overlay fecha ao clicar no botão X ou no backdrop. Fecha automaticamente ao sair da página.
+- Novo ícone `maximize` adicionado à biblioteca `icons.js`.
+- Novos estilos CSS: `.match-hero__modo-jogo`, `.modo-jogo`, `.modo-jogo__header`, `.modo-jogo__score-block`, `.modo-jogo__sections`, `.modo-jogo__fact`.
+
+#### Partida — Ficha Rápida de Jogadores
+
+- **`PlayerQuickCard`** (`js/components/playerQuickCard.js`): bottom sheet animado que sobe ao clicar em qualquer jogador na seção "Olho neles" da partida. Exibe:
+  - Foto (com fallback), nome, seleção, posição, camisa, idade, clube.
+  - Grid de stats da temporada: gols, assistências, jogos, nota média.
+  - Link "Ver perfil completo" para `/jogadores/:slug`.
+- Animação de entrada/saída com `transform: translateY` + transition 300ms cubic-bezier.
+- Atributos `data-player-card` e `data-team-code` injetados nos `.key-player` após carregamento do squad em `loadPreMatch`.
+- Delegação de eventos via `.match-page` — sem listeners por jogador.
+- Novos estilos CSS: `.pqc-backdrop`, `.pqc`, `.pqc--open`, `.pqc__header`, `.pqc__stats`, `.pqc__link`.
+- Novos ícones: `eye`, `user` adicionados à biblioteca `icons.js`.
+
+#### Seleções — Copa a Copa
+
+- **Seção "Copa a Copa"** (`renderWorldCupTimeline`) na página de cada seleção, acima de "Honras e Títulos". Exibe:
+  - Linha do tempo visual de todas as edições da Copa desde que o time passou a participar regularmente.
+  - Anos com título marcados em **ouro** com 🏆; demais edições com ponto cinza.
+  - Badge de troféus acumulados e texto `bestResult`.
+- Heurística de participação por confederação: `hasLongHistory` (UEFA/CONMEBOL desde 1930), `hasMidHistory` (CAF/AFC desde 1982), demais (desde 2006).
+- Dados lidos de `enriched.worldCups` e `enriched.bestResult` — nenhum dado novo necessário no JSON.
+- Placeholder skeleton durante hidratação assíncrona.
+- Novos estilos CSS: `.wc-timeline`, `.wc-timeline__grid`, `.wc-timeline__item`, `.wc-timeline__item--win`, `.wc-timeline__trophy`.
+
+### Alterado
+
+- `matchSections.js` agora importa `FIXTURES`, `GROUPS`, `getTeam` de `data.js` e `matchPhase` de `util/match.js` para cálculos internos de briefing.
+- `partida.js` importa e integra `renderMatchBriefing`, `openModoJogo`/`closeModoJogo`, `bindPlayerCards`.
+- `matchHero.js` adiciona botão "Modo Jogo" quando `phase === 'live'`.
+- `selecoes.js` adiciona `renderWorldCupTimeline`, placeholder e chamada em `hydrateEnriched`.
+- `icons.js` ganha três novos ícones: `maximize`, `eye`, `user`.
+- `inicio.js` importa `matchSlug` de `util/match.js` (já existia, passou a ser necessário para o live banner).
+
+---
+
 ## [Não-publicado]
 
 ### Alterado (BREAKING — router reescrito com modelo declarativo)
