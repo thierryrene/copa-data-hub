@@ -12,6 +12,8 @@ import { renderWelcomeOverlay, mountWelcome } from './layout/welcome.js';
 import { renderInstallBanner } from './layout/layout.js';
 import { prefetchTeamDossier } from './api/teamLoader.js';
 import { pages } from './pages/index.js';
+import { renderSearchOverlay, mountSearchOverlay } from './components/searchOverlay.js';
+import { loadEnrichedTeams } from './api/enriched.js';
 
 // Tabela declarativa de rotas do app.
 // name: identificador usado em router.navigate() e para destaque da nav.
@@ -81,7 +83,13 @@ class App {
       </main>
       ${renderInstallBanner()}
       ${renderBottomNav('home')}
+      ${renderSearchOverlay()}
     `;
+
+    // Botão de busca no header
+    const searchBtn = document.getElementById('header-search-btn');
+    if (searchBtn) searchBtn.addEventListener('click', () => window._searchOpen?.());
+    mountSearchOverlay(this.router);
   }
 
   startApp() {
@@ -98,6 +106,7 @@ class App {
     }
 
     setupInstallPrompt(this.state.settings.installDismissed);
+    loadEnrichedTeams(); // pré-aquece o cache para as páginas de seleção
 
     this.countdownInterval = setInterval(() => updateCountdown(), 1000);
 
@@ -118,6 +127,7 @@ class App {
     const renderRoute = (name, pageModule, params) => {
       const container = pageContainer();
       if (!container) return;
+      container.dataset.page = name;
       try {
         container.innerHTML = pageModule.render(this.state, params);
       } catch (err) {
