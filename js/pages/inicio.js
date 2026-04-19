@@ -3,9 +3,11 @@ import { getTodayFixtures, getTeam, getTeamFixtures, getGroupForTeam, FIXTURES }
 import { renderCountdown } from '../components/countdown.js';
 import { renderXPBar } from '../components/xpBar.js';
 import { renderMatchCard } from '../components/matchCard.js';
+import { showToast } from '../components/toast.js';
 import { setSEO, schemaWebApp } from '../util/seo.js';
 import { matchPhase, matchSlug } from '../util/match.js';
 import { escapeHTML } from '../util/html.js';
+import { downloadCalendar } from '../util/calendar.js';
 
 // ── Banner de Jogo Ao Vivo ──
 function renderLiveBanner() {
@@ -319,6 +321,19 @@ function render(state) {
         </div>
       </div>
     </div>
+
+    <div class="calendar-import mt-xl">
+      <div class="calendar-import__icon">
+        ${icon('calendar', 28)}
+      </div>
+      <div class="calendar-import__content">
+        <div class="calendar-import__title">Leve o Mundial no seu calendário</div>
+        <p class="calendar-import__description">Importe todas as 104 partidas direto para o Google Calendar, Apple Calendar ou Outlook. Receba lembretes antes de cada jogo.</p>
+      </div>
+      <button class="btn btn--gold btn--sm calendar-import__btn" id="calendar-import-btn" type="button">
+        ${icon('download', 16)} Importar Calendário
+      </button>
+    </div>
   `;
 }
 
@@ -334,6 +349,62 @@ function bindEvents(_state, { router }) {
   document.querySelectorAll('[data-nav]').forEach(el => {
     el.addEventListener('click', () => router.navigate(el.dataset.nav));
   });
+
+  const notifyBtn = document.getElementById('countdown-notify-btn');
+  if (notifyBtn) {
+    notifyBtn.addEventListener('click', async () => {
+      if (!('Notification' in window)) {
+        showToast('Notificações não suportadas neste navegador', 'error');
+        return;
+      }
+      if (Notification.permission === 'granted') {
+        showToast('✓ Notificações já ativadas', 'success');
+        return;
+      }
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        showToast('🔔 Você será avisado sobre o Mundial!', 'success');
+      } else {
+        showToast('Permissão não concedida', 'error');
+      }
+    });
+  }
+
+  const calendarBtn = document.getElementById('calendar-import-btn');
+  if (calendarBtn) {
+    calendarBtn.addEventListener('click', () => {
+      try {
+        downloadCalendar();
+        showToast('📅 Calendário exportado! Abra o arquivo .ics para importar', 'success');
+      } catch (err) {
+        console.error('[calendar]', err);
+        showToast('Erro ao gerar calendário', 'error');
+      }
+    });
+  }
+
+  const shareBtn = document.getElementById('countdown-share-btn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', async () => {
+      const shareData = {
+        title: 'Copa Data Hub — Mundial 2026',
+        text: 'Acompanhe o Mundial 2026 comigo! Dados, previsões e bolão gamificado.',
+        url: window.location.origin
+      };
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(shareData.url);
+          showToast('🔗 Link copiado!', 'success');
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          showToast('Não foi possível compartilhar', 'error');
+        }
+      }
+    });
+  }
 }
 
 export default { render, bindEvents };
