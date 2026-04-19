@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 // Servidor estático com fallback SPA + rewrite para /champions.
-// Replica o comportamento mínimo que qualquer hospedagem precisa ter em produção.
+// Inclui proxy /api/football/* → api.football-data.org para contornar CORS em dev.
+// Em produção usar Vercel Functions para o mesmo proxy.
 
 'use strict';
 
 const http = require('node:http');
+const https = require('node:https');
 const fs = require('node:fs');
 const path = require('node:path');
 const url = require('node:url');
@@ -54,9 +56,55 @@ function serveFile(filePath, req, res) {
   });
 }
 
+function proxyFootballApi(req, res) {
+  const parsed = url.parse(req.url);
+  // Remove o prefixo /api/football e repassa o resto para a API externa
+  const apiPath = parsed.pathname.replace('/api/football', '') + (parsed.search || '');
+  const token = parsed.query
+    ? new URLSearchParams(parsed.search).get('_token')
+    : null;
+
+  // Extrai o token da query string sem expô-lo ao browser no path real
+  const cleanSearch = parsed.search
+    ? '?' + parsed.search.slice(1).replace(/&?_token=[^&]*/g, '').replace(/^\&/, '')
+    : '';
+  const cleanPath = parsed.pathname.replace('/api/football', '') + cleanSearch;
+
+  const options = {
+    hostname: 'api.football-data.org',
+    port: 443,
+    path: cleanPath,
+    method: 'GET',
+    headers: {
+      'X-Auth-Token': token || ''
+    }
+  };
+
+  const proxy = https.request(options, (apiRes) => {
+    res.writeHead(apiRes.statusCode, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'no-store'
+    });
+    apiRes.pipe(res);
+  });
+
+  proxy.on('error', () => {
+    res.writeHead(502, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Proxy error: não foi possível alcançar a API.' }));
+  });
+
+  proxy.end();
+}
+
 const server = http.createServer((req, res) => {
   const parsed = url.parse(req.url);
   let pathname = decodeURIComponent(parsed.pathname || '/');
+
+  if (pathname.startsWith('/api/football/')) {
+    proxyFootballApi(req, res);
+    return;
+  }
 
   if (pathname === '/') {
     serveFile(path.join(ROOT, 'index.html'), req, res);
