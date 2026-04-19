@@ -177,13 +177,16 @@ Este projeto consome APIs externas (Wikipedia/Wikimedia) e renderiza conteúdo d
 2. Rode mentalmente o fluxo: este código é chamado de onde? O que espera como input/output?
 3. Se mudar um helper em [js/state.js](js/state.js) ou [js/components.js](js/components.js), audite todos os consumidores antes de commitar.
 
-### 4.2 Testando localmente
-Como não há framework de testes, validação é manual:
+### 4.2 Testando localmente e Execução
+Como não há framework de testes automatizados, a validação é manual e o agente deve rodar o servidor local para validar as alterações:
 
 ```bash
-# Servir (qualquer um dos dois):
-python3 -m http.server 3000
+# Servir localmente (comando principal):
+node scripts/dev-server.js 3000
+
+# Alternativas (caso o dev-server falhe):
 npx serve -s .
+python3 -m http.server 3000
 ```
 
 Abra `http://localhost:3000` e teste:
@@ -208,6 +211,10 @@ Abra `http://localhost:3000` e teste:
 ### 4.5 Deploy
 - Deploy é automático para Vercel a partir de `main` (ver [vercel.json](vercel.json)).
 - Headers de cache são imutáveis para JS/CSS/JSON/imagens (1 ano). Rewrites SPA em [vercel.json](vercel.json) direcionam rotas sem extensão para `index.html` (e `/champions/*` para `champions.html`).
+
+### 4.6 Melhoria Contínua e Backlog de IA
+- Ao identificar oportunidades de criar novos prompts, automações, _Skills_ ou instruções granulares (ex: `applyTo`) que facilitem o workflow, o agente **não deve** criar os arquivos proativamente.
+- Em vez disso, registre a sugestão com justificativa e impacto no arquivo [docs/AGENT_BACKLOG.md](docs/AGENT_BACKLOG.md).
 
 ---
 
