@@ -7,6 +7,68 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ---
 
+## Não lançado
+
+### Adicionado — UI/UX dos palpites e Home
+
+Foco em tornar os palpites visíveis em todo o app e aproveitar o tamanho da tela no desktop. Reformulação do bolão e do contador regressivo da home, além de novo fluxo de exportação de calendário.
+
+#### Fanzone — Bolão reformulado e nova aba "Meus Palpites"
+
+- **Card do bolão reescrito**: inputs de placar 60×60 sem setas nativas, separador "VS" dourado, bandeira/código em classes dedicadas (`.bolao-card__flag`, `.bolao-card__code`), scores agrupados em `.bolao-card__scores`.
+- **Estado visual "salvo"**: quando já existe palpite, o card ganha borda emerald (`.bolao-card--saved`), badge "✓ Salvo" no header e o botão alterna para "Atualizar Palpite".
+- **Grid 2 colunas em ≥1024px** nos cards do bolão (`.bolao-grid`). Mobile continua 1 coluna.
+- **Confiança em pill glass**: `.bolao-card__confidence` com fundo glass e estrelas maiores (1.2rem) com scale/shadow no ativo.
+- **Alerta dinâmico** acima dos cards: "X partidas sem palpite" (gold) ou "Todos registrados" (emerald).
+- **Nova sub-tab "Meus Palpites"** na fanzone agrupa todos os palpites por status:
+  - 🎯 Placar exato (100 XP base)
+  - ✅ Acertou vencedor (50 XP base)
+  - ⏳ Aguardando resultado
+  - 💪 Não acertou (5 XP base)
+  - Exibe XP ganho com multiplicador de confiança nos encerrados; data nos pendentes.
+
+#### Home — Palpites surfaceados nos cards de partida
+
+- **`renderMatchCard(fixture, prediction)`** aceita palpite opcional e mostra faixa emerald "Meu palpite · 2×1 ⭐⭐" no rodapé do card.
+- `inicio.js` e `jogos.js` passam o palpite do usuário ao renderizar cada card.
+- **Badge no título** "Próximos Jogos" da home: pill gold "N sem palpite" quando há partidas visíveis sem palpite.
+- **Lista em grid 2 colunas** na home (`.matches-list--grid`) seguindo o padrão da rota Jogos.
+
+#### Card de partida totalmente clicável
+
+- `.match-card` agora é `position: relative` + `cursor: pointer`.
+- `.match-card__link::after` cobre o card inteiro como overlay de link.
+- Links de seleção e footer mantêm `position: relative; z-index: 1` para continuarem clicáveis.
+- Sublinhado global de `a:hover` removido dos links do card.
+
+#### Home — Contador regressivo redesenhado
+
+- Layout 2 colunas (≥900px): intro à esquerda + cards/info à direita. Mobile empilha naturalmente.
+- Badge gold "🏆 Contagem Oficial 2026" + título grande com gradiente gold→yellow em "Junho de 2026".
+- Cards de Dias/Horas/Minutos/Segundos com números em itálico display (`.countdown-item`, `.countdown-number`).
+- Barra `.countdown-info` com ícones coloridos: blue para "Locais" e emerald para "Início".
+- **Ativar Notificação**: pede `Notification.requestPermission()` com feedback via toast.
+- **Compartilhar**: `navigator.share` nativo com fallback para copiar URL no clipboard.
+- Estado "em andamento" usa `.countdown-live-banner`.
+
+#### Home — Importação do calendário completo (.ics)
+
+- Novo utilitário [js/util/calendar.js](js/util/calendar.js):
+  - `buildIcsCalendar()` gera arquivo iCalendar com todas as 104 partidas.
+  - Conversão correta de fuso local do estádio para UTC (EDT/CDT/PDT em junho).
+  - Cada `VEVENT` traz times (nomes completos), estádio/cidade, grupo e horário local.
+  - Duração padrão de 2h por jogo.
+  - `downloadCalendar()` dispara download do `mundial-2026.ics`.
+- CTA `.calendar-import` no fim da home: ícone gold + descrição + botão "Importar Calendário".
+- Compatível com Google Calendar, Apple Calendar e Outlook.
+
+### Alterado
+
+- `js/pages/jogos.js` agora recebe `state` em `render(state)` para passar palpites ao `renderMatchCard`.
+- CSS do countdown foi totalmente reescrito. O override antigo `max-width: 400px` no `.countdown-grid` foi removido.
+
+---
+
 ## 2026-04-19
 
 ### Adicionado (Foco Informativo — App de Segunda Tela)
