@@ -1,10 +1,13 @@
 // Catálogo de campeonatos suportados. Indexado por slug (URL-friendly).
+// code: código da competição na football-data.org
+// status: 'active' = temporada em andamento | 'finished' = temporada encerrada
 
 export const LEAGUES = {
   'champions-league': {
     slug: 'champions-league',
-    apiId: 2,
+    code: 'CL',
     season: 2025,
+    status: 'active',
     name: 'UEFA Champions League',
     shortName: 'Champions League',
     emoji: '⭐',
@@ -17,8 +20,9 @@ export const LEAGUES = {
   },
   'brasileirao': {
     slug: 'brasileirao',
-    apiId: 71,
-    season: 2025,
+    code: 'BSA',
+    season: 2026,
+    status: 'active',
     name: 'Brasileirão Série A',
     shortName: 'Brasileirão',
     emoji: '🇧🇷',
@@ -26,13 +30,14 @@ export const LEAGUES = {
     country: 'Brasil',
     color: '#059669',
     accent: '#fbbf24',
-    description: 'O principal campeonato de futebol do Brasil. Classificação, próximos jogos e artilheiros da Série A.',
+    description: 'O principal campeonato de futebol do Brasil. Classificação, próximos jogos e artilheiros da Série A 2026.',
     keywords: 'brasileirão, série a, campeonato brasileiro, cbf, futebol brasil'
   },
   'premier-league': {
     slug: 'premier-league',
-    apiId: 39,
+    code: 'PL',
     season: 2025,
+    status: 'active',
     name: 'Premier League',
     shortName: 'Premier League',
     emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
