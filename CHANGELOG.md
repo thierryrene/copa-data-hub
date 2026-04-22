@@ -9,6 +9,136 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ## Não lançado
 
+### Adicionado — Sedes & estádios (2026-04-21)
+
+#### Modal 3D dos estádios
+
+- Novo componente `js/components/stadium3dModal.js`: modal fullscreen com iframe Google Maps em modo satélite (`t=k`, zoom 18), navegável sem chave de API.
+- Botão "Ver em 3D" no header do modal abre o **Google Earth** em nova aba (`earth.google.com/web/...`) com tilt 60° e rotação livre — vista 3D real.
+- Backdrop com blur, animação de entrada bouncy, fechamento via × / click fora / ESC; cleanup automático ao sair da rota.
+
+#### Redesign do card de estádio
+
+- Hierarquia visual: nome em display 700, cidade em secundário, capacidade e fuso horário em pills compactos.
+- Selo de país (`__flag` 56×56) com ring colorido (azul EUA / esmeralda México / rosa Canadá) e animação `scale(1.05)` no hover.
+- Tinta sutil de fundo por país (`::before` 6%) que intensifica para 10% no hover — profundidade sem poluir.
+- Hover com `translateY(-3px)` + glow dourado + bordas viram gold; CTA com seta `→` que desliza 4px à direita.
+- Pin "🏆 FINAL" no canto superior direito com gradient gold + glow; cards finais ganham borda dourada.
+- Acessibilidade: `:focus-visible` com ring dourado de 3px; `aria-label` rico no botão.
+- Mobile (≤720px): CTA "Ver em 3D" sempre visível; nomes/cidades longos com `text-overflow: ellipsis`.
+
+#### Correção de coordenadas
+
+- Verificadas as 16 coordenadas em latlong.net e atualizadas com 6 casas decimais.
+- **Estadio BBVA** (Monterrey) estava ~480m fora do alvo — corrigido `25.6649` → `25.669132`.
+- **AT&T Stadium** ~110m no longitude — corrigido `-97.0945` → `-97.093231`.
+- **MetLife Stadium**: cidade trocada de "Nova Jersey" para "East Rutherford, NJ" (cidade correta da sede).
+
+### Adicionado — Tema & paletas de cores (2026-04-21)
+
+#### Sistema de tema (Auto / Claro / Escuro)
+
+- Novo `js/util/theme.js` com `bootThemeAndPalette()` aplicado **antes** do `mountShell` para evitar flash de cor.
+- Modo "Auto" segue `prefers-color-scheme` do SO via `matchMedia` listener — re-aplica em tempo real quando o usuário muda o tema do sistema.
+- Atualiza `<meta name="theme-color">` para a barra do navegador combinar com o tema ativo.
+- Persistido em `state.settings.theme` (defaults `'auto'`).
+
+#### 8 paletas de cores
+
+- Cada paleta sobrescreve as variáveis accent (`--color-gold/blue/rose/emerald/purple/cyan`), gradientes (`--gradient-gold/blue/emerald/rose`), glows (`--shadow-glow-*`), `--gradient-glow` (fundo do body), `--gradient-hero` e `--color-bg-primary`/`--color-bg-secondary` tonalizados (dark + light).
+- **Stadium Night** (default): dourado #f59e0b + azul #3b82f6 + rosa #f43f5e
+- **Sunset**: laranja #f97316 + rosa quente #ec4899 + âmbar #fbbf24
+- **Pitch**: verde grama #22c55e + azul royal #1d4ed8 + amarelo #eab308
+- **Brasil**: amarelo CBF #facc15 + verde #16a34a + azul faixa #1e3a8a
+- **Royal**: roxo #a855f7 + ciano #06b6d4 + magenta #ec4899
+- **Volcano**: vermelho #dc2626 + laranja queimado #ea580c + dourado #fbbf24
+- **Ocean**: ciano #0ea5e9 + teal #0d9488 + azul profundo #1e40af
+- **Champion**: dourado intenso #fbbf24 + bronze #b45309 + esmeralda #10b981
+
+#### UI em /configurações
+
+- Novo grupo **"Aparência"** com toggle de 3 temas (estilo iOS) e grid responsivo (`auto-fill, minmax(110px, 1fr)`) com 8 cards de paleta. Card ativo ganha glow dourado.
+- Card de paleta mostra 3 swatches coloridos pré-visualizando as cores principais.
+- Toast de confirmação ao trocar tema/paleta; mudanças aplicadas instantaneamente (sem reload).
+
+#### Botão de configurações no header
+
+- Novo botão de engrenagem em `js/layout/header.js`, ao lado da busca e do badge de XP — visível em todas as rotas.
+- Classe `.app-header__search-btn` renomeada para `.app-header__icon-btn` (compartilhada entre busca e settings).
+
+#### Correção de bugs do modo light
+
+- Variáveis `--surface-overlay` / `--surface-overlay-strong` / `--surface-overlay-card` substituem rgba escuras hardcoded em `.app-header`, `.bottom-nav` e `.live-match-card`.
+- Variáveis `--overlay-backdrop` / `--overlay-backdrop-strong` para backdrops (`search-overlay`, `pqc-backdrop`, `modo-jogo`).
+- Gradientes que terminavam em `rgba(10,14,26,X)` substituídos por `var(--color-bg-card)` (`.card--gold`, `.calendar-import`, `.today-widget`, `.live-banner`, `.match-briefing`).
+- Sombras (`--shadow-sm/md/lg`) com opacidade reduzida em modo light.
+
+### Adicionado — Tratamento de erros e separação de chaves de API (2026-04-21)
+
+#### `util/apiStatus.js`
+
+- Registro global do último erro de API com tipos `NO_KEY`, `UNAUTHORIZED`, `RATE_LIMIT`, `NETWORK`, `HTTP` e mensagens em pt-BR via `describeApiError()`.
+- Listeners reativos via `onApiStatusChange()` — UI re-renderiza banners automaticamente quando o estado muda.
+- Helper `classifyHttpStatus(status)` mapeia 401/403 → unauthorized, 429 → rate limit.
+
+#### Logs detalhados nas chamadas
+
+- `js/api/match.js`, `js/api/squad.js` e `js/api/player.js` substituíram `try/catch` silenciosos por `console.error`/`console.warn` com path, status HTTP e payload errors da API-Football (que retorna 200 com `{errors: {...}}` em quota estourada).
+- Banner amarelo `#match-api-banner` injetado na página de partida exibe a mensagem do erro corrente; reage em tempo real ao listener.
+- Placeholders "Carregando..." na página de partida agora viram mensagens claras quando dados não chegam ("Indisponível — configure sua chave em Configurações").
+
+#### Separação de chaves API
+
+- **Bug corrigido**: o app usava o mesmo `state.settings.apiKey` para duas APIs diferentes (api-sports.io com header `x-apisports-key` e football-data.org com `X-Auth-Token`) — qualquer chave preenchida quebrava metade do app.
+- Novos campos: `apiSportsKey` (api-sports) e `footballDataKey` (football-data); migration v3→v4 copia o legado `apiKey` para `apiSportsKey` (formato compatível) e remove o campo antigo.
+- UI em /configurações com **2 campos independentes**, cada um validando contra seu endpoint próprio (`/status` para api-sports, `/competitions/PL` para football-data) e mostrando cota usada / liga autorizada.
+- Salvar uma chave limpa **apenas os caches dela** (`cdh_match_*`/`cdh_squad_*`/`cdh_player_*` ou `cdh_league_*`).
+
+### Adicionado — Card flutuante de partida ao vivo (2026-04-21)
+
+- Novo `js/components/liveMatchCard.js` montado no shell global (`app.js`).
+- Card fixo acima do bottom-nav (`bottom: nav-height + safe-area + 8px`) com glassmorphism + slide-in bouncy.
+- Aparece quando há fixture com `matchPhase === 'live'` (incluindo cenários do modo demo).
+- Layout: dot vermelho pulsante + minuto | times+placar | botão ×.
+- Última linha discreta com último evento (`⚽ 65' João Silva`).
+- Polling a cada 30s; busca em segundo plano via `fetchMatchData` para enriquecer com `elapsed` + último gol/cartão.
+- Click navega para `/partida/<slug>` via router; oculto automaticamente nessa rota para o mesmo jogo.
+- Botão "×" dispensa por 1h via `sessionStorage` (`cdh_live_dismissed_<id>`).
+- Hook `onRouteChange()` esconde em transições de rota; responsivo (≤380px aperta padding/fonte).
+
+### Adicionado — Modo demo global por query param (2026-04-21)
+
+#### Cenários
+
+- `?mock=pre` — pré-jogo, kickoff em 2 dias, countdown ativo.
+- `?mock=halftime` — intervalo, placar 1×0.
+- `?mock=live` — 2º tempo aos 65', placar 2×1, eventos rolando.
+- `?mock=finished` — encerrado 3×1 com ratings, breakdown de gols, shot map, xG.
+- `?mock=injuries-heavy` — pré-jogo com 6 desfalques (3 por time).
+- `?mock=off` — desativa.
+
+Persistido em `sessionStorage` (`cdh_mock_scenario`) — sobrevive à navegação interna sem precisar repor na URL.
+
+#### Distribuição global de fixtures
+
+- Quando qualquer cenário ativo, `applyMockToFixtures()` em `js/util/mockMode.js` transforma a lista do `FIXTURES` em uma Copa "em andamento" realista: ~50% finished com placares plausíveis (hash determinístico), 4 ao vivo (`2H`/`HT`), restante futuros (`NS`).
+- Páginas que reagem: `inicio.js` (live banner, today widget, próximo jogo, tournament numbers), `jogos.js` (Match Center com filtros), `fanzone.js` (bolão e palpites resolvidos), `selecoes.js` (fixtures do time), `groupTable.js` (standings), `matchSections.js` (briefing pré-jogo).
+
+#### Mocks procedurais (determinísticos)
+
+- `js/util/mockData.js`: geradores que produzem o mesmo time → mesmos jogadores via hash do código.
+- Squads de 23 jogadores com nomes plausíveis (pools de primeiros + sobrenomes globais), formação por time, posições agrupadas.
+- Lineups com `grid` posicional ("linha:coluna") compatível com `lineupField.js`.
+- Eventos por cenário (gols, cartões, subs, vermelho aos 78' no finished).
+- Statistics escalonadas (×0.5 halftime, ×0.72 live, ×1.0 finished); bloco `players` com ratings.
+- H2H 5 partidas, forma 5 jogos W/D/L com agregado, weather constante, injuries (1/time normal, 6 no `injuries-heavy`).
+- Mocks também para campeonatos externos: `mockLeagueFixtures`, `mockLeagueStandings`, `mockLeagueTopScorers`, `mockPlayerDetails`.
+
+#### Banner DEMO global
+
+- `js/components/mockBanner.js` montado no shell — pill roxo "MODO DEMO" + select de cenário (troca recarrega a página) + botão "Desativar".
+- Aparece em **todas** as rotas quando o modo está ativo.
+
 ### Adicionado — Página de partida enriquecida (2026-04-21)
 
 Expansão informativa da rota `/partida/:slug` aproveitando campos da API-Football que já vinham no payload mas não eram renderizados, somados a duas novas integrações.
