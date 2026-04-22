@@ -3,8 +3,10 @@ import { escapeHTML } from '../util/html.js';
 import { setSEO } from '../util/seo.js';
 import { matchSlug, findFixtureBySlug, matchPhase, predictionResultXP } from '../util/match.js';
 import { FIXTURES, getTeam, getStadium, getTeamApiId } from '../data.js';
-import { fetchMatchData, fetchHeadToHead } from '../api/match.js';
+import { fetchMatchData, fetchHeadToHead, fetchInjuries, fetchTeamForm, fetchWeather } from '../api/match.js';
 import { fetchSquad } from '../api/squad.js';
+import { getApiError, describeApiError, ERROR_KIND, onApiStatusChange } from '../util/apiStatus.js';
+import { applyMockToFixture } from '../util/mockMode.js';
 import { showToast } from '../components/toast.js';
 import { renderPredictionBar } from '../components/predictionBar.js';
 import { renderMatchHero, tickCountdown } from '../components/match/matchHero.js';
@@ -15,6 +17,11 @@ import {
   renderHighlightCards, renderMatchTabs, bindMatchTabs,
   renderMatchBriefing
 } from '../components/match/matchSections.js';
+import {
+  renderRefereeCard, renderWeatherCard, renderInjuriesList,
+  renderTeamForm, renderGoalBreakdown
+} from '../components/match/matchInfoCards.js';
+import { renderLineupsBoard } from '../components/match/lineupField.js';
 import { renderMomentumChart } from '../components/attackMomentum.js';
 import { renderShotMap } from '../components/shotMap.js';
 import { renderXgTimeline } from '../components/xgTimeline.js';
@@ -24,6 +31,25 @@ import { bindPlayerCards } from '../components/playerQuickCard.js';
 
 let pollTimer = null;
 let countdownTimer = null;
+let apiStatusUnsub = null;
+
+function renderApiBanner(err) {
+  const host = document.getElementById('match-api-banner');
+  if (!host) return;
+  const msg = describeApiError(err);
+  if (!msg) {
+    host.innerHTML = '';
+    return;
+  }
+  host.innerHTML = `
+    <div class="api-warning" role="status">
+      <span class="api-warning__icon" aria-hidden="true">⚠️</span>
+      <div class="api-warning__body">
+        ${escapeHTML(msg).replace('Configurações', '<a href="/configuracoes" data-route-link>Configurações</a>')}
+      </div>
+    </div>
+  `;
+}
 
 function notFound(slug) {
   return `
@@ -115,6 +141,12 @@ function renderPreContent(fixture, home, away) {
     <div class="match-tab-panel" data-panel="overview">
       ${renderMatchBriefing(fixture, home, away)}
       ${renderPredictionBar(55, 25, 20, fixture.home, fixture.away)}
+
+      <section class="match-section">
+        <div class="section-title">${icon('zap', 18)} Forma Recente</div>
+        <div id="match-form"><p class="text-sm text-muted">Carregando últimos jogos…</p></div>
+      </section>
+
       <section class="match-section">
         <div class="section-title">${icon('eye', 18)} Olho neles</div>
         <div class="key-grid">
@@ -128,9 +160,30 @@ function renderPreContent(fixture, home, away) {
           </div>
         </div>
       </section>
+
       <section class="match-section">
         <div class="section-title">${icon('shield', 18)} Retrospecto</div>
         <div id="match-h2h"><p class="text-sm text-muted">Carregando histórico…</p></div>
+      </section>
+
+      <section class="match-section">
+        <div class="section-title">${icon('info', 18)} Informações da Partida</div>
+        <div class="match-info-grid">
+          <div id="match-referee"></div>
+          <div id="match-weather"></div>
+        </div>
+      </section>
+
+      <section class="match-section">
+        <div class="section-title">🩹 Desfalques</div>
+        <div id="match-injuries"><p class="text-sm text-muted">Carregando desfalques…</p></div>
+      </section>
+    </div>
+
+    <div class="match-tab-panel" data-panel="lineups" hidden>
+      <section class="match-section">
+        <div class="section-title">${icon('users', 18)} Provável Escalação</div>
+        <div id="match-lineups"><p class="text-sm text-muted">Buscando escalação provável…</p></div>
       </section>
     </div>
   `;
@@ -146,6 +199,16 @@ function renderLiveContent(fixture, home, away) {
       <section class="match-section">
         <div class="section-title">${icon('zap', 18)} Enquete da Partida</div>
         ${renderPoll(fixture.id, 'Quem vai marcar o próximo gol?', [home.code, away.code, 'Sem gols'])}
+      </section>
+      <section class="match-section">
+        <div class="section-title">${icon('info', 18)} Arbitragem</div>
+        <div id="match-referee"></div>
+      </section>
+    </div>
+    <div class="match-tab-panel" data-panel="lineups" hidden>
+      <section class="match-section">
+        <div class="section-title">${icon('users', 18)} Escalação</div>
+        <div id="match-lineups"><p class="text-sm text-muted">Carregando escalação…</p></div>
       </section>
     </div>
     <div class="match-tab-panel" data-panel="stats" hidden>
@@ -173,6 +236,7 @@ function renderFinishedContent(fixture, home, away) {
       <section class="match-section">
         <div class="section-title">${icon('sparkles', 18)} Destaques</div>
         <div id="match-highlights"><p class="text-sm text-muted">Carregando destaques…</p></div>
+        <div id="match-goal-breakdown"></div>
       </section>
       <section class="match-section">
         <div class="section-title">${icon('award', 18)} Avaliações</div>
@@ -181,6 +245,16 @@ function renderFinishedContent(fixture, home, away) {
       <section class="match-section">
         <div class="section-title">${icon('info', 18)} Resumo</div>
         <div id="match-recap"><p class="text-sm text-muted">Carregando resumo…</p></div>
+      </section>
+      <section class="match-section">
+        <div class="section-title">${icon('whistle', 18)} Arbitragem</div>
+        <div id="match-referee"></div>
+      </section>
+    </div>
+    <div class="match-tab-panel" data-panel="lineups" hidden>
+      <section class="match-section">
+        <div class="section-title">${icon('users', 18)} Escalação Final</div>
+        <div id="match-lineups"><p class="text-sm text-muted">Carregando escalação…</p></div>
       </section>
     </div>
     <div class="match-tab-panel" data-panel="stats" hidden>
@@ -213,8 +287,10 @@ function renderFinishedContent(fixture, home, away) {
 
 function render(state, params) {
   const slug = String(params?.slug || '').toLowerCase();
-  const fixture = findFixtureBySlug(FIXTURES, slug);
+  let fixture = findFixtureBySlug(FIXTURES, slug);
   if (!fixture) return notFound(slug);
+
+  fixture = applyMockToFixture(fixture);
 
   const home = getTeam(fixture.home);
   const away = getTeam(fixture.away);
@@ -238,6 +314,8 @@ function render(state, params) {
 
     <div class="match-page" data-fixture="${escapeHTML(String(fixture.id))}" data-phase="${phase}">
 
+      <div id="match-api-banner"></div>
+
       ${predictionBox(state, fixture)}
 
       ${renderMatchTabs(phase)}
@@ -255,39 +333,100 @@ function render(state, params) {
 async function loadPreMatch(fixture, home, away, loadedSquads = {}) {
   const homeApi = getTeamApiId(home.code);
   const awayApi = getTeamApiId(away.code);
+  const stadium = getStadium(fixture.stadium);
+  const kickoffISO = `${fixture.date}T${fixture.time}:00Z`;
 
-  const [h2h, homeSquad, awaySquad] = await Promise.all([
+  const [h2h, homeSquad, awaySquad, injuries, formHome, formAway, weather, matchData] = await Promise.all([
     fetchHeadToHead(homeApi, awayApi).catch(() => []),
     fetchSquad(home.code).catch(() => null),
-    fetchSquad(away.code).catch(() => null)
+    fetchSquad(away.code).catch(() => null),
+    fetchInjuries(fixture.id).catch(() => []),
+    fetchTeamForm(homeApi).catch(() => []),
+    fetchTeamForm(awayApi).catch(() => []),
+    fetchWeather(stadium?.lat, stadium?.lng, kickoffISO).catch(() => null),
+    fetchMatchData(fixture.id, 'pre').catch(() => null)
   ]);
 
   if (homeSquad) loadedSquads[home.code] = homeSquad;
   if (awaySquad) loadedSquads[away.code] = awaySquad;
 
+  const noKeyMsg = '<p class="text-sm text-muted">Indisponível — configure sua chave da API em <a href="/configuracoes" data-route-link>Configurações</a>.</p>';
+  const emptyMsg = '<p class="text-sm text-muted">Dados indisponíveis no momento.</p>';
+
   const h2hEl = document.getElementById('match-h2h');
-  if (h2hEl) h2hEl.innerHTML = renderH2H(h2h, home, away);
+  if (h2hEl) {
+    h2hEl.innerHTML = h2h?.length
+      ? renderH2H(h2h, home, away)
+      : (getApiError()?.kind === ERROR_KIND.NO_KEY ? noKeyMsg : '<p class="text-sm text-muted">Sem histórico de confrontos disponível.</p>');
+  }
+
+  const formEl = document.getElementById('match-form');
+  if (formEl) {
+    const hasForm = (formHome?.length || 0) + (formAway?.length || 0) > 0;
+    formEl.innerHTML = hasForm
+      ? renderTeamForm(formHome, formAway, home, away)
+      : (getApiError()?.kind === ERROR_KIND.NO_KEY ? noKeyMsg : '<p class="text-sm text-muted">Forma recente indisponível.</p>');
+  }
+
+  const refEl = document.getElementById('match-referee');
+  if (refEl) refEl.innerHTML = renderRefereeCard(matchData?.referee)
+    || '<p class="text-xs text-muted">Árbitro ainda não confirmado.</p>';
+
+  const wxEl = document.getElementById('match-weather');
+  if (wxEl) wxEl.innerHTML = renderWeatherCard(weather, stadium)
+    || '<p class="text-xs text-muted">Previsão do tempo indisponível.</p>';
+
+  const injEl = document.getElementById('match-injuries');
+  if (injEl) {
+    const apiHome = { id: homeApi, name: home.name, flag: home.flag };
+    const apiAway = { id: awayApi, name: away.name, flag: away.flag };
+    if (!injuries?.length && getApiError()?.kind === ERROR_KIND.NO_KEY) {
+      injEl.innerHTML = noKeyMsg;
+    } else {
+      injEl.innerHTML = renderInjuriesList(injuries, apiHome, apiAway);
+    }
+  }
+
+  const lineupsEl = document.getElementById('match-lineups');
+  if (lineupsEl) {
+    const apiHome = { id: homeApi, name: home.name };
+    const apiAway = { id: awayApi, name: away.name };
+    if (!matchData?.lineups?.length && getApiError()?.kind === ERROR_KIND.NO_KEY) {
+      lineupsEl.innerHTML = noKeyMsg;
+    } else {
+      lineupsEl.innerHTML = renderLineupsBoard(matchData?.lineups, apiHome, apiAway);
+    }
+  }
 
   const keyHomeEl = document.getElementById('match-key-home');
   const keyAwayEl = document.getElementById('match-key-away');
+  const fallback = getApiError()?.kind === ERROR_KIND.NO_KEY ? noKeyMsg : emptyMsg;
 
   if (keyHomeEl) {
-    keyHomeEl.innerHTML = renderKeyPlayers((homeSquad?.players || []).slice(0, 3));
-    keyHomeEl.querySelectorAll('.key-player').forEach((el, i) => {
-      const p = (homeSquad?.players || [])[i];
-      const name = p?.player?.name || p?.name || '';
-      if (name) el.setAttribute('data-player-card', escapeHTML(name));
-      el.setAttribute('data-team-code', home.code);
-    });
+    if (homeSquad?.players?.length) {
+      keyHomeEl.innerHTML = renderKeyPlayers(homeSquad.players.slice(0, 3));
+      keyHomeEl.querySelectorAll('.key-player').forEach((el, i) => {
+        const p = homeSquad.players[i];
+        const name = p?.player?.name || p?.name || '';
+        if (name) el.setAttribute('data-player-card', escapeHTML(name));
+        el.setAttribute('data-team-code', home.code);
+      });
+    } else {
+      keyHomeEl.innerHTML = fallback;
+    }
   }
   if (keyAwayEl) {
-    keyAwayEl.innerHTML = renderKeyPlayers((awaySquad?.players || []).slice(0, 3));
-    keyAwayEl.querySelectorAll('.key-player').forEach((el, i) => {
-      const p = (awaySquad?.players || [])[i];
-      const name = p?.player?.name || p?.name || '';
-      if (name) el.setAttribute('data-player-card', escapeHTML(name));
-      el.setAttribute('data-team-code', away.code);
-    });
+    if (awaySquad?.players?.length) {
+      keyAwayEl.innerHTML = renderKeyPlayers(awaySquad.players.slice(0, 3));
+      keyAwayEl.querySelectorAll('.key-player').forEach((el, i) => {
+        const p = awaySquad.players[i];
+        const name = p?.player?.name || p?.name || '';
+        if (name) el.setAttribute('data-player-card', escapeHTML(name));
+        el.setAttribute('data-team-code', away.code);
+      });
+    } else {
+      keyAwayEl.innerHTML = fallback;
+    }
   }
 }
 
@@ -297,6 +436,17 @@ async function loadLiveOrFinished(fixture, home, away, phase) {
 
   const timelineEl = document.getElementById('match-timeline');
   if (timelineEl) timelineEl.innerHTML = renderTimeline(data.events, home, away);
+
+  const refEl = document.getElementById('match-referee');
+  if (refEl) refEl.innerHTML = renderRefereeCard(data.referee)
+    || '<p class="text-xs text-muted">Árbitro não informado.</p>';
+
+  const lineupsEl = document.getElementById('match-lineups');
+  if (lineupsEl) {
+    const apiHome = { id: data.home?.id, name: data.home?.name || home.name };
+    const apiAway = { id: data.away?.id, name: data.away?.name || away.name };
+    lineupsEl.innerHTML = renderLineupsBoard(data.lineups, apiHome, apiAway);
+  }
 
   if (phase === 'live') {
     const statsEl = document.getElementById('match-live-stats');
@@ -314,6 +464,9 @@ async function loadLiveOrFinished(fixture, home, away, phase) {
       highlightsEl.innerHTML = renderHighlightCards(fixture, data.events, data.statistics, data.players, home, away)
         || '<p class="text-sm text-muted">Destaques indisponíveis.</p>';
     }
+
+    const breakdownEl = document.getElementById('match-goal-breakdown');
+    if (breakdownEl) breakdownEl.innerHTML = renderGoalBreakdown(data.events);
 
     const recapEl = document.getElementById('match-recap');
     if (recapEl) recapEl.innerHTML = renderRecap(fixture, data.events, home, away);
@@ -347,16 +500,18 @@ async function loadLiveOrFinished(fixture, home, away, phase) {
 
 function bindEvents(state, { router, params }) {
   const slug = String(params?.slug || '').toLowerCase();
-  const fixture = findFixtureBySlug(FIXTURES, slug);
+  const rawFixture = findFixtureBySlug(FIXTURES, slug);
 
-  if (!fixture) {
+  if (!rawFixture) {
     setSEO({ title: 'Partida não encontrada', description: 'Jogo não localizado.', canonical: window.location.pathname });
     return;
   }
 
+  const fixture = applyMockToFixture(rawFixture);
   const home = getTeam(fixture.home);
   const away = getTeam(fixture.away);
   const phase = matchPhase(fixture);
+
   const dateLabel = new Date(`${fixture.date}T${fixture.time}:00`).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
   setSEO({
@@ -386,6 +541,11 @@ function bindEvents(state, { router, params }) {
 
   // Tabs
   bindMatchTabs();
+
+  // Banner de status da API (re-renderiza quando estado muda)
+  renderApiBanner(getApiError());
+  if (apiStatusUnsub) apiStatusUnsub();
+  apiStatusUnsub = onApiStatusChange((err) => renderApiBanner(err));
 
   // Confiança no palpite
   const confStars = document.getElementById('conf-stars');
@@ -449,7 +609,10 @@ function bindEvents(state, { router, params }) {
   }
 
   // Fecha Modo Jogo ao sair da página
-  return () => closeModoJogo();
+  return () => {
+    closeModoJogo();
+    if (apiStatusUnsub) { apiStatusUnsub(); apiStatusUnsub = null; }
+  };
 }
 
 export default { render, bindEvents };

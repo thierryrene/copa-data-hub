@@ -6,12 +6,14 @@ import { slugify } from '../../util/slug.js';
 import { icon } from '../../icons.js';
 import { FIXTURES, GROUPS, getTeam } from '../../data.js';
 import { matchPhase } from '../../util/match.js';
+import { applyMockToFixtures } from '../../util/mockMode.js';
 
 // ── Briefing Pré-Jogo ──
 function computeGroupStandings(groupId) {
   const groupTeams = GROUPS[groupId]?.teams || [];
+  const allFixtures = applyMockToFixtures(FIXTURES);
   return groupTeams.map(code => {
-    const played = FIXTURES.filter(f =>
+    const played = allFixtures.filter(f =>
       f.group === groupId &&
       (f.home === code || f.away === code) &&
       matchPhase(f) === 'finished'
@@ -354,15 +356,22 @@ function savePoll(fixtureId, data) {
 }
 
 // ── Estatísticas ao vivo (barras visuais) ──
+// Ordem reflete fluxo visual: posse → ofensivo → defensivo → disciplina.
 const STAT_LABELS = {
   'Ball Possession': 'Posse de Bola',
   'Total Shots': 'Chutes Totais',
   'Shots on Goal': 'Chutes ao Gol',
+  'Shots off Goal': 'Chutes para Fora',
+  'Blocked Shots': 'Chutes Bloqueados',
   'Corner Kicks': 'Escanteios',
+  'Offsides': 'Impedimentos',
+  'Goalkeeper Saves': 'Defesas do Goleiro',
+  'Total passes': 'Passes Totais',
+  'Passes accurate': 'Passes Certos',
+  'Passes %': 'Precisão de Passes',
   'Fouls': 'Faltas',
   'Yellow Cards': 'Cartões Amarelos',
-  'Passes accurate': 'Passes Certos',
-  'Passes %': 'Precisão Passes',
+  'Red Cards': 'Cartões Vermelhos',
 };
 
 export function renderLiveStats(stats, home, away) {
@@ -463,16 +472,18 @@ export function renderMatchTabs(phase) {
   const tabs = phase === 'pre'
     ? [
         { id: 'overview', label: icon('zap', 14) + ' Pré-Jogo', active: true },
-        { id: 'h2h', label: icon('shield', 14) + ' H2H', active: false },
+        { id: 'lineups', label: icon('users', 14) + ' Provável XI', active: false },
       ]
     : phase === 'live'
     ? [
         { id: 'live', label: '🔴 Ao Vivo', active: true },
+        { id: 'lineups', label: icon('users', 14) + ' Escalação', active: false },
         { id: 'stats', label: icon('barChart', 14) + ' Stats', active: false },
         { id: 'events', label: icon('calendar', 14) + ' Eventos', active: false },
       ]
     : [
         { id: 'recap', label: icon('sparkles', 14) + ' Resumo', active: true },
+        { id: 'lineups', label: icon('users', 14) + ' Escalação', active: false },
         { id: 'stats', label: icon('barChart', 14) + ' Stats', active: false },
         { id: 'vizual', label: icon('target', 14) + ' Visuais', active: false },
         { id: 'events', label: icon('calendar', 14) + ' Eventos', active: false },
