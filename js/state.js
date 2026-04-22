@@ -6,7 +6,7 @@
 // automaticamente, sem perder dados de usuário (XP, palpites, streak).
 
 const STORAGE_KEY = 'copadatahub_state';
-const STATE_VERSION = 2;
+const STATE_VERSION = 4;
 
 const DEFAULT_STATE = {
   _version: STATE_VERSION,
@@ -27,7 +27,12 @@ const DEFAULT_STATE = {
   settings: {
     notifications: true,
     installDismissed: false,
-    apiKey: '63dac64042df41209e99b787a87da1b4'
+    // apiSportsKey: api-sports.io (header x-apisports-key) — partidas, escalações, jogadores.
+    apiSportsKey: '63dac64042df41209e99b787a87da1b4',
+    // footballDataKey: football-data.org v4 (header X-Auth-Token) — campeonatos externos.
+    footballDataKey: '',
+    theme: 'auto',
+    palette: 'stadium'
   }
 };
 
@@ -36,7 +41,23 @@ const DEFAULT_STATE = {
 const MIGRATIONS = [
   // v1 → v2: troca chave api-sports pela chave football-data.org
   (state) => {
-    state.settings.apiKey = DEFAULT_STATE.settings.apiKey;
+    state.settings.apiKey = DEFAULT_STATE.settings.apiSportsKey;
+    return state;
+  },
+  // v2 → v3: adiciona theme/palette defaults
+  (state) => {
+    if (state.settings.theme == null) state.settings.theme = 'auto';
+    if (state.settings.palette == null) state.settings.palette = 'stadium';
+    return state;
+  },
+  // v3 → v4: split apiKey em apiSportsKey/footballDataKey.
+  // A chave default antiga era da api-sports.io — herda-se para apiSportsKey.
+  (state) => {
+    if (state.settings.apiSportsKey == null) {
+      state.settings.apiSportsKey = state.settings.apiKey || DEFAULT_STATE.settings.apiSportsKey;
+    }
+    if (state.settings.footballDataKey == null) state.settings.footballDataKey = '';
+    delete state.settings.apiKey;
     return state;
   }
 ];

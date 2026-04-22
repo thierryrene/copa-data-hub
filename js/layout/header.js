@@ -13,8 +13,11 @@ export function renderHeader(state) {
         </div>
       </div>
       <div class="app-header__actions">
-        <button class="app-header__search-btn" id="header-search-btn" aria-label="Buscar seleções, estádios ou partidas">
+        <button class="app-header__icon-btn" id="header-search-btn" aria-label="Buscar seleções, estádios ou partidas">
           ${icon('search', 18)}
+        </button>
+        <button class="app-header__icon-btn" id="header-settings-btn" aria-label="Abrir configurações">
+          ${icon('settings', 18)}
         </button>
         <div class="app-header__badge" id="header-xp-badge">
           ⚡ <span id="header-xp">${xp}</span> XP

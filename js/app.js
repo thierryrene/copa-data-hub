@@ -14,6 +14,9 @@ import { prefetchTeamDossier } from './api/teamLoader.js';
 import { pages } from './pages/index.js';
 import { renderSearchOverlay, mountSearchOverlay } from './components/searchOverlay.js';
 import { loadEnrichedTeams } from './api/enriched.js';
+import { renderMockBanner, bindMockBanner } from './components/mockBanner.js';
+import { mountLiveMatchCard, onRouteChange as onLiveCardRoute } from './components/liveMatchCard.js';
+import { bootThemeAndPalette } from './util/theme.js';
 
 // Tabela declarativa de rotas do app.
 // name: identificador usado em router.navigate() e para destaque da nav.
@@ -51,6 +54,7 @@ const NAV_HIGHLIGHT = {
 class App {
   constructor() {
     this.state = loadState();
+    bootThemeAndPalette();
     this.router = new Router();
     this.countdownInterval = null;
     this.init();
@@ -77,11 +81,13 @@ class App {
     root.innerHTML = `
       ${renderWelcomeOverlay()}
       ${renderHeader(this.state)}
+      ${renderMockBanner()}
       <div class="toast-container" id="toast-container"></div>
       <main id="app">
         <div class="page active" id="page-container"></div>
       </main>
       ${renderInstallBanner()}
+      <div id="live-match-card-host"></div>
       ${renderBottomNav('home')}
       ${renderSearchOverlay()}
     `;
@@ -90,6 +96,12 @@ class App {
     const searchBtn = document.getElementById('header-search-btn');
     if (searchBtn) searchBtn.addEventListener('click', () => window._searchOpen?.());
     mountSearchOverlay(this.router);
+
+    // Botão de configurações no header
+    const settingsBtn = document.getElementById('header-settings-btn');
+    if (settingsBtn) settingsBtn.addEventListener('click', () => this.router.navigate('configuracoes'));
+
+    bindMockBanner();
   }
 
   startApp() {
@@ -164,9 +176,12 @@ class App {
       updateBottomNavHighlight(null);
     });
 
-    this.router.onNavigate = (name) => {
+    this.router.onNavigate = (name, params) => {
       updateBottomNavHighlight(NAV_HIGHLIGHT[name] || null);
+      onLiveCardRoute(name, params);
     };
+
+    mountLiveMatchCard(this.router);
   }
 
   renderNotFound() {
