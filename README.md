@@ -1,40 +1,59 @@
-# 🏆 CopaDataHub 2026
+# 🏆 CopaDataHub 2026 — Nuxt Edition
 
-> PWA open source de dados, previsões e bolão para o maior torneio de seleções do mundo — 48 seleções, 3 países, zero dependências.
+> PWA open source de dados, previsões e bolão para o maior torneio de seleções do mundo — 48 seleções, 3 países, agora em Nuxt 4.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PWA Ready](https://img.shields.io/badge/PWA-ready-brightgreen.svg)](manifest.json)
-[![Zero Dependencies](https://img.shields.io/badge/deps-zero-orange.svg)](AGENTS.md)
-[![Vanilla JS](https://img.shields.io/badge/stack-vanilla%20JS-yellow.svg)](js/app.js)
+[![PWA Ready](https://img.shields.io/badge/PWA-ready-brightgreen.svg)](nuxt.config.ts)
+[![Nuxt 4](https://img.shields.io/badge/Nuxt-4-00DC82.svg)](https://nuxt.com)
+[![Pinia](https://img.shields.io/badge/state-Pinia-yellow.svg)](stores/)
+
+> **Branch `nuxt-migration`** — migração do PWA vanilla JS para Nuxt 4 SPA + Pinia. A versão vanilla original vive em `main`.
 
 ---
 
-## ✨ Por que este projeto existe?
+## ✨ Por que Nuxt?
 
-O CopaDataHub nasceu da vontade de construir uma experiência rica de Copa do Mundo **sem a complexidade de um framework**. É uma aposta na web plataforma: HTML5 + CSS Custom Properties + ES6 Modules entregam FCP < 1.5s mesmo em redes móveis congestionadas, sem build step, sem `node_modules`, sem lock-in.
+A versão vanilla original foi um laboratório de web plataforma pura — e ainda vive na branch `main`. Esta branch reimagina o mesmo app com:
 
-É também um **laboratório aberto**: contribuições são bem-vindas, a arquitetura é intencionalmente legível, e cada decisão de design está documentada.
+- **Nuxt 4** em modo SPA (`ssr: false`) para manter o comportamento client-heavy
+- **Pinia** como state global (substitui o localStorage manual)
+- **File-based routing** (10 rotas, 4 dinâmicas com `[slug]`)
+- **Auto-imports** de stores, composables e utils
+- **@vite-pwa/nuxt** para Service Worker, manifest e precaching
+- **CSS preservado** integralmente — mesmo design system, 8 paletas, tema dark/light
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# Clone e sirva — é só isso
-git clone https://github.com/thierryrene/copa-data-hub.git
+git clone -b nuxt-migration https://github.com/thierryrene/copa-data-hub.git
 cd copa-data-hub
+pnpm install
 
-# Opção recomendada (rewrite SPA incluso, deep-links funcionam)
-node scripts/dev-server.js 3000
+# Dev server com HMR
+pnpm run dev           # http://localhost:3000
 
-# Alternativas
-npx serve -s .
-python3 -m http.server 3000
+# Build de produção
+pnpm run build
+node .output/server/index.mjs
+
+# Gerar estático (SPA export)
+pnpm run generate
 ```
 
 Abra `http://localhost:3000` → escolha seu time favorito → explore. 🎉
 
-> 💡 **Dica:** use aba anônima ou "Disable cache" nas DevTools para evitar cache teimoso em desenvolvimento.
+### Modo demo
+
+Adicione `?mock=<cenário>` em qualquer URL para ver o app com dados mockados:
+
+- `?mock=pre` — pré-jogo, countdown ativo
+- `?mock=halftime` — intervalo, placar 1×0
+- `?mock=live` — 2º tempo aos 65', 2×1
+- `?mock=finished` — encerrado 3×1 com ratings e breakdown de gols
+- `?mock=injuries-heavy` — pré-jogo com 6 desfalques
+- `?mock=off` — desativa
 
 ---
 
