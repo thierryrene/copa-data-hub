@@ -3,6 +3,9 @@
 
 import { getTeamApiId, getTeamFormation } from '../data.js';
 import { loadState } from '../state.js';
+import { setApiError, clearApiError, classifyHttpStatus, ERROR_KIND } from '../util/apiStatus.js';
+import { isMockActive } from '../util/mockMode.js';
+import { mockSquad } from '../util/mockData.js';
 
 const API_BASE = 'https://v3.football.api-sports.io';
 const CACHE_PREFIX = 'cdh_squad_';
@@ -23,8 +26,8 @@ const POSITION_SHORT = {
 };
 
 function getApiKey() {
-  const state = loadState();
-  return state?.settings?.apiKey || '';
+  const s = loadState()?.settings;
+  return s?.apiSportsKey || s?.apiKey || '';
 }
 
 function getCached(teamCode) {
@@ -126,6 +129,8 @@ function pickStarting11(squad) {
 }
 
 export async function fetchSquad(teamCode) {
+  if (isMockActive()) return mockSquad(teamCode);
+
   const cached = getCached(teamCode);
   if (cached) return cached;
 
@@ -133,19 +138,43 @@ export async function fetchSquad(teamCode) {
   if (!apiId) return null;
 
   const apiKey = getApiKey();
-  if (!apiKey) return null;
+  if (!apiKey) {
+    setApiError(ERROR_KIND.NO_KEY);
+    console.warn(`[fetchSquad] sem chave; ignorando ${teamCode}`);
+    return null;
+  }
 
-  const response = await fetch(`${API_BASE}/players/squads?team=${apiId}`, {
-    headers: { 'x-apisports-key': apiKey }
-  });
+  try {
+    const response = await fetch(`${API_BASE}/players/squads?team=${apiId}`, {
+      headers: { 'x-apisports-key': apiKey }
+    });
 
-  if (!response.ok) return null;
+    if (!response.ok) {
+      setApiError(classifyHttpStatus(response.status), `HTTP ${response.status}`);
+      console.error(`[fetchSquad] HTTP ${response.status} para team=${apiId} (${teamCode})`);
+      return null;
+    }
 
-  const data = await response.json();
-  const squad = parseSquadResponse(data, teamCode);
+    const data = await response.json();
+    if (data?.errors && Object.keys(data.errors).length) {
+      const firstErr = Object.values(data.errors)[0];
+      const isQuota = String(firstErr).toLowerCase().includes('limit') || String(firstErr).toLowerCase().includes('quota');
+      setApiError(isQuota ? ERROR_KIND.RATE_LIMIT : ERROR_KIND.HTTP, String(firstErr));
+      console.error(`[fetchSquad] payload errors:`, data.errors);
+      return null;
+    }
 
-  if (squad) setCache(teamCode, squad);
-  return squad;
+    const squad = parseSquadResponse(data, teamCode);
+    if (squad) {
+      clearApiError();
+      setCache(teamCode, squad);
+    }
+    return squad;
+  } catch (e) {
+    setApiError(ERROR_KIND.NETWORK, e?.message || '');
+    console.error(`[fetchSquad] network fail para ${teamCode}:`, e);
+    return null;
+  }
 }
 
 export function buildLineup(squad) {

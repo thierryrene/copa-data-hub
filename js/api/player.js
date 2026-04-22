@@ -4,6 +4,8 @@
 import { loadState } from '../state.js';
 import { fetchWikipediaPlayerSummary } from './wikipedia.js';
 import { slugify } from '../util/slug.js';
+import { isMockActive } from '../util/mockMode.js';
+import { mockPlayerDetails } from '../util/mockData.js';
 
 const API_BASE = 'https://v3.football.api-sports.io';
 const CACHE_PREFIX = 'cdh_player_';
@@ -72,8 +74,8 @@ export async function resolvePlayerIdBySlug(slug) {
 }
 
 function getApiKey() {
-  const state = loadState();
-  return state?.settings?.apiKey || '';
+  const s = loadState()?.settings;
+  return s?.apiSportsKey || s?.apiKey || '';
 }
 
 function getCached(playerId) {
@@ -166,6 +168,8 @@ function parsePlayerResponse(apiData) {
 }
 
 export async function fetchPlayerDetails(playerId) {
+  if (isMockActive()) return mockPlayerDetails(playerId);
+
   const cached = getCached(playerId);
   if (cached) return cached;
 

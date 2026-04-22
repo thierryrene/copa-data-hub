@@ -2,6 +2,8 @@
 // Cache sessionStorage TTL 30min.
 
 import { loadState } from '../state.js';
+import { isMockActive } from '../util/mockMode.js';
+import { mockLeagueFixtures, mockLeagueStandings, mockLeagueTopScorers } from '../util/mockData.js';
 
 // Em localhost usa proxy local para contornar CORS (ver scripts/dev-server.js).
 // Em produção as requests vão direto — requer Vercel Function como proxy.
@@ -11,8 +13,7 @@ const CACHE_PREFIX = 'cdh_league_';
 const CACHE_TTL = 30 * 60 * 1000;
 
 function getApiKey() {
-  const state = loadState();
-  return state?.settings?.apiKey || '';
+  return loadState()?.settings?.footballDataKey || '';
 }
 
 function cacheKey(kind, code) {
@@ -75,6 +76,8 @@ async function apiGet(path) {
 // mode: 'next' | 'last' | 'mixed'
 // football-data filtra por status: SCHEDULED/TIMED = próximos | FINISHED = encerrados
 export async function fetchLeagueFixtures(league, { next = 10, last = 5, mode = 'next' } = {}) {
+  if (isMockActive()) return mockLeagueFixtures(league, { next, last, mode });
+
   const key = cacheKey(`fixtures_${mode}`, league.code);
   const cached = getCached(key);
   if (cached) return cached;
@@ -107,6 +110,8 @@ export async function fetchLeagueFixtures(league, { next = 10, last = 5, mode = 
 }
 
 export async function fetchLeagueStandings(league) {
+  if (isMockActive()) return mockLeagueStandings(league);
+
   const key = cacheKey('standings', league.code);
   const cached = getCached(key);
   if (cached) return cached;
@@ -129,6 +134,8 @@ export async function fetchLeagueStandings(league) {
 }
 
 export async function fetchLeagueTopScorers(league, { limit = 10 } = {}) {
+  if (isMockActive()) return mockLeagueTopScorers(league, { limit });
+
   const key = cacheKey('scorers', league.code);
   const cached = getCached(key);
   if (cached) return cached;
