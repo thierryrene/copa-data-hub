@@ -9,6 +9,36 @@ e o projeto adota [Conventional Commits](https://www.conventionalcommits.org/pt-
 
 ## Não lançado
 
+### Adicionado — Página de partida enriquecida (2026-04-21)
+
+Expansão informativa da rota `/partida/:slug` aproveitando campos da API-Football que já vinham no payload mas não eram renderizados, somados a duas novas integrações.
+
+#### Nova aba "Escalação" (formação SVG)
+
+- Componente `js/components/match/lineupField.js` desenha campo SVG (220×320) com 11 titulares posicionados via `grid` ("linha:coluna") da API.
+- Aba adaptativa por fase: "Provável XI" pré-jogo, "Escalação" ao vivo, "Escalação Final" pós-jogo.
+- Cores por time (azul mandante, dourado visitante), círculo numerado + sobrenome embaixo, hover com brilho.
+- Banco completo listado abaixo de cada formação; clique em qualquer jogador abre o `playerQuickCard` (delegação já existente).
+- Fallback elegante quando lineups ainda não foram divulgados.
+
+#### Cards informativos novos
+
+- **Arbitragem** (`renderRefereeCard`): nome do árbitro principal aparece em pré-jogo e pós-jogo. Dado já vinha em `fixture.referee` mas nunca era exibido.
+- **Clima no estádio** (`renderWeatherCard`): integração com [open-meteo.com](https://open-meteo.com) (gratuito, sem chave). Temperatura, vento km/h, chance de chuva e ícone WMO localizado em pt-BR.
+- **Desfalques** (`renderInjuriesList`): lista por time de lesionados/suspensos via novo endpoint `/injuries?fixture=`. Ícone por motivo (suspenso 🟥, doença 🤒, dúvida ❓, lesão 🩹) e clique abre ficha do jogador.
+- **Forma recente** (`renderTeamForm`): tira dos últimos 5 jogos com células coloridas W/D/L (esmeralda/cinza/rosa) + agregado "3V · 8/4 gols". Endpoint `/fixtures?team=&last=5`.
+- **Breakdown de gols** (`renderGoalBreakdown`): pills "⚽ Jogada · 🎯 Pênalti · 🔄 Contra" abaixo dos destaques pós-jogo.
+
+#### Estatísticas expandidas
+
+- `renderLiveStats` ganhou: chutes para fora, chutes bloqueados, impedimentos, defesas do goleiro, passes totais, cartões vermelhos.
+- Reorganização da ordem visual: posse → ofensivo → defensivo → disciplina.
+
+#### Camada de dados
+
+- `js/api/match.js`: novos `fetchInjuries`, `fetchTeamForm`, `fetchWeather` seguindo o mesmo padrão de cache adaptativo (5min pré, 24h forma, 5min clima).
+- Helper `apiGetExternal` para chamadas sem header `x-apisports-key` (open-meteo).
+
 ### Adicionado — UI/UX dos palpites e Home
 
 Foco em tornar os palpites visíveis em todo o app e aproveitar o tamanho da tela no desktop. Reformulação do bolão e do contador regressivo da home, além de novo fluxo de exportação de calendário.
