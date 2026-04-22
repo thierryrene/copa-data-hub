@@ -1,7 +1,8 @@
 import { icon } from '../icons.js';
-import { STADIUMS } from '../data.js';
+import { STADIUMS, getStadium } from '../data.js';
 import { renderStadiumCard } from '../components/stadiumCard.js';
 import { setSEO } from '../util/seo.js';
+import { openStadium3D, closeStadium3D } from '../components/stadium3dModal.js';
 
 function render(_state) {
   const filterHTML = `
@@ -48,18 +49,33 @@ function bindEvents() {
     keywords: 'estádios mundial 2026, sedes copa 2026, EUA, Canadá, México'
   });
 
-  const filters = document.getElementById('stadium-filters');
-  if (!filters) return;
-  filters.addEventListener('click', (e) => {
-    const btn = e.target.closest('.filter-tab');
-    if (!btn) return;
-    const filter = btn.dataset.filter;
-    filters.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.stadium-wrapper').forEach((s) => {
-      s.style.display = (filter === 'all' || s.dataset.country === filter) ? '' : 'none';
+  const container = document.getElementById('stadiums-container');
+  if (container) {
+    container.addEventListener('click', (e) => {
+      const card = e.target.closest('.stadium-card');
+      if (!card) return;
+      const id = card.dataset.stadiumId;
+      const stadium = getStadium(id);
+      if (stadium) openStadium3D(stadium);
     });
-  });
+  }
+
+  const filters = document.getElementById('stadium-filters');
+  if (filters) {
+    filters.addEventListener('click', (e) => {
+      const btn = e.target.closest('.filter-tab');
+      if (!btn) return;
+      const filter = btn.dataset.filter;
+      filters.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.stadium-wrapper').forEach((s) => {
+        s.style.display = (filter === 'all' || s.dataset.country === filter) ? '' : 'none';
+      });
+    });
+  }
+
+  // Fecha modal ao sair da rota
+  return () => closeStadium3D();
 }
 
 export default { render, bindEvents };

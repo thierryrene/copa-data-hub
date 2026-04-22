@@ -94,24 +94,24 @@ export const GROUPS = {
   L: { teams: ["BEL", "AUT", "CRC", "PER"] }
 };
 
-// 16 Stadiums across 3 countries
+// 16 Stadiums across 3 countries — coordenadas verificadas em latlong.net (Apr/2026).
 export const STADIUMS = [
-  { id: "met", name: "MetLife Stadium", city: "Nova Jersey", country: "EUA", capacity: 82500, lat: 40.8135, lng: -74.0745, timezone: "EST", isFinal: true },
-  { id: "att", name: "AT&T Stadium", city: "Arlington, TX", country: "EUA", capacity: 80000, lat: 32.7473, lng: -97.0945, timezone: "CST", isFinal: false },
-  { id: "har", name: "Hard Rock Stadium", city: "Miami, FL", country: "EUA", capacity: 65326, lat: 25.9580, lng: -80.2389, timezone: "EST", isFinal: false },
-  { id: "sof", name: "SoFi Stadium", city: "Los Angeles, CA", country: "EUA", capacity: 70240, lat: 33.9535, lng: -118.3392, timezone: "PST", isFinal: false },
-  { id: "lum", name: "Lumen Field", city: "Seattle, WA", country: "EUA", capacity: 69000, lat: 47.5952, lng: -122.3316, timezone: "PST", isFinal: false },
-  { id: "gil", name: "Gillette Stadium", city: "Foxborough, MA", country: "EUA", capacity: 65878, lat: 42.0909, lng: -71.2643, timezone: "EST", isFinal: false },
-  { id: "nrg", name: "NRG Stadium", city: "Houston, TX", country: "EUA", capacity: 72220, lat: 29.6847, lng: -95.4107, timezone: "CST", isFinal: false },
-  { id: "mer", name: "Mercedes-Benz Stadium", city: "Atlanta, GA", country: "EUA", capacity: 71000, lat: 33.7554, lng: -84.4010, timezone: "EST", isFinal: false },
-  { id: "lin", name: "Lincoln Financial Field", city: "Filadélfia, PA", country: "EUA", capacity: 69796, lat: 39.9008, lng: -75.1675, timezone: "EST", isFinal: false },
-  { id: "arr", name: "Arrowhead Stadium", city: "Kansas City, MO", country: "EUA", capacity: 76416, lat: 39.0489, lng: -94.4839, timezone: "CST", isFinal: false },
-  { id: "lev", name: "Levi's Stadium", city: "Santa Clara, CA", country: "EUA", capacity: 68500, lat: 37.4033, lng: -121.9694, timezone: "PST", isFinal: false },
-  { id: "azt", name: "Estadio Azteca", city: "Cidade do México", country: "México", capacity: 87523, lat: 19.3029, lng: -99.1505, timezone: "CST", isFinal: false },
-  { id: "bbv", name: "Estadio BBVA", city: "Monterrey", country: "México", capacity: 53500, lat: 25.6649, lng: -100.2447, timezone: "CST", isFinal: false },
-  { id: "akr", name: "Estadio Akron", city: "Guadalajara", country: "México", capacity: 49850, lat: 20.6821, lng: -103.4622, timezone: "CST", isFinal: false },
-  { id: "bmo", name: "BMO Field", city: "Toronto", country: "Canadá", capacity: 45736, lat: 43.6332, lng: -79.4186, timezone: "EST", isFinal: false },
-  { id: "bcp", name: "BC Place", city: "Vancouver", country: "Canadá", capacity: 54500, lat: 49.2768, lng: -123.1118, timezone: "PST", isFinal: false }
+  { id: "met", name: "MetLife Stadium", city: "East Rutherford, NJ", country: "EUA", capacity: 82500, lat: 40.813477, lng: -74.074951, timezone: "EST", isFinal: true },
+  { id: "att", name: "AT&T Stadium", city: "Arlington, TX", country: "EUA", capacity: 80000, lat: 32.748138, lng: -97.093231, timezone: "CST", isFinal: false },
+  { id: "har", name: "Hard Rock Stadium", city: "Miami, FL", country: "EUA", capacity: 65326, lat: 25.957830, lng: -80.239326, timezone: "EST", isFinal: false },
+  { id: "sof", name: "SoFi Stadium", city: "Los Angeles, CA", country: "EUA", capacity: 70240, lat: 33.953438, lng: -118.339447, timezone: "PST", isFinal: false },
+  { id: "lum", name: "Lumen Field", city: "Seattle, WA", country: "EUA", capacity: 69000, lat: 47.595135, lng: -122.331917, timezone: "PST", isFinal: false },
+  { id: "gil", name: "Gillette Stadium", city: "Foxborough, MA", country: "EUA", capacity: 65878, lat: 42.090790, lng: -71.264404, timezone: "EST", isFinal: false },
+  { id: "nrg", name: "NRG Stadium", city: "Houston, TX", country: "EUA", capacity: 72220, lat: 29.684702, lng: -95.410965, timezone: "CST", isFinal: false },
+  { id: "mer", name: "Mercedes-Benz Stadium", city: "Atlanta, GA", country: "EUA", capacity: 71000, lat: 33.755371, lng: -84.401436, timezone: "EST", isFinal: false },
+  { id: "lin", name: "Lincoln Financial Field", city: "Filadélfia, PA", country: "EUA", capacity: 69796, lat: 39.901325, lng: -75.167862, timezone: "EST", isFinal: false },
+  { id: "arr", name: "Arrowhead Stadium", city: "Kansas City, MO", country: "EUA", capacity: 76416, lat: 39.048855, lng: -94.484474, timezone: "CST", isFinal: false },
+  { id: "lev", name: "Levi's Stadium", city: "Santa Clara, CA", country: "EUA", capacity: 68500, lat: 37.403297, lng: -121.969765, timezone: "PST", isFinal: false },
+  { id: "azt", name: "Estadio Azteca", city: "Cidade do México", country: "México", capacity: 87523, lat: 19.302837, lng: -99.150803, timezone: "CST", isFinal: false },
+  { id: "bbv", name: "Estadio BBVA", city: "Monterrey", country: "México", capacity: 53500, lat: 25.669132, lng: -100.244621, timezone: "CST", isFinal: false },
+  { id: "akr", name: "Estadio Akron", city: "Guadalajara", country: "México", capacity: 49850, lat: 20.681721, lng: -103.463135, timezone: "CST", isFinal: false },
+  { id: "bmo", name: "BMO Field", city: "Toronto", country: "Canadá", capacity: 45736, lat: 43.633087, lng: -79.418961, timezone: "EST", isFinal: false },
+  { id: "bcp", name: "BC Place", city: "Vancouver", country: "Canadá", capacity: 54500, lat: 49.276646, lng: -123.112564, timezone: "PST", isFinal: false }
 ];
 
 // Group stage fixtures (sample — first round of all groups)
