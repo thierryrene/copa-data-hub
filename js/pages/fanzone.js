@@ -1,5 +1,6 @@
 import { icon } from '../icons.js';
 import { FIXTURES, TRIVIA, getTeam } from '../data.js';
+import { applyMockToFixtures } from '../util/mockMode.js';
 import { renderXPBar } from '../components/xpBar.js';
 import { showToast } from '../components/toast.js';
 import { getXPProgress, savePrediction, recordTrivia, addXP } from '../state.js';
@@ -140,8 +141,9 @@ function render(state) {
     </div>
   `;
 
-  const bolaoFixtures = FIXTURES.slice(0, 4);
-  const upcomingAll = FIXTURES.filter(f => matchPhase(f) === 'pre');
+  const mockedFixtures = applyMockToFixtures(FIXTURES);
+  const bolaoFixtures = mockedFixtures.slice(0, 4);
+  const upcomingAll = mockedFixtures.filter(f => matchPhase(f) === 'pre');
   const pendingCount = upcomingAll.filter(f => !state.user.predictions.find(p => p.fixtureId === f.id)).length;
 
   const bolaoHTML = `
@@ -274,8 +276,9 @@ function render(state) {
     `;
 
     const groups = { exact: [], winner: [], miss: [], pending: [] };
+    const fixtureLookup = applyMockToFixtures(FIXTURES);
     preds.forEach(pred => {
-      const fixture = FIXTURES.find(f => f.id === pred.fixtureId);
+      const fixture = fixtureLookup.find(f => f.id === pred.fixtureId);
       if (!fixture) return;
       const xp = predictionResultXP(pred, fixture);
       const multiplier = pred.confidence || 1;

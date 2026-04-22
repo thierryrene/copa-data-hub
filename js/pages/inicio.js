@@ -1,5 +1,6 @@
 import { icon } from '../icons.js';
 import { getTodayFixtures, getTeam, getTeamFixtures, getGroupForTeam, FIXTURES } from '../data.js';
+import { applyMockToFixtures } from '../util/mockMode.js';
 import { renderCountdown } from '../components/countdown.js';
 import { renderXPBar } from '../components/xpBar.js';
 import { renderMatchCard } from '../components/matchCard.js';
@@ -11,7 +12,7 @@ import { downloadCalendar } from '../util/calendar.js';
 
 // ── Banner de Jogo Ao Vivo ──
 function renderLiveBanner() {
-  const live = FIXTURES.filter(f => matchPhase(f) === 'live');
+  const live = applyMockToFixtures(FIXTURES).filter(f => matchPhase(f) === 'live');
   if (!live.length) return '';
 
   const f = live[0];
@@ -35,7 +36,7 @@ function renderLiveBanner() {
 
 // ── Widget "Hoje no Mundial" ──
 function renderTodayWidget() {
-  const today = getTodayFixtures();
+  const today = applyMockToFixtures(getTodayFixtures());
   if (!today.length) return '';
 
   const liveCount = today.filter(f => matchPhase(f) === 'live').length;
@@ -88,7 +89,7 @@ function renderTodayWidget() {
 
 // ── Estatísticas do Torneio ──
 function renderTournamentNumbers() {
-  const played = FIXTURES.filter(f => matchPhase(f) === 'finished');
+  const played = applyMockToFixtures(FIXTURES).filter(f => matchPhase(f) === 'finished');
   const totalGoals = played.reduce((s, f) => s + (f.homeScore ?? 0) + (f.awayScore ?? 0), 0);
   const avgGoals = played.length ? (totalGoals / played.length).toFixed(1) : '—';
 
@@ -137,7 +138,7 @@ function renderMeuCopa(state) {
   const team = getTeam(favCode);
   if (!team) return '';
 
-  const teamFixtures = getTeamFixtures(favCode);
+  const teamFixtures = applyMockToFixtures(getTeamFixtures(favCode));
   const groupInfo = getGroupForTeam(favCode);
 
   // Próximo jogo
@@ -149,7 +150,7 @@ function renderMeuCopa(state) {
   let groupPos = '—', groupPts = 0;
   if (groupInfo) {
     const standings = groupInfo.teams.map(code => {
-      const fixtures = FIXTURES.filter(f => f.group === groupInfo.id && (f.home === code || f.away === code));
+      const fixtures = applyMockToFixtures(FIXTURES).filter(f => f.group === groupInfo.id && (f.home === code || f.away === code));
       let pts = 0;
       fixtures.forEach(f => {
         if (f.homeScore == null) return;
@@ -213,7 +214,7 @@ function renderMeuCopa(state) {
 }
 
 function render(state) {
-  const upcoming = FIXTURES
+  const upcoming = applyMockToFixtures(FIXTURES)
     .filter(f => matchPhase(f) === 'pre')
     .sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`))
     .slice(0, 4);

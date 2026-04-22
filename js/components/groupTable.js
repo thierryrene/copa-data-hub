@@ -1,9 +1,10 @@
 import { icon } from '../icons.js';
 import { getTeam, FIXTURES } from '../data.js';
+import { applyMockToFixtures } from '../util/mockMode.js';
 
 // Calcula pontos e form (últimos 3 resultados) para cada time no grupo
 function computeStandings(groupId, teamCodes) {
-  const groupFixtures = FIXTURES.filter(f => f.group === groupId);
+  const groupFixtures = applyMockToFixtures(FIXTURES).filter(f => f.group === groupId);
 
   const stats = {};
   teamCodes.forEach(code => {

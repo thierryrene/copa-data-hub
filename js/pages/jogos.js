@@ -3,6 +3,7 @@ import { FIXTURES, STADIUMS } from '../data.js';
 import { matchPhase } from '../util/match.js';
 import { renderMatchCard } from '../components/matchCard.js';
 import { setSEO } from '../util/seo.js';
+import { applyMockToFixtures } from '../util/mockMode.js';
 
 // País de cada estádio
 const STADIUM_COUNTRY = Object.fromEntries(STADIUMS.map(s => [s.id, s.country]));
@@ -37,14 +38,15 @@ function categorize(fixtures) {
 
 function render(state) {
   const predictions = state?.user?.predictions || [];
-  const c = categorize(FIXTURES);
+  const fixtures = applyMockToFixtures(FIXTURES);
+  const c = categorize(fixtures);
 
   // Contagens por rodada e por sede para os labels dos filtros
-  const rdCount = [1, 2, 3].map(d => FIXTURES.filter(f => MATCHDAY[f.id] === d).length);
+  const rdCount = [1, 2, 3].map(d => fixtures.filter(f => MATCHDAY[f.id] === d).length);
   const sedeCount = {
-    EUA:    FIXTURES.filter(f => STADIUM_COUNTRY[f.stadium] === 'EUA').length,
-    Canadá: FIXTURES.filter(f => STADIUM_COUNTRY[f.stadium] === 'Canadá').length,
-    México: FIXTURES.filter(f => STADIUM_COUNTRY[f.stadium] === 'México').length,
+    EUA:    fixtures.filter(f => STADIUM_COUNTRY[f.stadium] === 'EUA').length,
+    Canadá: fixtures.filter(f => STADIUM_COUNTRY[f.stadium] === 'Canadá').length,
+    México: fixtures.filter(f => STADIUM_COUNTRY[f.stadium] === 'México').length,
   };
 
   return `
@@ -52,7 +54,7 @@ function render(state) {
     <p class="section-subtitle">Calendário completo de partidas do Mundial 2026 com cobertura ao vivo, escalações e estatísticas.</p>
 
     <div class="filter-tabs" id="match-status-filter">
-      <button class="filter-tab active" data-status="all">Todos (${FIXTURES.length})</button>
+      <button class="filter-tab active" data-status="all">Todos (${fixtures.length})</button>
       ${c.live.length ? `<button class="filter-tab" data-status="live">🔴 Ao Vivo (${c.live.length})</button>` : ''}
       <button class="filter-tab" data-status="upcoming">Próximos (${c.upcoming.length})</button>
       <button class="filter-tab" data-status="finished">Encerrados (${c.finished.length})</button>
@@ -77,7 +79,7 @@ function render(state) {
     </div>
 
     <div class="matches-list" id="matches-container">
-      ${FIXTURES.map(f => {
+      ${fixtures.map(f => {
         const pred = predictions.find(p => p.fixtureId === f.id) || null;
         return `
         <div class="match-wrapper"

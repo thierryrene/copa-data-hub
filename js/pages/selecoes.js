@@ -1,5 +1,6 @@
 import { icon } from '../icons.js';
 import { getTeam, getTeamBySlug, getTeamFixtures, getGroupForTeam } from '../data.js';
+import { applyMockToFixtures } from '../util/mockMode.js';
 import { renderTeamChip } from '../components/teamChip.js';
 import { renderTeamFixtureRow } from '../components/teamFixtureRow.js';
 import { renderLineupField, renderLineupSkeleton } from '../components/lineupField.js';
@@ -202,7 +203,7 @@ function render(state, params) {
   if (!team) return renderNotFound(rawSlug);
 
   const group = getGroupForTeam(team.code);
-  const teamFixtures = getTeamFixtures(team.code);
+  const teamFixtures = applyMockToFixtures(getTeamFixtures(team.code));
   const isFavorite = state.user.favoriteTeam === team.code;
   const favoriteTeam = state.user.favoriteTeam ? getTeam(state.user.favoriteTeam) : null;
   const canCompare = favoriteTeam && favoriteTeam.code !== team.code;
